@@ -55,4 +55,16 @@ class SampleControllerTest extends BaseMvcTest {
         when(sampleService.getAllSamples()).thenReturn(sampleGetResList);
         this.mockMvc.perform(get("/v1/sample")).andDo(print()).andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("샘플 단건 조회 테스트")
+    void 샘플_단건_조회() throws Exception {
+        Long sampleId = 1L;
+        String title = "title";
+        String text = "text";
+        SampleGetRes sampleGetRes =
+                SampleGetRes.builder().sampleId(sampleId).title(title).text(text).build();
+        when(sampleService.getSample(any())).thenReturn(sampleGetRes);
+        this.mockMvc.perform(get("/v1/sample/" + sampleId)).andDo(print()).andExpect(status().isOk());
+    }
 }
