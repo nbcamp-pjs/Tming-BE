@@ -14,10 +14,8 @@ import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Table(name = "tb_post")
 public class Post extends BaseEntity {
     @Id
@@ -41,6 +39,17 @@ public class Post extends BaseEntity {
     //	@JoinColumn(name = "userId")
     //	private User user;
 
-    @OneToMany(mappedBy = "post",targetEntity = PostStack.class,cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<PostStack> issueComments = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "post",
+            targetEntity = PostStack.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<PostStack> postStackList = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "post",
+            targetEntity = JobLimit.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<JobLimit> jobLimitList = new ArrayList<>();
 }
