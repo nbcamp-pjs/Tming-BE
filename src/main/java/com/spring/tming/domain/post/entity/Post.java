@@ -60,7 +60,14 @@ public class Post extends BaseEntity {
     private final List<JobLimit> jobLimitList = new ArrayList<>();
 
     @Builder
-    private Post(Long postId, String title, String content, Timestamp deadline, Status status, Long visit, String imageUrl) {
+    private Post(
+            Long postId,
+            String title,
+            String content,
+            Timestamp deadline,
+            Status status,
+            Long visit,
+            String imageUrl) {
         this.postId = postId;
         this.title = title;
         this.content = content;
