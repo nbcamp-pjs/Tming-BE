@@ -14,8 +14,14 @@ import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tb_post")
 public class Post extends BaseEntity {
     @Id
@@ -52,4 +58,15 @@ public class Post extends BaseEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private final List<JobLimit> jobLimitList = new ArrayList<>();
+
+    @Builder
+    private Post(Long postId, String title, String content, Timestamp deadline, Status status, Long visit, String imageUrl) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.deadline = deadline;
+        this.status = status;
+        this.visit = visit;
+        this.imageUrl = imageUrl;
+    }
 }
