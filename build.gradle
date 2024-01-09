@@ -54,6 +54,11 @@ dependencies {
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.11'
+
+	// 이메일 인증을 위해 JavaMailApi를 직접 사용할 수 있도록 의존성 추가
+	implementation 'javax.mail:mail:1.4.7'
+	// Spring Context Support
+	implementation 'org.springframework:spring-context-support:5.3.9'
 }
 
 spotless {
