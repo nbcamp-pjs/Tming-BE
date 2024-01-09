@@ -1,14 +1,14 @@
 package com.spring.tming.global.jwt;
 
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
-import io.jsonwebtoken.*;
 import java.util.Base64;
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +25,7 @@ public class JwtUtil {
 
     @Value("${jwt.secret.key}")
     private String secretkey;
+
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -37,25 +38,25 @@ public class JwtUtil {
     public String createAccessToken(String username) {
         Date date = new Date();
 
-        return BEARER_PREFIX +
-            Jwts.builder()
-                .setSubject(username)
-                .claim(AUTHORIZATION_KEY, username)
-                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
-                .setIssuedAt(date)
-                .signWith(key, signatureAlgorithm)
-                .compact();
+        return BEARER_PREFIX
+                + Jwts.builder()
+                        .setSubject(username)
+                        .claim(AUTHORIZATION_KEY, username)
+                        .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
     }
 
     public String createRefreshToken(String username) {
         Date date = new Date();
 
-        return BEARER_PREFIX +
-            Jwts.builder()
-                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
-                .setIssuedAt(date)
-                .signWith(key, signatureAlgorithm)
-                .compact();
+        return BEARER_PREFIX
+                + Jwts.builder()
+                        .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
     }
 
     public String getTokenFromHeader(HttpServletRequest request, String tokenType) {
@@ -85,6 +86,4 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 }
