@@ -17,7 +17,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public RestResponse<PostCreateRes> createPost(@RequestBody PostCreateReq postCreateReq) { // 인증된 유저 정보 추가
+    public RestResponse<PostCreateRes> createPost(
+            @RequestBody PostCreateReq postCreateReq) { // 인증된 유저 정보 추가
         return RestResponse.success(postService.createPost(postCreateReq));
     }
 }

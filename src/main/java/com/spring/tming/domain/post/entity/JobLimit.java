@@ -31,7 +31,7 @@ public class JobLimit {
     @Column private Integer headcount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
+    @JoinColumn(name = "postId", nullable = false, table = "tb_post")
     private Post post;
 
     @Builder

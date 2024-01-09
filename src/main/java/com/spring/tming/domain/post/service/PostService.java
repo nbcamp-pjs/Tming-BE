@@ -23,16 +23,14 @@ public class PostService {
         // title, content, deadline => validation 진행
         // skills 테이블 분리하지 않고 문자열 배열 형식 (회의후 진행)
         // image 처리 분리 => 저장소url 가져오기
-        Post savedPost =
-                postRepository.save(
-                        Post.builder()
+        Post newPost = Post.builder()
                                 .title(postCreateReq.getTitle())
                                 .content(postCreateReq.getContent())
                                 .deadline(postCreateReq.getDeadline())
                                 .status(Status.OPEN)
                                 .visit(0L)
                                 .imageUrl(postCreateReq.getImage())
-                                .build());
+                                .build();
 
         // 저장된 post로 postStack에도 저장
         // 테이블 분리할 경우 => for문으로 들어온 값 수만큼 저장 (보류)
@@ -42,15 +40,8 @@ public class PostService {
         postCreateReq
                 .getJobLimitList()
                 .forEach(
-                        jobLimit -> {
-                            jobLimitRepository.save(
-                                    JobLimit.builder()
-                                            .job(jobLimit.getJob())
-                                            .headcount(jobLimit.getHeadcount())
-                                            .post(savedPost)
-                                            .build());
-                        });
+                    newPost::addJobLimitList);
 
-        return PostServiceMapper.INSTANCE.toPostCreateRes(savedPost);
+        return PostServiceMapper.INSTANCE.toPostCreateRes(postRepository.save(newPost));
     }
 }

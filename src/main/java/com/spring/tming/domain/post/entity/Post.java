@@ -76,4 +76,8 @@ public class Post extends BaseEntity {
         this.visit = visit;
         this.imageUrl = imageUrl;
     }
+
+    public void addJobLimitList(JobLimit jobLimit) {
+        this.jobLimitList.add(jobLimit);
+    }
 }
