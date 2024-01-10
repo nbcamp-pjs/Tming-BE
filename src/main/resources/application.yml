@@ -28,4 +28,15 @@ logging:
 
 jwt:
   secret:
-    key: 아무거나
+    key: asdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdadasdadasdasdasdasdasdasdasdds
+
+cloud:
+  aws:
+    s3:
+      bucket:
+        name: name
+        url: url
+    credentials:
+      accessKey: accessKey
+      secretKey: secretKey
+    region: region

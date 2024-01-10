@@ -59,6 +59,8 @@ dependencies {
 	implementation 'javax.mail:mail:1.4.7'
 	// Spring Context Support
 	implementation 'org.springframework:spring-context-support:5.3.9'
+
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.623'
 }
 
 spotless {
