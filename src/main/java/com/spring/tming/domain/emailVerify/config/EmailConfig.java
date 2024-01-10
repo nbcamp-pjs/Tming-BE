@@ -12,7 +12,7 @@ public class EmailConfig {
     @Bean
     public JavaMailSender mailSender() {//JAVA MAILSENDER 인터페이스를 구현한 객체를 빈으로 등록하기 위함.
 
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();//JavaMailSender 의 구현체를 생성하고
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();//JavaMailSender의 구현체를 생성
         mailSender.setHost("smtp.gmail.com");// 속성을 넣기 시작. 이메일 전송에 사용할 SMTP 서버 호스트를 설정
         mailSender.setPort(587);// 587로 포트를 지정
         mailSender.setUsername("jangd6995@gmail.com");// 인증메시지용 구글계정
