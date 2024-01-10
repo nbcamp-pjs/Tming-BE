@@ -50,14 +50,14 @@ public class Post extends BaseEntity {
             targetEntity = PostStack.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private final List<PostStack> postStackList = new ArrayList<>();
+    private final List<PostStack> postStacks = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "post",
             targetEntity = JobLimit.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private final List<JobLimit> jobLimitList = new ArrayList<>();
+    private final List<JobLimit> jobLimits = new ArrayList<>();
 
     @Builder
     private Post(
@@ -77,7 +77,11 @@ public class Post extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void addJobLimitList(JobLimit jobLimit) {
-        this.jobLimitList.add(jobLimit);
+    public void addPostStacks(PostStack postStack) {
+        this.postStacks.add(postStack);
+    }
+
+    public void addJobLimits(JobLimit jobLimit) {
+        this.jobLimits.add(jobLimit);
     }
 }
