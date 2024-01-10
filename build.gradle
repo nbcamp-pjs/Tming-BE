@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id 'com.diffplug.spotless' version '6.11.0'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.spring.tming'
@@ -16,6 +17,12 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
+}
+
+ext {
+	asciidocVersion = "2.0.6.RELEASE"
+	snippetsDir = file('build/generated-snippets')
 }
 
 repositories {
@@ -26,7 +33,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -37,6 +50,15 @@ dependencies {
 
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.11'
+
+	// 이메일 인증을 위해 JavaMailApi를 직접 사용할 수 있도록 의존성 추가
+	implementation 'javax.mail:mail:1.4.7'
+	// Spring Context Support
+	implementation 'org.springframework:spring-context-support:5.3.9'
 }
 
 spotless {
@@ -59,4 +81,26 @@ tasks.named("spotlessJava").configure { dependsOn("compileTestJava") }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from asciidoctor.outputDir
+		into "src/main/resources/static/docs"
+	}
 }
