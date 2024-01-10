@@ -37,7 +37,8 @@ public class EmailConfig {
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("spring.mail.transport.protocol", springMailTransportProtocol);
         javaMailProperties.put("spring.mail.smtp.auth", springMailSmtpAuth);
-        javaMailProperties.put("spring.mail.smtp.socketFactory.class", springMailSmtpSocketFactoryClass);
+        javaMailProperties.put(
+                "spring.mail.smtp.socketFactory.class", springMailSmtpSocketFactoryClass);
         javaMailProperties.put("spring.mail.smtp.starttls.enable", springMailSmtpStarttlsEnable);
         javaMailProperties.put("spring.mail.debug", springMailDebug);
         javaMailProperties.put("spring.mail.smtp.ssl.trust", springMailSmtpSslTrust);
