@@ -45,4 +45,25 @@ class S3ProviderTest {
         verify(amazonS3).doesObjectExist(any(), any());
         verify(amazonS3).getUrl(any(), any());
     }
+
+    @Test
+    @DisplayName("파일 수정 테스트")
+    void 파일_수정() throws IOException {
+        // given
+        String filename = "images/sparta.png";
+        Resource resource = new ClassPathResource(filename);
+        MultipartFile multipartFile =
+                new MockMultipartFile(
+                        "sparta", filename, "image/png", Files.readAllBytes(resource.getFile().toPath()));
+        when(amazonS3.getUrl(any(), any())).thenReturn(new URL("https://example.com/mock-url"));
+        when(amazonS3.doesObjectExist(any(), any())).thenReturn(true);
+
+        // when
+        s3Provider.updateImage("test/" + filename, multipartFile);
+
+        // then
+        verify(amazonS3).doesObjectExist(any(), any());
+        verify(amazonS3).putObject(any(), any(), any(), any());
+        verify(amazonS3).getUrl(any(), any());
+    }
 }
