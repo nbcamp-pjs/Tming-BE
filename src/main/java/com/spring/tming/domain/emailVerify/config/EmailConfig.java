@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 public class EmailConfig {
 
-    @Value("${mail.transport.protocol}")
+    @Value("${spring.mail.transport.protocol}")
     private String mailTransportProtocol;
 
     @Value("${mail.smtp.auth}")
