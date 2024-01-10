@@ -10,7 +10,7 @@ import java.util.Properties;
 @Configuration
 public class EmailConfig {
     @Bean
-    public JavaMailSender mailSender() {//JAVA MAILSENDER 인터페이스를 구현한 객체를 빈으로 등록하기 위함.
+    public JavaMailSender mailSender() { //JAVA MAILSENDER 인터페이스를 구현한 객체를 빈으로 등록하기 위함.
 
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();//JavaMailSender의 구현체를 생성
         mailSender.setHost("smtp.gmail.com");// 속성을 넣기 시작. 이메일 전송에 사용할 SMTP 서버 호스트를 설정
@@ -27,7 +27,7 @@ public class EmailConfig {
         javaMailProperties.put("mail.smtp.ssl.trust", "smtp.naver.com"); //smtp 서버의 ssl 인증서를 신뢰
         javaMailProperties.put("mail.smtp.ssl.protocols", "TLSv1.2"); //사용할 ssl 프로토콜 버젼
 
-        mailSender.setJavaMailProperties(javaMailProperties); //mailSender에 팀에서 만든 properties 넣고
+        mailSender.setJavaMailProperties(javaMailProperties); //mailSender에 팀에서 만든 properties 넣기
 
         return mailSender;//빈으로 등록.
     }
