@@ -11,37 +11,37 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 public class EmailConfig {
 
     @Value("${spring.mail.transport.protocol}")
-    private String mailTransportProtocol;
+    private String springMailTransportProtocol;
 
-    @Value("${mail.smtp.auth}")
-    private String mailSmtpAuth;
+    @Value("${spring.mail.smtp.auth}")
+    private String springMailSmtpAuth;
 
-    @Value("${mail.smtp.socketFactory.class}")
-    private String mailSmtpSocketFactoryClass;
+    @Value("${spring.mail.smtp.socketFactory.class}")
+    private String springMailSmtpSocketFactoryClass;
 
-    @Value("${mail.smtp.starttls.enable}")
-    private String mailSmtpStarttlsEnable;
+    @Value("${spring.mail.smtp.starttls.enable}")
+    private String springMailSmtpStarttlsEnable;
 
-    @Value("${mail.debug}")
-    private String mailDebug;
+    @Value("${spring.mail.debug}")
+    private String springMailDebug;
 
-    @Value("${mail.smtp.ssl.trust}")
-    private String mailSmtpSslTrust;
+    @Value("${spring.mail.smtp.ssl.trust}")
+    private String springMailSmtpSslTrust;
 
-    @Value("${mail.smtp.ssl.protocols}")
-    private String mailSmtpSslProtocols;
+    @Value("${spring.mail.smtp.ssl.protocols}")
+    private String springMailSmtpSslProtocols;
 
     @Bean
     public JavaMailSender mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties javaMailProperties = new Properties();
-        javaMailProperties.put("mail.transport.protocol", mailTransportProtocol);
-        javaMailProperties.put("mail.smtp.auth", mailSmtpAuth);
-        javaMailProperties.put("mail.smtp.socketFactory.class", mailSmtpSocketFactoryClass);
-        javaMailProperties.put("mail.smtp.starttls.enable", mailSmtpStarttlsEnable);
-        javaMailProperties.put("mail.debug", mailDebug);
-        javaMailProperties.put("mail.smtp.ssl.trust", mailSmtpSslTrust);
-        javaMailProperties.put("mail.smtp.ssl.protocols", mailSmtpSslProtocols);
+        javaMailProperties.put("spring.mail.transport.protocol", springMailTransportProtocol);
+        javaMailProperties.put("spring.mail.smtp.auth", springMailSmtpAuth);
+        javaMailProperties.put("spring.mail.smtp.socketFactory.class", springMailSmtpSocketFactoryClass);
+        javaMailProperties.put("spring.mail.smtp.starttls.enable", springMailSmtpStarttlsEnable);
+        javaMailProperties.put("spring.mail.debug", springMailDebug);
+        javaMailProperties.put("spring.mail.smtp.ssl.trust", springMailSmtpSslTrust);
+        javaMailProperties.put("spring.mail.smtp.ssl.protocols", springMailSmtpSslProtocols);
 
         mailSender.setJavaMailProperties(javaMailProperties);
 
