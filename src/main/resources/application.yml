@@ -29,3 +29,14 @@ logging:
 jwt:
   secret:
     key: asdasdasdasdasdasdasdasdasdasdasdasdsadasdasdasdasdasdadasdadasdasdasdasdasdasdasdds
+
+cloud:
+  aws:
+    s3:
+      bucket:
+        name: name
+        url: url
+    credentials:
+      accessKey: accessKey
+      secretKey: secretKey
+    region: region
