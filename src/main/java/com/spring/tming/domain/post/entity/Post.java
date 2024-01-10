@@ -76,12 +76,4 @@ public class Post extends BaseEntity {
         this.visit = visit;
         this.imageUrl = imageUrl;
     }
-
-    public void addPostStacks(PostStack postStack) {
-        this.postStacks.add(postStack);
-    }
-
-    public void addJobLimits(JobLimit jobLimit) {
-        this.jobLimits.add(jobLimit);
-    }
 }

@@ -11,6 +11,8 @@ import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,38 +33,44 @@ public class PostService {
         // s3에 업로드 진행방식 전에 서버에 저장하는 방식으로 진행 (리팩토링)
         String imageUrl = ImageFileHandler.uploadImage(image);
 
-        Post newPost =
-                Post.builder()
-                        .title(postCreateReq.getTitle())
-                        .content(postCreateReq.getContent())
-                        .deadline(postCreateReq.getDeadline())
-                        .status(Status.OPEN)
-                        .visit(0L)
-                        .imageUrl(imageUrl)
-                        .build();
+        Post savedPost =
+                postRepository.save(
+                        Post.builder()
+                                .title(postCreateReq.getTitle())
+                                .content(postCreateReq.getContent())
+                                .deadline(postCreateReq.getDeadline())
+                                .status(Status.OPEN)
+                                .visit(0L)
+                                .imageUrl(imageUrl)
+                                .build());
 
         // 저장된 post로 postStack에도 저장
         // 테이블 분리할 경우 => for문으로 들어온 값 수만큼 저장 (보류)
         // Post테이블에 저장할 경우 들어온 값 그대로 저장 => 위에서 컬럼만들어서 진행
+        List<PostStack> postStacks = new ArrayList<>();
         postCreateReq
                 .getSkills()
                 .forEach(
                         skill -> {
-                            newPost.addPostStacks(PostStack.builder().skill(skill).post(newPost).build());
+                            postStacks.add(PostStack.builder().skill(skill).post(savedPost).build());
                         });
+        postStackRepository.saveAll(postStacks);
+
         // 저장된 post로 jobLimit에도 저장
+        List<JobLimit> jobLimits = new ArrayList<>();
         postCreateReq
                 .getJobLimits()
                 .forEach(
                         jobLimit -> {
-                            newPost.addJobLimits(
+                            jobLimits.add(
                                     JobLimit.builder()
                                             .job(jobLimit.getJob())
                                             .headcount(jobLimit.getHeadcount())
-                                            .post(newPost)
+                                            .post(savedPost)
                                             .build());
                         });
+        jobLimitRepository.saveAll(jobLimits);
 
-        return PostServiceMapper.INSTANCE.toPostCreateRes(postRepository.save(newPost));
+        return PostServiceMapper.INSTANCE.toPostCreateRes(savedPost);
     }
 }
