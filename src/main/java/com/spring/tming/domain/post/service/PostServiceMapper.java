@@ -1,6 +1,7 @@
 package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,4 +11,6 @@ public interface PostServiceMapper {
     PostServiceMapper INSTANCE = Mappers.getMapper(PostServiceMapper.class);
 
     PostCreateRes toPostCreateRes(Post post);
+
+    PostUpdateRes toPostUpdateRes(Post post);
 }

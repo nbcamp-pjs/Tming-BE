@@ -1,6 +1,7 @@
 package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
+import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
@@ -10,6 +11,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +74,57 @@ public class PostService {
         jobLimitRepository.saveAll(jobLimits);
 
         return PostServiceMapper.INSTANCE.toPostCreateRes(savedPost);
+    }
+
+    @Transactional
+    public void updatePost(PostUpdateReq postUpdateReq, MultipartFile image) throws IOException {
+        // 해당하는 기존 모집글의 정보를 가져온다.
+        Post post = postRepository.findByPostId(postUpdateReq.getPostId());
+        // post가 없는 경우 validation 처리
+
+        // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
+
+        // 수정한 이미지 파일 처리
+        String imageUrl = ImageFileHandler.uploadImage(image);
+
+        // 업데이트한 Post 만들기
+        Post updatedPost =
+                postRepository.save(
+                        Post.builder()
+                                .postId(postUpdateReq.getPostId())
+                                .title(postUpdateReq.getTitle())
+                                .content(postUpdateReq.getContent())
+                                .deadline(postUpdateReq.getDeadline())
+                                .status(post.getStatus())
+                                .visit(post.getVisit())
+                                .imageUrl(imageUrl)
+                                .build());
+
+        // 해당 모집글에 관련된 엔티티 제거
+        postStackRepository.deleteAllByPostId(postUpdateReq.getPostId());
+        jobLimitRepository.deleteAllByPostId(postUpdateReq.getPostId());
+
+        List<PostStack> postStacks = new ArrayList<>();
+        postUpdateReq
+                .getSkills()
+                .forEach(
+                        skill -> {
+                            postStacks.add(PostStack.builder().skill(skill).post(updatedPost).build());
+                        });
+        postStackRepository.saveAll(postStacks);
+
+        List<JobLimit> jobLimits = new ArrayList<>();
+        postUpdateReq
+                .getJobLimits()
+                .forEach(
+                        jobLimit -> {
+                            jobLimits.add(
+                                    JobLimit.builder()
+                                            .job(jobLimit.getJob())
+                                            .headcount(jobLimit.getHeadcount())
+                                            .post(updatedPost)
+                                            .build());
+                        });
+        jobLimitRepository.saveAll(jobLimits);
     }
 }

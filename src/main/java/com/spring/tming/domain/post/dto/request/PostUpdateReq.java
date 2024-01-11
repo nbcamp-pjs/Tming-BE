@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCreateReq {
+public class PostUpdateReq {
+    private Long postId;
     private String title;
     private String content;
     private Timestamp deadline;
@@ -19,12 +20,14 @@ public class PostCreateReq {
     private List<Skill> skills;
 
     @Builder
-    private PostCreateReq(
+    private PostUpdateReq(
+            Long postId,
             String title,
             String content,
             Timestamp deadline,
             List<JobLimit> jobLimits,
             List<Skill> skills) {
+        this.postId = postId;
         this.title = title;
         this.content = content;
         this.deadline = deadline;
