@@ -12,7 +12,7 @@ public enum ResultCode {
     NOT_FOUND_SAMPLE(2002, "샘플 데이터가 없습니다."),
 
     // 이메일 유효성 검사
-    INVALID_EMAIL(1002, "올바른 이메일 주소가 아닙니다."),
+    INVALID_EMAIL(1002, "올바른 이메일 주소가 아닙니다. 다시 입력해주세요"),
     EMPTY_EMAIL(1003, "이메일을 입력해주세요"),
     EMAIL_SEND_ERROR(2000, "이메일 전송 중 오류가 발생했습니다.");
 
