@@ -3,6 +3,7 @@ package com.spring.tming.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.tming.domain.user.dto.request.LoginReq;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.jwt.JwtUtil;
 import com.spring.tming.global.redis.RedisUtil;
 import jakarta.servlet.FilterChain;
@@ -10,10 +11,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.spring.tming.global.meta.ResultCode.*;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -37,7 +42,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                     loginReq.getEmail(), loginReq.getPassword(), null));
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw new GlobalException(NOT_FOUND_USER);
         }
     }
 
@@ -62,7 +67,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(
-            HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+            HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
+
+        if (exception instanceof BadCredentialsException || exception instanceof InternalAuthenticationServiceException) {
+            log.error("입력정보 틀림");
+            throw new GlobalException(PASSWORD_MISMATCH);
+        } else {
+            log.error("서버 에러");
+            throw new GlobalException(SYSTEM_ERROR);
+        }
+
     }
 }
