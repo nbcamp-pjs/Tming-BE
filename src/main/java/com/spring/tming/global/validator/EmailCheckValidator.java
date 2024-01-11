@@ -6,18 +6,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmailCheckValidator {
+    // 이메일 유효성 검사 정규표현식 상수화
+    private static final String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+
     public static void validateEmail(String email) {
-        if (email == null || email.isEmpty()) {
+        validateEmailNotEmpty(email);
+        validateEmailFormat(email);
+    }
+
+    private static void validateEmailNotEmpty(String email) {
+        if (isEmailEmpty(email)) {
             throw new GlobalException(ResultCode.EMPTY_EMAIL);
         }
+    }
 
-        // 이메일 유효성 검사 정규표현식
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
+    private static boolean isEmailEmpty(String email) {
+        return email == null || email.isEmpty();
+    }
 
-        if (!matcher.matches()) {
+    private static void validateEmailFormat(String email) {
+        if (!isEmailValid(email)) {
             throw new GlobalException(ResultCode.INVALID_EMAIL);
         }
+    }
+
+    private static boolean isEmailValid(String email) {
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
