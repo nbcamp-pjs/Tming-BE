@@ -35,6 +35,11 @@ spring:
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 logging:
   level:
     org.hibernate.SQL: debug
