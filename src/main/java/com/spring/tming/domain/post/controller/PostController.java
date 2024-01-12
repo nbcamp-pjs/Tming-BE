@@ -1,14 +1,17 @@
 package com.spring.tming.domain.post.controller;
 
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
+import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,12 @@ public class PostController {
             @RequestPart(name = "image", required = false) MultipartFile image)
             throws IOException {
         postService.updatePost(postUpdateReq, image);
+        return RestResponse.success(null);
+    }
+
+    @DeleteMapping
+    public RestResponse<Void> deletePost(@RequestBody PostDeleteReq postDeleteReq) {
+        postService.deletePost(postDeleteReq);
         return RestResponse.success(null);
     }
 }

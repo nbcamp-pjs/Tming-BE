@@ -1,6 +1,7 @@
 package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
+import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
@@ -107,5 +108,11 @@ public class PostService {
                                     .build());
                 });
         jobLimitRepository.saveAll(jobLimits);
+    }
+
+    public void deletePost(PostDeleteReq postDeleteReq) {
+        Post post = postRepository.findByPostId(postDeleteReq.getPostId());
+
+        postRepository.delete(post);
     }
 }
