@@ -4,22 +4,15 @@ import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
-// 사용자가 인증번호를 확인하고 인증번호를 입력하였을 때 받아오는 DTO
+@Getter
 public class EmailCheckReq {
     private String email;
     private String authNumber;
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAuthNumber() {
-        return authNumber;
     }
 
     public void setAuthNumber(String authNumber) {
@@ -54,3 +47,4 @@ public class EmailCheckReq {
         return authNumber == null || authNumber.isEmpty();
     }
 }
+// 사용자가 인증번호를 확인하고 인증번호를 입력하였을 때 그 값을 받아오는 DTO
