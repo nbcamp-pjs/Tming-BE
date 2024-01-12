@@ -8,7 +8,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface JobLimitRepository extends JpaRepository<JobLimit, Long> {
 
-    @Modifying
-    @Query("DELETE FROM JobLimit jl WHERE jl.post.postId = :postId")
-    void deleteAllByPostId(@Param("postId") Long postId);
+    void deleteByPostPostId(Long postId);
 }

@@ -8,7 +8,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface PostStackRepository extends JpaRepository<PostStack, Long> {
 
-    @Modifying
-    @Query("DELETE FROM PostStack ps WHERE ps.post.postId = :postId")
-    void deleteAllByPostId(@Param("postId") Long postId);
+    void deleteByPostPostId(Long postId);
 }

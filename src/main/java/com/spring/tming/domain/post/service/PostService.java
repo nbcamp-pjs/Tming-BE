@@ -4,6 +4,8 @@ import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostDeleteRes;
+import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
@@ -58,7 +60,8 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(PostUpdateReq postUpdateReq, MultipartFile image) throws IOException {
+    public PostUpdateRes updatePost(PostUpdateReq postUpdateReq, MultipartFile image)
+            throws IOException {
         // 해당하는 기존 모집글의 정보를 가져온다.
         Post post = postRepository.findByPostId(postUpdateReq.getPostId());
         // post가 없는 경우 validation 처리
@@ -82,10 +85,11 @@ public class PostService {
                                 .build());
 
         // 해당 모집글에 관련된 엔티티 제거
-        postStackRepository.deleteAllByPostId(postUpdateReq.getPostId());
-        jobLimitRepository.deleteAllByPostId(postUpdateReq.getPostId());
+        postStackRepository.deleteByPostPostId(postUpdateReq.getPostId());
+        jobLimitRepository.deleteByPostPostId(postUpdateReq.getPostId());
 
         savePostStackAndJobLimit(postUpdateReq.getSkills(), postUpdateReq.getJobLimits(), updatedPost);
+        return PostServiceMapper.INSTANCE.toPostUpdateRes(updatedPost);
     }
 
     private void savePostStackAndJobLimit(
@@ -112,11 +116,12 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(PostDeleteReq postDeleteReq) {
+    public PostDeleteRes deletePost(PostDeleteReq postDeleteReq) {
         Post post = postRepository.findByPostId(postDeleteReq.getPostId());
         PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
 
         postRepository.delete(post);
+        return PostServiceMapper.INSTANCE.toPostDeleteRes(post);
     }
 }

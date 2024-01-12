@@ -8,8 +8,12 @@ import com.spring.tming.global.exception.GlobalException;
 public class PostValidator {
 
     public static void checkIsNullPost(Post post) {
-        if (post == null) {
+        if (isNullPost(post)) {
             throw new GlobalException(NOT_FOUND_POST);
         }
+    }
+
+    private static boolean isNullPost(Post post) {
+        return post == null;
     }
 }

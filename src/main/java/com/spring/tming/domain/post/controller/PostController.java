@@ -4,6 +4,8 @@ import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostDeleteRes;
+import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
 import java.io.IOException;
@@ -32,17 +34,15 @@ public class PostController {
     }
 
     @PatchMapping
-    public RestResponse<Void> updatePost(
+    public RestResponse<PostUpdateRes> updatePost(
             @RequestPart(name = "request") PostUpdateReq postUpdateReq,
             @RequestPart(name = "image", required = false) MultipartFile image)
             throws IOException {
-        postService.updatePost(postUpdateReq, image);
-        return RestResponse.success(null);
+        return RestResponse.success(postService.updatePost(postUpdateReq, image));
     }
 
     @DeleteMapping
-    public RestResponse<Void> deletePost(@RequestBody PostDeleteReq postDeleteReq) {
-        postService.deletePost(postDeleteReq);
-        return RestResponse.success(null);
+    public RestResponse<PostDeleteRes> deletePost(@RequestBody PostDeleteReq postDeleteReq) {
+        return RestResponse.success(postService.deletePost(postDeleteReq));
     }
 }
