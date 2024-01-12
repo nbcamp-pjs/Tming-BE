@@ -22,6 +22,24 @@ spring:
         mode: always
         encoding: UTF-8
 
+  mail:
+    host: host
+    port: 1
+    username: username
+    password: password
+    properties:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 logging:
   level:
     org.hibernate.SQL: debug
