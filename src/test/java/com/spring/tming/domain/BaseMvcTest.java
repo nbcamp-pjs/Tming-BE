@@ -1,9 +1,12 @@
 package com.spring.tming.domain;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
 import capital.scalable.restdocs.AutoDocumentation;
 import capital.scalable.restdocs.jackson.JacksonResultHandlers;
 import capital.scalable.restdocs.response.ResponseModifyingPreprocessors;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.tming.global.security.MockSpringSecurityFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,6 +47,7 @@ public class BaseMvcTest {
                                                 ResponseModifyingPreprocessors.replaceBinaryContent(),
                                                 ResponseModifyingPreprocessors.limitJsonArrayLength(objectMapper),
                                                 Preprocessors.prettyPrint())))
+                        .apply(springSecurity(new MockSpringSecurityFilter()))
                         .apply(
                                 MockMvcRestDocumentation.documentationConfiguration(restDocumentation)
                                         .uris()
