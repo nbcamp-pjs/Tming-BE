@@ -15,6 +15,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -30,16 +31,15 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostStackRepository postStackRepository;
     private final JobLimitRepository jobLimitRepository;
+    private final S3Provider s3Provider;
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image)
             throws IOException {
         // postCreateReq로 들어온 값들에 대한 검증
         // title, content, deadline => validation 진행
-        // skills 테이블 분리하지 않고 문자열 배열 형식 (회의후 진행)
-        // image 처리 분리 => 저장소url 가져오기
-        // s3에 업로드 진행방식 전에 서버에 저장하는 방식으로 진행 (리팩토링)
-        String imageUrl = ImageFileHandler.uploadImage(image);
 
+        // image 처리 분리 => 저장소url 가져오기
+        String imageUrl = s3Provider.saveFile(image, "postImage");
         Post savedPost =
                 postRepository.save(
                         Post.builder()
@@ -69,7 +69,7 @@ public class PostService {
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
 
         // 수정한 이미지 파일 처리
-        String imageUrl = ImageFileHandler.uploadImage(image);
+        String imageUrl = ImageFileHandler.checkUpdateImage(post, image);
 
         // 업데이트한 Post 만들기
         Post updatedPost =
