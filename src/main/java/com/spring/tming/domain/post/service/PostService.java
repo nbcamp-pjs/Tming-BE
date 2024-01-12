@@ -6,6 +6,7 @@ import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
+import com.spring.tming.domain.post.entity.Skill;
 import com.spring.tming.domain.post.entity.Status;
 import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
@@ -49,29 +50,7 @@ public class PostService {
         // 저장된 post로 postStack에도 저장
         // 테이블 분리할 경우 => for문으로 들어온 값 수만큼 저장 (보류)
         // Post테이블에 저장할 경우 들어온 값 그대로 저장 => 위에서 컬럼만들어서 진행
-        List<PostStack> postStacks = new ArrayList<>();
-        postCreateReq
-                .getSkills()
-                .forEach(
-                        skill -> {
-                            postStacks.add(PostStack.builder().skill(skill).post(savedPost).build());
-                        });
-        postStackRepository.saveAll(postStacks);
-
-        // 저장된 post로 jobLimit에도 저장
-        List<JobLimit> jobLimits = new ArrayList<>();
-        postCreateReq
-                .getJobLimits()
-                .forEach(
-                        jobLimit -> {
-                            jobLimits.add(
-                                    JobLimit.builder()
-                                            .job(jobLimit.getJob())
-                                            .headcount(jobLimit.getHeadcount())
-                                            .post(savedPost)
-                                            .build());
-                        });
-        jobLimitRepository.saveAll(jobLimits);
+        savePostStackAndJobLimit(postCreateReq.getSkills(), postCreateReq.getJobLimits(), savedPost);
 
         return PostServiceMapper.INSTANCE.toPostCreateRes(savedPost);
     }
@@ -104,27 +83,29 @@ public class PostService {
         postStackRepository.deleteAllByPostId(postUpdateReq.getPostId());
         jobLimitRepository.deleteAllByPostId(postUpdateReq.getPostId());
 
+        savePostStackAndJobLimit(postUpdateReq.getSkills(), postUpdateReq.getJobLimits(), updatedPost);
+    }
+
+    private void savePostStackAndJobLimit(
+            List<Skill> skills, List<JobLimit> jobLimitList, Post post) {
         List<PostStack> postStacks = new ArrayList<>();
-        postUpdateReq
-                .getSkills()
-                .forEach(
-                        skill -> {
-                            postStacks.add(PostStack.builder().skill(skill).post(updatedPost).build());
-                        });
+        skills.forEach(
+                skill -> {
+                    postStacks.add(PostStack.builder().skill(skill).post(post).build());
+                });
         postStackRepository.saveAll(postStacks);
 
+        // 저장된 post로 jobLimit에도 저장
         List<JobLimit> jobLimits = new ArrayList<>();
-        postUpdateReq
-                .getJobLimits()
-                .forEach(
-                        jobLimit -> {
-                            jobLimits.add(
-                                    JobLimit.builder()
-                                            .job(jobLimit.getJob())
-                                            .headcount(jobLimit.getHeadcount())
-                                            .post(updatedPost)
-                                            .build());
-                        });
+        jobLimitList.forEach(
+                jobLimit -> {
+                    jobLimits.add(
+                            JobLimit.builder()
+                                    .job(jobLimit.getJob())
+                                    .headcount(jobLimit.getHeadcount())
+                                    .post(post)
+                                    .build());
+                });
         jobLimitRepository.saveAll(jobLimits);
     }
 }
