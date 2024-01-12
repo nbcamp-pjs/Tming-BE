@@ -13,6 +13,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import com.spring.tming.global.validator.PostValidator;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class PostService {
         // 해당하는 기존 모집글의 정보를 가져온다.
         Post post = postRepository.findByPostId(postUpdateReq.getPostId());
         // post가 없는 경우 validation 처리
-
+        PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
 
         // 수정한 이미지 파일 처리
@@ -110,8 +111,11 @@ public class PostService {
         jobLimitRepository.saveAll(jobLimits);
     }
 
+    @Transactional
     public void deletePost(PostDeleteReq postDeleteReq) {
         Post post = postRepository.findByPostId(postDeleteReq.getPostId());
+        PostValidator.checkIsNullPost(post);
+        // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
 
         postRepository.delete(post);
     }
