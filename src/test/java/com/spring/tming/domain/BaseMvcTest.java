@@ -1,5 +1,6 @@
 package com.spring.tming.domain;
 
+import static com.spring.tming.test.UserTest.TEST_USER;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import capital.scalable.restdocs.AutoDocumentation;
@@ -7,6 +8,8 @@ import capital.scalable.restdocs.jackson.JacksonResultHandlers;
 import capital.scalable.restdocs.response.ResponseModifyingPreprocessors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.tming.global.security.MockSpringSecurityFilter;
+import com.spring.tming.global.security.UserDetailsImpl;
+import java.security.Principal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,6 +20,8 @@ import org.springframework.restdocs.cli.CliDocumentation;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,10 +33,12 @@ public class BaseMvcTest {
 
     @Autowired protected ObjectMapper objectMapper;
     protected MockMvc mockMvc;
+    protected Principal mockPrincipal;
     @Autowired private WebApplicationContext context;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) throws Exception {
+        mockUserSetup();
         var mockMvcRequestBuilders =
                 MockMvcRequestBuilders.get("http://example.com")
                         .header("Authorization", "Bearer <<전달받은토큰값>>");
@@ -68,5 +75,12 @@ public class BaseMvcTest {
                                                 AutoDocumentation.methodAndPath(),
                                                 AutoDocumentation.section()))
                         .build();
+    }
+
+    private void mockUserSetup() {
+        UserDetails testUserDetails = new UserDetailsImpl(TEST_USER);
+        mockPrincipal =
+                new UsernamePasswordAuthenticationToken(
+                        testUserDetails, "", testUserDetails.getAuthorities());
     }
 }
