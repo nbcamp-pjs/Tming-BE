@@ -5,6 +5,9 @@ spring:
     username: root
     password: a123456789
 
+
+
+
   jpa:
     open-in-view: false
     hibernate:
@@ -34,6 +37,7 @@ spring:
           enable: true
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
+
 
 logging:
   level:
