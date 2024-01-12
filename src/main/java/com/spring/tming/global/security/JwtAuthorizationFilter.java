@@ -41,9 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     && redisUtil.hasKey(refreshToken)) {
 
                 Long userId = (Long) redisUtil.get(refreshToken);
-                accessToken =
-                        jwtUtil
-                                .createAccessToken(userDetailsService.UserById(userId).getUsername());
+                accessToken = jwtUtil.createAccessToken(userDetailsService.UserById(userId).getUsername());
                 response.addHeader("AccessToken", accessToken);
             }
         }
@@ -70,6 +68,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private Authentication createAuthentication(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetails.getPassword(), null, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                userDetails.getPassword(), null, userDetails.getAuthorities());
     }
 }

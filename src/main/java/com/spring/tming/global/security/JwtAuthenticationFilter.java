@@ -1,5 +1,7 @@
 package com.spring.tming.global.security;
 
+import static com.spring.tming.global.meta.ResultCode.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.tming.domain.user.dto.request.LoginReq;
 import com.spring.tming.domain.user.entity.User;
@@ -17,8 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static com.spring.tming.global.meta.ResultCode.*;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -69,13 +69,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
 
-        if (exception instanceof BadCredentialsException || exception instanceof InternalAuthenticationServiceException) {
+        if (exception instanceof BadCredentialsException
+                || exception instanceof InternalAuthenticationServiceException) {
             log.error("입력정보 틀림");
             throw new GlobalException(PASSWORD_MISMATCH);
         } else {
             log.error("서버 에러");
             throw new GlobalException(SYSTEM_ERROR);
         }
-
     }
 }

@@ -1,7 +1,6 @@
 package com.spring.tming.domain.user.repository;
 
 import com.spring.tming.domain.user.entity.User;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
