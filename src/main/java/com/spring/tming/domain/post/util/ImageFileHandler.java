@@ -44,10 +44,10 @@ public class ImageFileHandler {
         // 기존에 데이터가 없는데 들어온 값에 데이터가 있는 경우 -> 생성
         if (post.getImageUrl() != null && (image == null || image.isEmpty())) {
             String[] url = post.getImageUrl().split("/");
-            s3Provider.deleteImage(url[url.length - 1]);
+            s3Provider.deleteImage(url[url.length - 2] + "/" + url[url.length - 1]);
         } else if (post.getImageUrl() != null) {
             String[] url = post.getImageUrl().split("/");
-            imageUrl = s3Provider.updateImage(url[url.length - 1], image);
+            imageUrl = s3Provider.updateImage(url[url.length - 2] + "/" + url[url.length - 1], image);
         } else if (image != null) {
             imageUrl = s3Provider.saveFile(image, "postImage");
         }

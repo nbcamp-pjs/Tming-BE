@@ -12,8 +12,4 @@ public interface PostServiceMapper {
     PostServiceMapper INSTANCE = Mappers.getMapper(PostServiceMapper.class);
 
     PostCreateRes toPostCreateRes(Post post);
-
-    PostUpdateRes toPostUpdateRes(Post post);
-
-    PostDeleteRes toPostDeleteRes(Post post);
 }

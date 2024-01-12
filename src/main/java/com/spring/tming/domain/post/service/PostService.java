@@ -89,7 +89,7 @@ public class PostService {
         jobLimitRepository.deleteByPostPostId(postUpdateReq.getPostId());
 
         savePostStackAndJobLimit(postUpdateReq.getSkills(), postUpdateReq.getJobLimits(), updatedPost);
-        return PostServiceMapper.INSTANCE.toPostUpdateRes(updatedPost);
+        return new PostUpdateRes();
     }
 
     private void savePostStackAndJobLimit(
@@ -122,6 +122,6 @@ public class PostService {
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
 
         postRepository.delete(post);
-        return PostServiceMapper.INSTANCE.toPostDeleteRes(post);
+        return new PostDeleteRes();
     }
 }
