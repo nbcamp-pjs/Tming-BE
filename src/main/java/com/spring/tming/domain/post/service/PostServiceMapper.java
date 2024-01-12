@@ -1,8 +1,6 @@
 package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
-import com.spring.tming.domain.post.dto.response.PostDeleteRes;
-import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
