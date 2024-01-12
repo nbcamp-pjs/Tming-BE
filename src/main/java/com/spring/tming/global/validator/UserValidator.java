@@ -7,12 +7,12 @@ import com.spring.tming.global.exception.GlobalException;
 
 public class UserValidator {
     public static void validate(User user) {
-        if (isNullSample(user)) {
+        if (isNullUser(user)) {
             throw new GlobalException(NOT_FOUND_USER);
         }
     }
 
-    private static boolean isNullSample(User user) {
+    private static boolean isNullUser(User user) {
         return user == null;
     }
 }

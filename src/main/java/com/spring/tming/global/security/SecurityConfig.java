@@ -1,5 +1,6 @@
 package com.spring.tming.global.security;
 
+import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.jwt.JwtUtil;
 import com.spring.tming.global.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -49,7 +50,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, redisUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, redisUtil, userRepository);
     }
 
     @Bean

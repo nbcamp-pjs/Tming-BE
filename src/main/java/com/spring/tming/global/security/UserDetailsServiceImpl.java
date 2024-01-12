@@ -20,10 +20,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserValidator.validate(user);
         return new UserDetailsImpl(user);
     }
-
-    public User UserById(Long userId) {
-        User user = userRepository.findByUserId(userId);
-        UserValidator.validate(user);
-        return user;
-    }
 }

@@ -2,8 +2,11 @@ package com.spring.tming.global.security;
 
 import static com.spring.tming.global.jwt.JwtUtil.*;
 
+import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.jwt.JwtUtil;
 import com.spring.tming.global.redis.RedisUtil;
+import com.spring.tming.global.validator.UserValidator;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +29,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -41,7 +44,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     && redisUtil.hasKey(refreshToken)) {
 
                 Long userId = (Long) redisUtil.get(refreshToken);
-                accessToken = jwtUtil.createAccessToken(userDetailsService.UserById(userId).getUsername());
+                User user = userRepository.findByUserId(userId);
+                UserValidator.validate(user);
+                accessToken = jwtUtil.createAccessToken(user.getUsername());
                 response.addHeader("AccessToken", accessToken);
             }
         }
@@ -67,8 +72,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private Authentication createAuthentication(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        User user = userRepository.findByEmail(email);
+        UserValidator.validate(user);
+        UserDetails userDetails = new UserDetailsImpl(user);
         return new UsernamePasswordAuthenticationToken(
-                userDetails.getPassword(), null, userDetails.getAuthorities());
+                userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 }
