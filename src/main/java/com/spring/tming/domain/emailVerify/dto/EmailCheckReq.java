@@ -2,49 +2,45 @@ package com.spring.tming.domain.emailVerify.dto;
 
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.validator.EmailCheckValidator;
+import com.spring.tming.global.validator.NumberCheckValidator;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailCheckReq {
     private String email;
     private String authNumber;
 
-    public void setEmail(String email) {
+    @Builder
+    private EmailCheckReq(String email, String authNumber) {
         this.email = email;
-    }
-
-    public void setAuthNumber(String authNumber) {
         this.authNumber = authNumber;
     }
 
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
 
-        if (isEmailEmpty(email)) {
-            errors.add("이메일을 입력해 주세요");
-        } else {
-            try {
-                EmailCheckValidator.validateEmail(email);
-            } catch (GlobalException e) {
-                errors.add(e.getResultCode().getMessage());
-            }
+        // 이메일 검증
+        try {
+            EmailCheckValidator.validateEmail(email);
+        } catch (GlobalException e) {
+            errors.add(e.getResultCode().getMessage());
         }
 
-        if (isAuthNumberEmpty(authNumber)) {
-            errors.add("인증 번호를 입력해 주세요");
+        // 인증 번호 검증
+        try {
+            NumberCheckValidator.validateNumber(authNumber);
+        } catch (GlobalException e) {
+            errors.add(e.getResultCode().getMessage());
         }
 
         return errors;
     }
-
-    private boolean isEmailEmpty(String email) {
-        return email == null || email.isEmpty();
-    }
-
-    private boolean isAuthNumberEmpty(String authNumber) {
-        return authNumber == null || authNumber.isEmpty();
-    }
 }
+
 // 사용자가 인증번호를 확인하고 인증번호를 입력하였을 때 그 값을 받아오는 DTO

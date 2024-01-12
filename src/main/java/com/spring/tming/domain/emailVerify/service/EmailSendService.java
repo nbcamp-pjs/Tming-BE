@@ -2,37 +2,39 @@ package com.spring.tming.domain.emailVerify.service;
 
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.ResultCode;
+import com.spring.tming.global.validator.EmailCheckValidator;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailSendService {
-    @Autowired private JavaMailSender mailSender;
-    private int authNumber;
-
-    // 임의의 6자리 양수를 반환.
-    public void makeRandomNumber() {
-        Random r = new Random();
-        StringBuilder randomNumber = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
-        for (int i = 0; i < 6; i++) {
-            randomNumber.append(r.nextInt(10)); // 문자열 연결 대신 StringBuilder를 사용하여 효율성을 높임
-        }
-
-        authNumber = Integer.parseInt(randomNumber.toString());
-    }
+    private final JavaMailSender mailSender;
 
     // 이메일을 어디서 보내는지, 어디로 보내는지, 인증 번호를 HTML 형식으로 어떻게 보내는지 작성.
-    public String joinEmail(String email) {
+    public String trialEmail(String email) {
+        try {
+            EmailCheckValidator.validateEmail(email);
+            System.out.println("이메일 인증 이메일: " + email);
+            String result = sendEmail(email);
+            return result;
+        } catch (GlobalException e) {
+            throw e;
+        }
+    }
+
+    private String sendEmail(String email) {
         makeRandomNumber();
-        String setFrom = "jangd6995@gmail.com";
+        String authNumber = makeRandomNumber();
+        String setFrom = "${spring.mail.username}";
         String toMail = email; // 인증번호를 받을 이메일 주소를 입력 받음.
-        String title = "Tming 회원가입인증 이메일입니다.";
-        String content =
+        final String title = "Tming 회원가입인증 이메일입니다.";
+        final String content =
                 "Tming 서비스를 이용해주셔서 감사합니다."
                         + "<br><br>"
                         + "인증번호는 "
@@ -41,11 +43,11 @@ public class EmailSendService {
                         + "<br>"
                         + "인증번호를 정확히 입력해주세요."; // 이메일 내용 삽입
         mailSend(setFrom, toMail, title, content);
-        return Integer.toString(authNumber);
+        return authNumber;
     }
 
     // 인증번호를 담은 이메일을 전송함.
-    public void mailSend(String setFrom, String toMail, String title, String content) {
+    private void mailSend(String setFrom, String toMail, String title, String content) {
         MimeMessage message =
                 mailSender.createMimeMessage(); // JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성.
         try {
@@ -62,5 +64,14 @@ public class EmailSendService {
             e.printStackTrace(); // e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드.
             throw new GlobalException(ResultCode.EMAIL_SEND_ERROR);
         }
+    }
+    // 임의의 6자리 양수를 반환.
+    public String makeRandomNumber() {
+        Random r = new Random();
+        StringBuilder randomNumber = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
+        for (int i = 0; i < 6; i++) {
+            randomNumber.append(r.nextInt(10)); // 문자열 연결 대신 StringBuilder를 사용하여 효율성을 높임
+        }
+        return randomNumber.toString();
     }
 }

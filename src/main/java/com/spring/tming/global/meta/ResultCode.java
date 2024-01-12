@@ -15,6 +15,8 @@ public enum ResultCode {
     INVALID_EMAIL(1002, "올바른 이메일 주소가 아닙니다. 다시 입력해주세요"),
     EMPTY_EMAIL(1003, "이메일을 입력해주세요"),
     EMAIL_SEND_ERROR(2000, "이메일 전송 중 오류가 발생했습니다."),
+    EMPTY_NUMBER(1004, "인증번호를 입력해주세요"),
+    INVALID_NUMBER(1005, "유효하지 않은 인증번호입니다."),
     NOT_FOUND_USER(3000, "유저 정보가 없습니다."),
     PASSWORD_MISMATCH(3001, "비밀번호가 일치하지 않습니다.");
 
