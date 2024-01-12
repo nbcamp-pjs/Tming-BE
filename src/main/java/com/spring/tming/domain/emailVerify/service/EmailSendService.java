@@ -1,11 +1,10 @@
 package com.spring.tming.domain.emailVerify.service;
 
+import com.spring.tming.global.exception.GlobalException;
+import com.spring.tming.global.meta.ResultCode;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
-import com.spring.tming.global.exception.GlobalException;
-import com.spring.tming.global.meta.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailSendService {
-    @Autowired
-    private JavaMailSender mailSender;
+    @Autowired private JavaMailSender mailSender;
     private int authNumber;
 
     // 임의의 6자리 양수를 반환.
@@ -46,7 +44,7 @@ public class EmailSendService {
         return Integer.toString(authNumber);
     }
 
-    // 인증번호를 담은 이메일을 전송.
+    // 인증번호를 담은 이메일을 전송함.
     public void mailSend(String setFrom, String toMail, String title, String content) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
