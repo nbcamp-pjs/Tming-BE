@@ -2,14 +2,17 @@ package com.spring.tming.domain.comment.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.spring.tming.domain.BaseMvcTest;
+import com.spring.tming.domain.comment.dto.request.CommentDeleteReq;
 import com.spring.tming.domain.comment.dto.request.CommentSaveReq;
 import com.spring.tming.domain.comment.dto.request.CommentUpdateReq;
+import com.spring.tming.domain.comment.dto.response.CommentDeleteRes;
 import com.spring.tming.domain.comment.dto.response.CommentSaveRes;
 import com.spring.tming.domain.comment.dto.response.CommentUpdateRes;
 import com.spring.tming.domain.comment.service.CommentService;
@@ -57,6 +60,23 @@ class CommentControllerTest extends BaseMvcTest {
                         patch("/v1/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(commentUpdateReq))
+                                .principal(this.mockPrincipal))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("comment 삭제 테스트")
+    void comment_삭제() throws Exception {
+        Long commentId = 1L;
+        CommentDeleteReq commentDeleteReq = CommentDeleteReq.builder().commentId(commentId).build();
+        CommentDeleteRes commentDeleteRes = new CommentDeleteRes();
+        when(commentService.deleteComment(any())).thenReturn(commentDeleteRes);
+        this.mockMvc
+                .perform(
+                        delete("/v1/comments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(commentDeleteReq))
                                 .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().isOk());

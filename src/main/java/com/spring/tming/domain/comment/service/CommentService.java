@@ -1,7 +1,9 @@
 package com.spring.tming.domain.comment.service;
 
+import com.spring.tming.domain.comment.dto.request.CommentDeleteReq;
 import com.spring.tming.domain.comment.dto.request.CommentSaveReq;
 import com.spring.tming.domain.comment.dto.request.CommentUpdateReq;
+import com.spring.tming.domain.comment.dto.response.CommentDeleteRes;
 import com.spring.tming.domain.comment.dto.response.CommentSaveRes;
 import com.spring.tming.domain.comment.dto.response.CommentUpdateRes;
 import com.spring.tming.domain.comment.entity.Comment;
@@ -47,6 +49,16 @@ public class CommentService {
                         .post(comment.getPost())
                         .build());
         return new CommentUpdateRes();
+    }
+
+    @Transactional
+    public CommentDeleteRes deleteComment(CommentDeleteReq commentDeleteReq) {
+        Comment comment =
+                commentRepository.findByCommentIdAndUserUserId(
+                        commentDeleteReq.getCommentId(), commentDeleteReq.getUserId());
+        CommentValidator.validate(comment);
+        commentRepository.delete(comment);
+        return new CommentDeleteRes();
     }
 
     private User getUserByUserId(Long userId) {
