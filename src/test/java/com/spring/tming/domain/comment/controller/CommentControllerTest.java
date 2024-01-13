@@ -3,6 +3,7 @@ package com.spring.tming.domain.comment.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -13,9 +14,12 @@ import com.spring.tming.domain.comment.dto.request.CommentDeleteReq;
 import com.spring.tming.domain.comment.dto.request.CommentSaveReq;
 import com.spring.tming.domain.comment.dto.request.CommentUpdateReq;
 import com.spring.tming.domain.comment.dto.response.CommentDeleteRes;
+import com.spring.tming.domain.comment.dto.response.CommentGetRes;
+import com.spring.tming.domain.comment.dto.response.CommentGetResList;
 import com.spring.tming.domain.comment.dto.response.CommentSaveRes;
 import com.spring.tming.domain.comment.dto.response.CommentUpdateRes;
 import com.spring.tming.domain.comment.service.CommentService;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -80,5 +84,26 @@ class CommentControllerTest extends BaseMvcTest {
                                 .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("postId로 comments 조회 테스트")
+    void postId_comments_조회() throws Exception {
+        Long postId = 1L;
+        Long commentId = 1L;
+        String username = "ysys";
+        String content = "content";
+        String createTimestamp = "2024.01.01 01:01:11";
+        CommentGetRes commentGetRes =
+                CommentGetRes.builder()
+                        .commentId(commentId)
+                        .username(username)
+                        .content(content)
+                        .createTimestamp(createTimestamp)
+                        .build();
+        CommentGetResList commentGetResList =
+                CommentGetResList.builder().comments(List.of(commentGetRes)).total(1).build();
+        when(commentService.getComments(any())).thenReturn(commentGetResList);
+        this.mockMvc.perform(get("/v1/comments/" + postId)).andDo(print()).andExpect(status().isOk());
     }
 }
