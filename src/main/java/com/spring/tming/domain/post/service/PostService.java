@@ -16,6 +16,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
@@ -36,7 +37,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final S3Provider s3Provider;
 
-    public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image)
+    public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
         // postCreateReq로 들어온 값들에 대한 검증
         // title, content, deadline => validation 진행
@@ -52,6 +53,7 @@ public class PostService {
                                 .status(Status.OPEN)
                                 .visit(0L)
                                 .imageUrl(imageUrl)
+                                .user(user)
                                 .build());
 
         // 저장된 post로 postStack에도 저장
@@ -63,7 +65,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostUpdateRes updatePost(PostUpdateReq postUpdateReq, MultipartFile image)
+    public PostUpdateRes updatePost(PostUpdateReq postUpdateReq, MultipartFile image, User user)
             throws IOException {
         // 해당하는 기존 모집글의 정보를 가져온다.
         Post post = postRepository.findByPostId(postUpdateReq.getPostId());
@@ -85,6 +87,7 @@ public class PostService {
                                 .status(post.getStatus())
                                 .visit(post.getVisit())
                                 .imageUrl(imageUrl)
+                                .user(user)
                                 .build());
 
         // 해당 모집글에 관련된 엔티티 제거
@@ -119,7 +122,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostDeleteRes deletePost(PostDeleteReq postDeleteReq) {
+    public PostDeleteRes deletePost(PostDeleteReq postDeleteReq, User user) {
         Post post = postRepository.findByPostId(postDeleteReq.getPostId());
         PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)

@@ -9,8 +9,10 @@ import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
+import com.spring.tming.global.security.UserDetailsImpl;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,22 +33,24 @@ public class PostController {
     @PostMapping
     public RestResponse<PostCreateRes> createPost(
             @RequestPart(name = "request") PostCreateReq postCreateReq,
-            @RequestPart(name = "image", required = false) MultipartFile image)
-            throws IOException { // 인증된 유저 정보 추가
-        return RestResponse.success(postService.createPost(postCreateReq, image));
+            @RequestPart(name = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws IOException {
+        return RestResponse.success(postService.createPost(postCreateReq, image, userDetails.getUser()));
     }
 
     @PatchMapping
     public RestResponse<PostUpdateRes> updatePost(
             @RequestPart(name = "request") PostUpdateReq postUpdateReq,
-            @RequestPart(name = "image", required = false) MultipartFile image)
+            @RequestPart(name = "image", required = false) MultipartFile image,
+        @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws IOException {
-        return RestResponse.success(postService.updatePost(postUpdateReq, image));
+        return RestResponse.success(postService.updatePost(postUpdateReq, image, userDetails.getUser()));
     }
 
     @DeleteMapping
-    public RestResponse<PostDeleteRes> deletePost(@RequestBody PostDeleteReq postDeleteReq) {
-        return RestResponse.success(postService.deletePost(postDeleteReq));
+    public RestResponse<PostDeleteRes> deletePost(@RequestBody PostDeleteReq postDeleteReq, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(postService.deletePost(postDeleteReq, userDetails.getUser()));
     }
 
     @GetMapping("/{postId}")
