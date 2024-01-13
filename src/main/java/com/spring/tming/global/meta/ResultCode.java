@@ -24,7 +24,6 @@ public enum ResultCode {
     NOT_FOUND_USER(3000, "유저 정보가 없습니다."),
     PASSWORD_MISMATCH(3001, "비밀번호가 일치하지 않습니다.");
 
-
     private Integer code;
     private String message;
 

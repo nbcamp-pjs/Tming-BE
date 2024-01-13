@@ -1,6 +1,5 @@
 package com.spring.tming.domain.emailVerify.dto.request;
 
-import com.spring.tming.global.validator.EmailCheckValidator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,6 @@ public class EmailReq {
     private EmailReq(String email) {
         this.email = email;
     }
-
 }
 
 // 사용자가 인증번호를 받을 이메일을 입력하기 위한 DTO

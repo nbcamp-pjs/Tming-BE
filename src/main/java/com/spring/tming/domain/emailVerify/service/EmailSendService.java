@@ -1,6 +1,5 @@
 package com.spring.tming.domain.emailVerify.service;
 
-import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
 import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.ResultCode;
@@ -23,9 +22,9 @@ public class EmailSendService {
     private final JavaMailSender mailSender;
     private static final String SET_FROM = "${spring.mail.username}";
     private static final String TITLE = "Tming 회원가입인증 이메일입니다.";
-    private static final String CONTENT_BEFORE_AUTHNUMBER = "Tming 서비스를 이용해주셔서 감사합니다." + "<br><br>" + "인증번호는 ";
+    private static final String CONTENT_BEFORE_AUTHNUMBER =
+            "Tming 서비스를 이용해주셔서 감사합니다." + "<br><br>" + "인증번호는 ";
     private static final String CONTENT_AFTER_AUTHNUMBER = "입니다." + "<br>" + "인증번호를 정확히 입력해주세요.";
-
 
     // 이메일을 어디서 보내는지, 어디로 보내는지, 인증 번호를 HTML 형식으로 어떻게 보내는지 작성.
     public EmailRes trialEmail(String email) {
@@ -33,8 +32,11 @@ public class EmailSendService {
             EmailCheckValidator.validateEmail(email);
             System.out.println("이메일 인증 이메일: " + email);
             String result = sendEmail(email); // sendEmail 메소드에서 이메일을 보내고 결과를 받음
-            // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환함.
-            return EmailRes.builder().email(email).message("이메일 전송을 완료하였습니다.").build(); // EmailRes로 성공값 반환
+            // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환한다.
+            return EmailRes.builder()
+                    .email(email)
+                    .message("이메일 전송을 완료하였습니다.")
+                    .build(); // EmailRes로 성공값 반환
         } catch (GlobalException e) {
             throw e;
         }
@@ -50,8 +52,8 @@ public class EmailSendService {
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             valueOperations.set(email, authNumber, 30, TimeUnit.MINUTES); // 30분 동안만 저장
 
-        }catch (Exception e){
-            //예외 처리
+        } catch (Exception e) {
+            // 예외 처리
             e.printStackTrace();
             throw new GlobalException(ResultCode.REDIS_CONNECTION_FAIL);
         }
@@ -83,7 +85,7 @@ public class EmailSendService {
         Random r = new Random();
         StringBuilder randomCapital = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
         for (int i = 0; i < 6; i++) {
-            char ch = (char)('A' + r.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
+            char ch = (char) ('A' + r.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
             randomCapital.append(ch); // 랜덤 생성 대문자를 직접 문자열 연결 대신 효율성 높은 StringBuilder에 추가.
         }
         return randomCapital.toString();

@@ -20,7 +20,7 @@ public class NumberCheckValidator {
         return number == null || number.isEmpty();
     }
 
-    private static boolean isNumberValid(String number){
-        return  number.matches(NUMBER_REGEX);
+    private static boolean isNumberValid(String number) {
+        return number.matches(NUMBER_REGEX);
     }
 }
