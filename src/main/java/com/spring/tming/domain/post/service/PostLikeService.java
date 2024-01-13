@@ -27,7 +27,7 @@ public class PostLikeService {
         Post post = getPostByPostId(postLikeReq.getPostId());
         PostLike postLike = postLikeRepository.findByUserAndPost(user, post);
         PostValidator.checkAlreadyLiked(postLike);
-        postLikeRepository.save(postLike);
+        postLikeRepository.save(PostLike.builder().user(user).post(post).build());
         return new PostLikeRes();
     }
 
