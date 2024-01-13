@@ -28,18 +28,11 @@ public class EmailSendService {
 
     // 이메일을 어디서 보내는지, 어디로 보내는지, 인증 번호를 HTML 형식으로 어떻게 보내는지 작성.
     public EmailRes trialEmail(String email) {
-        try {
-            EmailCheckValidator.validateEmail(email);
-            System.out.println("이메일 인증 이메일: " + email);
-            String result = sendEmail(email); // sendEmail 메소드에서 이메일을 보내고 결과를 받음
-            // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환한다.
-            return EmailRes.builder()
-                    .email(email)
-                    .message("이메일 전송을 완료하였습니다.")
-                    .build(); // EmailRes로 성공값 반환
-        } catch (GlobalException e) {
-            throw e;
-        }
+        EmailCheckValidator.validateEmail(email);
+        System.out.println("이메일 인증 이메일: " + email);
+        String result = sendEmail(email); // sendEmail 메소드에서 이메일을 보내고 결과를 받음
+        // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환한다.
+        return EmailRes.builder().email(email).build(); // EmailRes로 성공값 반환
     }
 
     private String sendEmail(String email) {

@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/email")
+@RequestMapping("/v1/users")
 public class EmailController {
 
     private final EmailSendService emailSendService;
 
-    @PostMapping("/send")
+    @PostMapping("/email")
     public RestResponse<EmailRes> mailSend(@RequestBody EmailReq emailReq) {
         EmailRes result = emailSendService.trialEmail(emailReq.getEmail());
         return RestResponse.success(result);

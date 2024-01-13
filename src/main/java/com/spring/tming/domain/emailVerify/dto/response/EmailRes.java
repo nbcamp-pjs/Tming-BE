@@ -8,13 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailRes {
-
     private String email;
-    private String message;
 
     @Builder
-    private EmailRes(String email, String message) {
+    private EmailRes(String email) {
         this.email = email;
-        this.message = message;
     }
 }
