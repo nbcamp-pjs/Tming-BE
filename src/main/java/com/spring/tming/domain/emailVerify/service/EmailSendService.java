@@ -64,7 +64,7 @@ public class EmailSendService {
     // 인증번호를 담은 이메일을 전송함.
     private void mailSend(String setFrom, String toMail, String title, String content) {
         MimeMessage message =
-                mailSender.createMimeMessage(); // JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성.
+                mailSender.createMimeMessage(); // JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성함.
         try {
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true, "utf-8"); // 이메일 메시지와 관련된 설정을 수행.
