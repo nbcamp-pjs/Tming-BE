@@ -30,32 +30,28 @@ public class EmailSendService {
     public EmailRes trialEmail(String email) {
         EmailCheckValidator.validateEmail(email);
         System.out.println("이메일 인증 이메일: " + email);
-        String result = sendEmail(email); // sendEmail 메소드에서 이메일을 보내고 결과를 받음
-        // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환한다.
-        return EmailRes.builder().email(email).build(); // EmailRes로 성공값 반환
+        String authNumber = makeRandomCapital();
+        sendEmail(email, authNumber);
+        return EmailRes.builder().email(email).build();
     }
 
-    private String sendEmail(String email) {
-        String authNumber = makeRandomCapital();
+    private void sendEmail(String email, String authNumber) {
         String toMail = email; // 인증번호를 받을 이메일 주소를 입력 받음.
         final String content = CONTENT_BEFORE_AUTHNUMBER + authNumber + CONTENT_AFTER_AUTHNUMBER;
-        mailSend(SET_FROM, toMail, TITLE, content);
+        mailPass(SET_FROM, toMail, TITLE, content);
         try {
             // 레디스에 인증번호 저장
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             valueOperations.set(email, authNumber, 30, TimeUnit.MINUTES); // 30분 동안만 저장
-
         } catch (Exception e) {
             // 예외 처리
             e.printStackTrace();
             throw new GlobalException(ResultCode.REDIS_CONNECTION_FAIL);
         }
-
-        return authNumber;
     }
 
     // 인증번호를 담은 이메일을 전송함.
-    private void mailSend(String setFrom, String toMail, String title, String content) {
+    private void mailPass(String setFrom, String toMail, String title, String content) {
         MimeMessage message =
                 mailSender.createMimeMessage(); // JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성함.
         try {
