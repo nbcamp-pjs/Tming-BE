@@ -5,6 +5,7 @@ import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
+import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
@@ -15,6 +16,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import jakarta.transaction.Transactional;
@@ -31,6 +33,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostStackRepository postStackRepository;
     private final JobLimitRepository jobLimitRepository;
+    private final UserRepository userRepository;
     private final S3Provider s3Provider;
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image)
@@ -123,5 +126,35 @@ public class PostService {
 
         postRepository.delete(post);
         return new PostDeleteRes();
+    }
+
+    public PostReadRes readPost(Long postId) {
+        // 포스트 단건 조회
+        // 1. 포스트 정보 (post, postStack, jobLimit) (Ok!)
+        // 2. like에서 count해서 가져오기 (보류)
+        // 3. user에서 username 가져오기 (Ok!)
+        // 4. member에서 정보 가져오기 (보류)
+        Post post = postRepository.findByPostId(postId);
+        PostValidator.checkIsNullPost(post);
+        List<Skill> skills = new ArrayList<>();
+        List<PostStack> postStacks = postStackRepository.findAllByPostPostId(postId);
+        postStacks.forEach(postStack -> skills.add(postStack.getSkill()));
+        List<JobLimit> jobLimits = jobLimitRepository.findAllByPostPostId(postId);
+
+        PostReadRes postReadRes =
+                PostReadRes.builder()
+                        .postId(postId)
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .deadline(post.getDeadline())
+                        .visit(post.getVisit())
+                        .like(0L) // 미구현
+                        .imageUrl(post.getImageUrl())
+                        .status(post.getStatus())
+                        .username("")
+                        .jobLimits(jobLimits)
+                        .skills(skills)
+                        .build();
+        return postReadRes;
     }
 }

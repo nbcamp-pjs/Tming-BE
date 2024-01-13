@@ -5,13 +5,16 @@ import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
+import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,5 +47,10 @@ public class PostController {
     @DeleteMapping
     public RestResponse<PostDeleteRes> deletePost(@RequestBody PostDeleteReq postDeleteReq) {
         return RestResponse.success(postService.deletePost(postDeleteReq));
+    }
+
+    @GetMapping("/{postId}")
+    public RestResponse<PostReadRes> readPost(@PathVariable Long postId) {
+        return RestResponse.success(postService.readPost(postId));
     }
 }
