@@ -135,8 +135,7 @@ public class PostService {
         // 포스트 단건 조회
         // 1. 포스트 정보 (post, postStack, jobLimit) (Ok!)
         // 2. like에서 count해서 가져오기 (보류)
-        // 3. user에서 username 가져오기 (Ok!)
-        // 4. member에서 정보 가져오기 (보류)
+        // 3. member에서 정보 가져오기 (보류)
         Post post = postRepository.findByPostId(postId);
         PostValidator.checkIsNullPost(post);
         List<Skill> skills = new ArrayList<>();
@@ -151,12 +150,13 @@ public class PostService {
                         .content(post.getContent())
                         .deadline(post.getDeadline())
                         .visit(post.getVisit())
-                        .like(0L) // 미구현
+                        .like(0L) // 보류
                         .imageUrl(post.getImageUrl())
                         .status(post.getStatus())
-                        .username("")
+                        .username(post.getUser().getUsername())
                         .jobLimits(jobLimits)
                         .skills(skills)
+//                    .members()
                         .build();
         return postReadRes;
     }
