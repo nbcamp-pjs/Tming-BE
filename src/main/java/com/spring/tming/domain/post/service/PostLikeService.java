@@ -1,7 +1,9 @@
 package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
+import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
+import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.domain.post.repository.PostLikeRepository;
@@ -29,6 +31,16 @@ public class PostLikeService {
         PostValidator.checkAlreadyLiked(postLike);
         postLikeRepository.save(PostLike.builder().user(user).post(post).build());
         return new PostLikeRes();
+    }
+
+    @Transactional
+    public PostUnlikeRes unlikePost(PostUnlikeReq postUnlikeReq) {
+        User user = getUserByUserId(postUnlikeReq.getUserId());
+        Post post = getPostByPostId(postUnlikeReq.getPostId());
+        PostLike postLike = postLikeRepository.findByUserAndPost(user, post);
+        PostValidator.checkNotYetLiked(postLike);
+        postLikeRepository.delete(postLike);
+        return new PostUnlikeRes();
     }
 
     private User getUserByUserId(Long userId) {
