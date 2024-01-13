@@ -2,13 +2,16 @@ package com.spring.tming.domain.comment.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.comment.dto.request.CommentSaveReq;
+import com.spring.tming.domain.comment.dto.request.CommentUpdateReq;
 import com.spring.tming.domain.comment.dto.response.CommentSaveRes;
+import com.spring.tming.domain.comment.dto.response.CommentUpdateRes;
 import com.spring.tming.domain.comment.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,25 @@ class CommentControllerTest extends BaseMvcTest {
                         post("/v1/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(commentSaveReq))
+                                .principal(this.mockPrincipal))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("comment 수정 테스트")
+    void comment_수정() throws Exception {
+        Long commentId = 1L;
+        String content = "content";
+        CommentUpdateReq commentUpdateReq =
+                CommentUpdateReq.builder().commentId(commentId).content(content).build();
+        CommentUpdateRes commentUpdateRes = new CommentUpdateRes();
+        when(commentService.updateComment(any())).thenReturn(commentUpdateRes);
+        this.mockMvc
+                .perform(
+                        patch("/v1/comments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(commentUpdateReq))
                                 .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().isOk());

@@ -71,3 +71,4 @@ include::{snippets}/sample-controller-test/샘플_단건_조회/auto-section.ado
 == comment API
 
 include::{snippets}/comment-controller-test/comment_저장/auto-section.adoc[]
+include::{snippets}/comment-controller-test/comment_수정/auto-section.adoc[]
