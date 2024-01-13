@@ -72,7 +72,7 @@ public class PostService {
         // post가 없는 경우 validation 처리
         PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
-
+        PostValidator.checkIsPostUser(post, user);
         // 수정한 이미지 파일 처리
         String imageUrl = ImageFileHandler.checkUpdateImage(post, image);
 
@@ -126,7 +126,7 @@ public class PostService {
         Post post = postRepository.findByPostId(postDeleteReq.getPostId());
         PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
-
+        PostValidator.checkIsPostUser(post, user);
         postRepository.delete(post);
         return new PostDeleteRes();
     }
