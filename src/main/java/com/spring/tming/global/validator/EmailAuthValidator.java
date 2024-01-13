@@ -1,23 +1,14 @@
-package com.spring.tming.domain.emailVerify.dto;
+package com.spring.tming.global.validator;
 
 import com.spring.tming.global.exception.GlobalException;
-import com.spring.tming.global.validator.EmailCheckValidator;
-import com.spring.tming.global.validator.NumberCheckValidator;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EmailCheckReq {
-    private String email;
+public class EmailAuthValidator {private String email;
     private String authNumber;
 
-    @Builder
-    private EmailCheckReq(String email, String authNumber) {
+    public EmailAuthValidator(String email, String authNumber) {
         this.email = email;
         this.authNumber = authNumber;
     }
@@ -42,5 +33,3 @@ public class EmailCheckReq {
         return errors;
     }
 }
-
-// 사용자가 인증번호를 확인하고 인증번호를 입력하였을 때 그 값을 받아오는 DTO

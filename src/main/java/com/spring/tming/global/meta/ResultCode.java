@@ -17,8 +17,13 @@ public enum ResultCode {
     EMAIL_SEND_ERROR(2000, "이메일 전송 중 오류가 발생했습니다."),
     EMPTY_NUMBER(1004, "인증번호를 입력해주세요"),
     INVALID_NUMBER(1005, "유효하지 않은 인증번호입니다."),
+
+    // 레디스 서버 연결 실패
+    REDIS_CONNECTION_FAIL(3002, "레디스 서버와의 연결이 실패했습니다."),
+
     NOT_FOUND_USER(3000, "유저 정보가 없습니다."),
     PASSWORD_MISMATCH(3001, "비밀번호가 일치하지 않습니다.");
+
 
     private Integer code;
     private String message;

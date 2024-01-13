@@ -1,6 +1,7 @@
 package com.spring.tming.domain.emailVerify.controller;
 
-import com.spring.tming.domain.emailVerify.dto.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.domain.emailVerify.service.EmailSendService;
 import com.spring.tming.global.response.RestResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class EmailController {
     private final EmailSendService emailSendService;
 
     @PostMapping("/send")
-    public RestResponse<String> mailSend(@RequestBody EmailReq emailReq) {
-        String result = emailSendService.trialEmail(emailReq.getEmail());
+    public RestResponse<EmailRes> mailSend(@RequestBody EmailReq emailReq) {
+        EmailRes result = emailSendService.trialEmail(emailReq.getEmail());
         return RestResponse.success(result);
     }
 }

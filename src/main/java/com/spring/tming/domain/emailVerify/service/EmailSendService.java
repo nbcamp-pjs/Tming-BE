@@ -1,12 +1,17 @@
 package com.spring.tming.domain.emailVerify.service;
 
+import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.ResultCode;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,35 +19,43 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailSendService {
+    private final StringRedisTemplate redisTemplate;
     private final JavaMailSender mailSender;
+    private static final String SET_FROM = "${spring.mail.username}";
+    private static final String TITLE = "Tming 회원가입인증 이메일입니다.";
+    private static final String CONTENT_BEFORE_AUTHNUMBER = "Tming 서비스를 이용해주셔서 감사합니다." + "<br><br>" + "인증번호는 ";
+    private static final String CONTENT_AFTER_AUTHNUMBER = "입니다." + "<br>" + "인증번호를 정확히 입력해주세요.";
+
 
     // 이메일을 어디서 보내는지, 어디로 보내는지, 인증 번호를 HTML 형식으로 어떻게 보내는지 작성.
-    public String trialEmail(String email) {
+    public EmailRes trialEmail(String email) {
         try {
             EmailCheckValidator.validateEmail(email);
             System.out.println("이메일 인증 이메일: " + email);
-            String result = sendEmail(email);
-            return result;
+            String result = sendEmail(email); // sendEmail 메소드에서 이메일을 보내고 결과를 받음
+            // 이메일을 성공적으로 보냈을시, 요청한 이메일 주소를 가진 EmailReq 객체를 반환함.
+            return EmailRes.builder().email(email).message("이메일 전송을 완료하였습니다.").build(); // EmailRes로 성공값 반환
         } catch (GlobalException e) {
             throw e;
         }
     }
 
     private String sendEmail(String email) {
-        makeRandomNumber();
-        String authNumber = makeRandomNumber();
-        String setFrom = "${spring.mail.username}";
+        String authNumber = makeRandomCapital();
         String toMail = email; // 인증번호를 받을 이메일 주소를 입력 받음.
-        final String title = "Tming 회원가입인증 이메일입니다.";
-        final String content =
-                "Tming 서비스를 이용해주셔서 감사합니다."
-                        + "<br><br>"
-                        + "인증번호는 "
-                        + authNumber
-                        + "입니다."
-                        + "<br>"
-                        + "인증번호를 정확히 입력해주세요."; // 이메일 내용 삽입
-        mailSend(setFrom, toMail, title, content);
+        final String content = CONTENT_BEFORE_AUTHNUMBER + authNumber + CONTENT_AFTER_AUTHNUMBER;
+        mailSend(SET_FROM, toMail, TITLE, content);
+        try {
+            // 레디스에 인증번호 저장
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            valueOperations.set(email, authNumber, 30, TimeUnit.MINUTES); // 30분 동안만 저장
+
+        }catch (Exception e){
+            //예외 처리
+            e.printStackTrace();
+            throw new GlobalException(ResultCode.REDIS_CONNECTION_FAIL);
+        }
+
         return authNumber;
     }
 
@@ -65,13 +78,14 @@ public class EmailSendService {
             throw new GlobalException(ResultCode.EMAIL_SEND_ERROR);
         }
     }
-    // 임의의 6자리 양수를 반환.
-    public String makeRandomNumber() {
+    // 임의의 6자리 숫자 반환 -> 6자리 랜덤 대문자를 반환하는 걸로 수정.
+    public String makeRandomCapital() {
         Random r = new Random();
-        StringBuilder randomNumber = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
+        StringBuilder randomCapital = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
         for (int i = 0; i < 6; i++) {
-            randomNumber.append(r.nextInt(10)); // 문자열 연결 대신 StringBuilder를 사용하여 효율성을 높임
+            char ch = (char)('A' + r.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
+            randomCapital.append(ch); // 랜덤 생성 대문자를 직접 문자열 연결 대신 효율성 높은 StringBuilder에 추가.
         }
-        return randomNumber.toString();
+        return randomCapital.toString();
     }
 }
