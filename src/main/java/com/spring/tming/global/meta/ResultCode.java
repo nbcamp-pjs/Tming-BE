@@ -14,14 +14,12 @@ public enum ResultCode {
     // 이메일 유효성 검사
     INVALID_EMAIL(1002, "올바른 이메일 주소가 아닙니다. 다시 입력해주세요"),
     EMPTY_EMAIL(1003, "이메일을 입력해주세요"),
+    DUPLICATED_USERNAME_OR_EMAIL(1004, "이메일 혹은 닉네임이 중복 되었습니다."),
 
     EMAIL_SEND_ERROR(2000, "이메일 전송 중 오류가 발생했습니다."),
 
     NOT_FOUND_USER(3000, "유저 정보가 없습니다."),
     PASSWORD_MISMATCH(3001, "비밀번호가 일치하지 않습니다."),
-    EXISTS_ACCOUNT(3002, "이미 존재하는 계정 입니다."),
-    ADMIN_TOKEN_MISMATCH(3003, "관리자 암호가 일치하지 않습니다."),
-    JOB_MISMATCH(3004, "직군을 선택하여 주십시오"),
 
     NOT_FOUND_POST(4002, "모집글 데이터가 없습니다.");
     private Integer code;

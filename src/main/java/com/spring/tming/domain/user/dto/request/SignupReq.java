@@ -1,6 +1,8 @@
 package com.spring.tming.domain.user.dto.request;
 
+import com.spring.tming.domain.post.entity.Job;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +13,13 @@ public class SignupReq {
     private String email;
     private String password;
     private String username;
-    private boolean role;
-    private String job;
-    private String introduce;
+    private Job job;
+
+    @Builder
+    private SignupReq(String email, String password, String username, Job job) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.job = job;
+    }
 }

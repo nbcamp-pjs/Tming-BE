@@ -1,6 +1,7 @@
 package com.spring.tming.domain.user.controller;
 
 import com.spring.tming.domain.user.dto.request.SignupReq;
+import com.spring.tming.domain.user.dto.response.SignupRes;
 import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.response.RestResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public RestResponse<Void> signup(@RequestBody SignupReq signupReq) {
+    public RestResponse<SignupRes> signup(@RequestBody SignupReq signupReq) {
         return RestResponse.success(userService.signup(signupReq));
     }
 }
