@@ -72,7 +72,7 @@ public class Post extends BaseEntity {
             Status status,
             Long visit,
             String imageUrl,
-        User user) {
+            User user) {
         this.postId = postId;
         this.title = title;
         this.content = content;

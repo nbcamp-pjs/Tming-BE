@@ -24,43 +24,43 @@ public class PostValidator {
         return post == null;
     }
 
-	public static void checkIsPostUser(Post post, User user) {
-		if (isUserIdEqual(post, user)) {
-			throw new GlobalException(POST_INVALID_AUTHORIZATION);
-		}
-	}
+    public static void checkIsPostUser(Post post, User user) {
+        if (isUserIdEqual(post, user)) {
+            throw new GlobalException(POST_INVALID_AUTHORIZATION);
+        }
+    }
 
-	private static boolean isUserIdEqual(Post post, User user) {
-		return !Objects.equals(post.getUser().getUserId(), user.getUserId());
-	}
+    private static boolean isUserIdEqual(Post post, User user) {
+        return !Objects.equals(post.getUser().getUserId(), user.getUserId());
+    }
 
-	public static Type checkIsValidType(Type type) {
-		Type checkedType;
-		try {
-			checkedType = Type.valueOf(String.valueOf(type));
-		} catch (IllegalArgumentException e) {
-			throw new GlobalException(POST_INVALID_FILTER);
-		}
-		return checkedType;
-	}
+    public static Type checkIsValidType(Type type) {
+        Type checkedType;
+        try {
+            checkedType = Type.valueOf(String.valueOf(type));
+        } catch (IllegalArgumentException e) {
+            throw new GlobalException(POST_INVALID_FILTER);
+        }
+        return checkedType;
+    }
 
-	public static Skill checkIsValidSkill(Skill skill) {
-		Skill checkedSkill;
-		try {
-			checkedSkill = Skill.valueOf(String.valueOf(skill));
-		} catch (IllegalArgumentException e) {
-			throw new GlobalException(POST_INVALID_FILTER);
-		}
-		return checkedSkill;
-	}
+    public static Skill checkIsValidSkill(Skill skill) {
+        Skill checkedSkill;
+        try {
+            checkedSkill = Skill.valueOf(String.valueOf(skill));
+        } catch (IllegalArgumentException e) {
+            throw new GlobalException(POST_INVALID_FILTER);
+        }
+        return checkedSkill;
+    }
 
-	public static Job checkIsValidJob(Job job) {
-		Job checkedJob;
-		try {
-			checkedJob = Job.valueOf(String.valueOf(job));
-		} catch (IllegalArgumentException e) {
-			throw new GlobalException(POST_INVALID_FILTER);
-		}
-		return checkedJob;
-	}
+    public static Job checkIsValidJob(Job job) {
+        Job checkedJob;
+        try {
+            checkedJob = Job.valueOf(String.valueOf(job));
+        } catch (IllegalArgumentException e) {
+            throw new GlobalException(POST_INVALID_FILTER);
+        }
+        return checkedJob;
+    }
 }

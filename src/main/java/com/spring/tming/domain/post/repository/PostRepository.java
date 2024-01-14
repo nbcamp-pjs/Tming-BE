@@ -8,7 +8,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Post findByPostId(Long postId);
 
-	List<Post> findAllByOrderByCreateTimestampAsc();
+    List<Post> findAllByOrderByCreateTimestampAsc();
 
-	List<Post> findAllByUserUserIdOrderByCreateTimestampAsc(Long userId);
+    List<Post> findAllByUserUserIdOrderByCreateTimestampAsc(Long userId);
 }

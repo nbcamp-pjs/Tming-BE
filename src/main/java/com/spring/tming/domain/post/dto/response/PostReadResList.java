@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostReadResList {
-	private List<PostReadRes> postReadRes;
+    private List<PostReadRes> postReadRes;
 
-	@Builder
-	private PostReadResList(List<PostReadRes> postReadRes) {
-		this.postReadRes = postReadRes;
-	}
+    @Builder
+    private PostReadResList(List<PostReadRes> postReadRes) {
+        this.postReadRes = postReadRes;
+    }
 }

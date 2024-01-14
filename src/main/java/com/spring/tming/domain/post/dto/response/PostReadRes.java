@@ -39,8 +39,8 @@ public class PostReadRes {
             String username,
             List<JobLimit> jobLimits,
             List<Skill> skills
-//            List<Member> members;
-    ) {
+            //            List<Member> members;
+            ) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -52,6 +52,6 @@ public class PostReadRes {
         this.username = username;
         this.jobLimits = jobLimits;
         this.skills = skills;
-//        this.members = member;
+        //        this.members = member;
     }
 }

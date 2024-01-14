@@ -158,7 +158,7 @@ public class PostService {
                         .username(writer.getUsername())
                         .jobLimits(jobLimits)
                         .skills(skills)
-//                    .members()
+                        //                    .members()
                         .build();
         return postReadRes;
     }
@@ -168,63 +168,67 @@ public class PostService {
         Type checkedType = PostValidator.checkIsValidType(type);
         PostReadResList postReadResList = null;
         switch (checkedType) {
-            case ALL: {
-                List<Post> posts = postRepository.findAllByOrderByCreateTimestampAsc();
-                List<PostReadRes> postReadRes = new ArrayList<>(); // TODO: 다른 것들도 구현 후 메서드로 리팩토링
-                posts.forEach(post -> {
-                    User writer = post.getUser();
-                    List<JobLimit> jobLimits = post.getJobLimits();
-                    postReadRes.add(PostReadRes.builder()
-                        .postId(post.getPostId())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .deadline(post.getDeadline())
-                        .visit(post.getVisit())
-                        .like(0L) // 보류
-                        .imageUrl(post.getImageUrl())
-                        .status(post.getStatus())
-                        .username(writer.getUsername())
-                        .jobLimits(jobLimits)
-                        .build()
-                    );
-                });
-                postReadResList = PostReadResList.builder()
-                    .postReadRes(postReadRes)
-                    .build();
-            }
-            case LIKE: {
-                // 보류
-            }
-            case APPLY: {
-                // 보류
-            }
-            case WRITE: {
-                List<Post> posts = postRepository.findAllByUserUserIdOrderByCreateTimestampAsc(user.getUserId());
-                List<PostReadRes> postReadRes = new ArrayList<>();
-                posts.forEach(post -> {
-                    User writer = post.getUser();
-                    List<JobLimit> jobLimits = post.getJobLimits();
-                    postReadRes.add(PostReadRes.builder()
-                        .postId(post.getPostId())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .deadline(post.getDeadline())
-                        .visit(post.getVisit())
-                        .like(0L) // 보류
-                        .imageUrl(post.getImageUrl())
-                        .status(post.getStatus())
-                        .username(writer.getUsername())
-                        .jobLimits(jobLimits)
-                        .build()
-                    );
-                });
-                postReadResList = PostReadResList.builder()
-                    .postReadRes(postReadRes)
-                    .build();
-            }
-            case MEMBER: {
-                // 보류
-            }
+            case ALL:
+                {
+                    List<Post> posts = postRepository.findAllByOrderByCreateTimestampAsc();
+                    List<PostReadRes> postReadRes = new ArrayList<>(); // TODO: 다른 것들도 구현 후 메서드로 리팩토링
+                    posts.forEach(
+                            post -> {
+                                User writer = post.getUser();
+                                List<JobLimit> jobLimits = post.getJobLimits();
+                                postReadRes.add(
+                                        PostReadRes.builder()
+                                                .postId(post.getPostId())
+                                                .title(post.getTitle())
+                                                .content(post.getContent())
+                                                .deadline(post.getDeadline())
+                                                .visit(post.getVisit())
+                                                .like(0L) // 보류
+                                                .imageUrl(post.getImageUrl())
+                                                .status(post.getStatus())
+                                                .username(writer.getUsername())
+                                                .jobLimits(jobLimits)
+                                                .build());
+                            });
+                    postReadResList = PostReadResList.builder().postReadRes(postReadRes).build();
+                }
+            case LIKE:
+                {
+                    // 보류
+                }
+            case APPLY:
+                {
+                    // 보류
+                }
+            case WRITE:
+                {
+                    List<Post> posts =
+                            postRepository.findAllByUserUserIdOrderByCreateTimestampAsc(user.getUserId());
+                    List<PostReadRes> postReadRes = new ArrayList<>();
+                    posts.forEach(
+                            post -> {
+                                User writer = post.getUser();
+                                List<JobLimit> jobLimits = post.getJobLimits();
+                                postReadRes.add(
+                                        PostReadRes.builder()
+                                                .postId(post.getPostId())
+                                                .title(post.getTitle())
+                                                .content(post.getContent())
+                                                .deadline(post.getDeadline())
+                                                .visit(post.getVisit())
+                                                .like(0L) // 보류
+                                                .imageUrl(post.getImageUrl())
+                                                .status(post.getStatus())
+                                                .username(writer.getUsername())
+                                                .jobLimits(jobLimits)
+                                                .build());
+                            });
+                    postReadResList = PostReadResList.builder().postReadRes(postReadRes).build();
+                }
+            case MEMBER:
+                {
+                    // 보류
+                }
         }
         return postReadResList;
     }
@@ -233,24 +237,25 @@ public class PostService {
         Skill checkedSkill = PostValidator.checkIsValidSkill(skill);
         List<PostStack> postStacks = postStackRepository.findAllBySkill(checkedSkill);
         List<PostReadRes> postReadRes = new ArrayList<>();
-        postStacks.forEach(postStack -> {
-            Post post = postStack.getPost();
-            User writer = post.getUser();
-            List<JobLimit> jobLimits = post.getJobLimits();
-            postReadRes.add(PostReadRes.builder()
-                .postId(post.getPostId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .deadline(post.getDeadline())
-                .visit(post.getVisit())
-                .like(0L) // 보류
-                .imageUrl(post.getImageUrl())
-                .status(post.getStatus())
-                .username(writer.getUsername())
-                .jobLimits(jobLimits)
-                .build()
-            );
-        });
+        postStacks.forEach(
+                postStack -> {
+                    Post post = postStack.getPost();
+                    User writer = post.getUser();
+                    List<JobLimit> jobLimits = post.getJobLimits();
+                    postReadRes.add(
+                            PostReadRes.builder()
+                                    .postId(post.getPostId())
+                                    .title(post.getTitle())
+                                    .content(post.getContent())
+                                    .deadline(post.getDeadline())
+                                    .visit(post.getVisit())
+                                    .like(0L) // 보류
+                                    .imageUrl(post.getImageUrl())
+                                    .status(post.getStatus())
+                                    .username(writer.getUsername())
+                                    .jobLimits(jobLimits)
+                                    .build());
+                });
         return PostReadResList.builder().postReadRes(postReadRes).build();
     }
 
@@ -258,23 +263,24 @@ public class PostService {
         Job checkedJob = PostValidator.checkIsValidJob(job);
         List<JobLimit> jobLimits = jobLimitRepository.findAllByJob(checkedJob);
         List<PostReadRes> postReadRes = new ArrayList<>();
-        jobLimits.forEach(jobLimit -> {
-            Post post = jobLimit.getPost();
-            User writer = post.getUser();
-            postReadRes.add(PostReadRes.builder()
-                .postId(post.getPostId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .deadline(post.getDeadline())
-                .visit(post.getVisit())
-                .like(0L) // 보류
-                .imageUrl(post.getImageUrl())
-                .status(post.getStatus())
-                .username(writer.getUsername())
-                .jobLimits(jobLimits)
-                .build()
-            );
-        });
+        jobLimits.forEach(
+                jobLimit -> {
+                    Post post = jobLimit.getPost();
+                    User writer = post.getUser();
+                    postReadRes.add(
+                            PostReadRes.builder()
+                                    .postId(post.getPostId())
+                                    .title(post.getTitle())
+                                    .content(post.getContent())
+                                    .deadline(post.getDeadline())
+                                    .visit(post.getVisit())
+                                    .like(0L) // 보류
+                                    .imageUrl(post.getImageUrl())
+                                    .status(post.getStatus())
+                                    .username(writer.getUsername())
+                                    .jobLimits(jobLimits)
+                                    .build());
+                });
         return PostReadResList.builder().postReadRes(postReadRes).build();
     }
 }
