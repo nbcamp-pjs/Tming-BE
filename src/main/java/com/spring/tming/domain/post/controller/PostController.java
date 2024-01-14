@@ -6,7 +6,9 @@ import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
+import com.spring.tming.domain.post.dto.response.PostReadResList;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
+import com.spring.tming.domain.post.enums.Type;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +57,12 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public RestResponse<PostReadRes> readPost(@PathVariable Long postId) {
+    public RestResponse<PostReadRes> readPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return RestResponse.success(postService.readPost(postId));
+    }
+
+    @GetMapping
+    public RestResponse<PostReadResList> readPostList(@RequestParam(name = "type", defaultValue = "ALL") Type type, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(postService.readPostList(type, userDetails.getUser()));
     }
 }

@@ -6,12 +6,14 @@ import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
+import com.spring.tming.domain.post.dto.response.PostReadResList;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
 import com.spring.tming.domain.post.entity.Skill;
 import com.spring.tming.domain.post.entity.Status;
+import com.spring.tming.domain.post.enums.Type;
 import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
@@ -39,8 +41,7 @@ public class PostService {
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
-        // postCreateReq로 들어온 값들에 대한 검증
-        // title, content, deadline => validation 진행
+        // TODO: postCreateReq로 들어온 값들에 대한 검증(title, content, deadline => validation 진행)
 
         // image 처리 분리 => 저장소url 가져오기
         String imageUrl = s3Provider.saveFile(image, "postImage");
@@ -56,9 +57,7 @@ public class PostService {
                                 .user(user)
                                 .build());
 
-        // 저장된 post로 postStack에도 저장
-        // 테이블 분리할 경우 => for문으로 들어온 값 수만큼 저장 (보류)
-        // Post테이블에 저장할 경우 들어온 값 그대로 저장 => 위에서 컬럼만들어서 진행
+        // 저장된 post로 postStack, jobLimit에도 저장
         savePostStackAndJobLimit(postCreateReq.getSkills(), postCreateReq.getJobLimits(), savedPost);
 
         return PostServiceMapper.INSTANCE.toPostCreateRes(savedPost);
@@ -131,6 +130,7 @@ public class PostService {
         return new PostDeleteRes();
     }
 
+    // TODO: Redis로 조회수 올리기
     public PostReadRes readPost(Long postId) {
         // 포스트 단건 조회
         // 1. 포스트 정보 (post, postStack, jobLimit) (Ok!)
@@ -138,6 +138,7 @@ public class PostService {
         // 3. member에서 정보 가져오기 (보류)
         Post post = postRepository.findByPostId(postId);
         PostValidator.checkIsNullPost(post);
+        User writer = post.getUser();
         List<Skill> skills = new ArrayList<>();
         List<PostStack> postStacks = postStackRepository.findAllByPostPostId(postId);
         postStacks.forEach(postStack -> skills.add(postStack.getSkill()));
@@ -145,7 +146,7 @@ public class PostService {
 
         PostReadRes postReadRes =
                 PostReadRes.builder()
-                        .postId(postId)
+                        .postId(post.getPostId())
                         .title(post.getTitle())
                         .content(post.getContent())
                         .deadline(post.getDeadline())
@@ -153,11 +154,77 @@ public class PostService {
                         .like(0L) // 보류
                         .imageUrl(post.getImageUrl())
                         .status(post.getStatus())
-                        .username(post.getUser().getUsername())
+                        .username(writer.getUsername())
                         .jobLimits(jobLimits)
                         .skills(skills)
 //                    .members()
                         .build();
         return postReadRes;
+    }
+
+    // TODO: 페이징처리하기
+    public PostReadResList readPostList(Type type, User user) {
+        Type checkedType = PostValidator.checkIsValidType(type);
+        PostReadResList postReadResList = null;
+        switch (checkedType) {
+            case ALL: {
+                List<Post> posts = postRepository.findAllByOrderByCreateTimestampAsc();
+                List<PostReadRes> postReadRes = new ArrayList<>();
+                posts.forEach(post -> {
+                    User writer = post.getUser();
+                    List<JobLimit> jobLimits = post.getJobLimits();
+                    postReadRes.add(PostReadRes.builder()
+                        .postId(post.getPostId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .deadline(post.getDeadline())
+                        .visit(post.getVisit())
+                        .like(0L) // 보류
+                        .imageUrl(post.getImageUrl())
+                        .status(post.getStatus())
+                        .username(writer.getUsername())
+                        .jobLimits(jobLimits)
+                        .build()
+                    );
+                });
+                postReadResList = PostReadResList.builder()
+                    .postReadRes(postReadRes)
+                    .build();
+            }
+            case LIKE: {
+                // 보류
+            }
+            case APPLY: {
+                // 보류
+            }
+            case WRITE: {
+                List<Post> posts = postRepository.findAllByUserUserIdOrderByCreateTimestampAsc(user.getUserId());
+                List<PostReadRes> postReadRes = new ArrayList<>(); // TODO: 다른 것들도 구현 후 메서드로 리팩토링
+                posts.forEach(post -> {
+                    User writer = post.getUser();
+                    List<JobLimit> jobLimits = post.getJobLimits();
+                    postReadRes.add(PostReadRes.builder()
+                        .postId(post.getPostId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .deadline(post.getDeadline())
+                        .visit(post.getVisit())
+                        .like(0L) // 보류
+                        .imageUrl(post.getImageUrl())
+                        .status(post.getStatus())
+                        .username(writer.getUsername())
+                        .jobLimits(jobLimits)
+                        .build()
+                    );
+                });
+                postReadResList = PostReadResList.builder()
+                    .postReadRes(postReadRes)
+                    .build();
+            }
+            case MEMBER: {
+                // 보류
+            }
+        }
+        return postReadResList;
     }
 }

@@ -19,7 +19,8 @@ public enum ResultCode {
     PASSWORD_MISMATCH(3001, "비밀번호가 일치하지 않습니다."),
 
     NOT_FOUND_POST(4002, "모집글 데이터가 없습니다."),
-    POST_INVALID_AUTHORIZATION(4003, "해당 모집글에 권한이 없습니다.");
+    POST_INVALID_AUTHORIZATION(4003, "해당 모집글에 권한이 없습니다."),
+    POST_INVALID_FILTER(4004, "지원하지 않는 전체조회 필터입니다.");
     private Integer code;
     private String message;
 
