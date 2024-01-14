@@ -4,6 +4,7 @@ import static com.spring.tming.global.meta.ResultCode.NOT_FOUND_POST;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_AUTHORIZATION;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 
+import com.spring.tming.domain.post.entity.Job;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.Skill;
 import com.spring.tming.domain.post.enums.Type;
@@ -41,5 +42,25 @@ public class PostValidator {
 			throw new GlobalException(POST_INVALID_FILTER);
 		}
 		return checkedType;
+	}
+
+	public static Skill checkIsValidSkill(Skill skill) {
+		Skill checkedSkill;
+		try {
+			checkedSkill = Skill.valueOf(String.valueOf(skill));
+		} catch (IllegalArgumentException e) {
+			throw new GlobalException(POST_INVALID_FILTER);
+		}
+		return checkedSkill;
+	}
+
+	public static Job checkIsValidJob(Job job) {
+		Job checkedJob;
+		try {
+			checkedJob = Job.valueOf(String.valueOf(job));
+		} catch (IllegalArgumentException e) {
+			throw new GlobalException(POST_INVALID_FILTER);
+		}
+		return checkedJob;
 	}
 }

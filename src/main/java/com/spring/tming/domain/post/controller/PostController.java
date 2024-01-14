@@ -8,6 +8,8 @@ import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostReadResList;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
+import com.spring.tming.domain.post.entity.Job;
+import com.spring.tming.domain.post.entity.Skill;
 import com.spring.tming.domain.post.enums.Type;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.global.response.RestResponse;
@@ -64,5 +66,15 @@ public class PostController {
     @GetMapping
     public RestResponse<PostReadResList> readPostList(@RequestParam(name = "type", defaultValue = "ALL") Type type, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return RestResponse.success(postService.readPostList(type, userDetails.getUser()));
+    }
+
+    @GetMapping
+    public RestResponse<PostReadResList> readPostListBySkill(@RequestParam(name = "skill") Skill skill, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(postService.readPostListBySkill(skill, userDetails.getUser()));
+    }
+
+    @GetMapping
+    public RestResponse<PostReadResList> readPostListByJob(@RequestParam(name = "job") Job job, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(postService.readPostListByJob(job, userDetails.getUser()));
     }
 }
