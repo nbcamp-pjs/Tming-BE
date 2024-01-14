@@ -16,8 +16,8 @@ import org.springframework.util.StringUtils;
 @Component
 public class JwtUtil {
 
-    public static final String ACCESS_TOKEN_HEADER = "Accesstoken";
-    public static final String REFRESH_TOKEN_HEADER = "Refreshtoken";
+    public static final String ACCESS_TOKEN_HEADER = "AccessToken";
+    public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
     private final long ACCESS_TOKEN_TIME = 30 * 1 * 1000l;
