@@ -7,10 +7,10 @@ import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 
 import com.spring.tming.domain.post.entity.Job;
 import com.spring.tming.domain.post.entity.Post;
+import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.domain.post.entity.Skill;
 import com.spring.tming.domain.post.enums.Type;
 import com.spring.tming.domain.user.entity.User;
-import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.global.exception.GlobalException;
 import java.util.Objects;
 
