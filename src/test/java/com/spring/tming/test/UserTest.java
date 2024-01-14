@@ -1,6 +1,8 @@
 package com.spring.tming.test;
 
+import com.spring.tming.domain.post.entity.Job;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.global.entity.Role;
 
 public interface UserTest {
 
@@ -13,8 +15,8 @@ public interface UserTest {
     String TEST_USER_PROFILE_URL = "resources/images/sparta.png";
 
     // TODO fix enum
-    String TEST_USER_ROLE = "USER";
-    String TEST_USER_JOB = "BACKEND";
+    Role TEST_USER_ROLE = Role.USER;
+    Job TEST_USER_JOB = Job.BACKEND;
 
     User TEST_USER =
             User.builder()

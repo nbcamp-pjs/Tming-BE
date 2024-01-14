@@ -34,6 +34,7 @@ public class User {
 
     @Builder
     private User(
+            Long userId,
             String email,
             String password,
             String username,
@@ -41,6 +42,7 @@ public class User {
             Job job,
             String introduce,
             String profileImageUrl) {
+        this.userId = userId;
         this.email = email;
         this.password = password;
         this.username = username;
