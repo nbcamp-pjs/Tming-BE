@@ -1,5 +1,6 @@
 package com.spring.tming.domain.emailVerify.controller;
 
+import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
 import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.domain.emailVerify.service.EmailSendService;
 import com.spring.tming.global.response.RestResponse;
@@ -14,8 +15,8 @@ public class EmailController {
     private final EmailSendService emailSendService;
 
     @PostMapping("/email")
-    public RestResponse<EmailRes> mailSend(@RequestParam String email) {
-        EmailRes result = emailSendService.trialEmail(email);
-        return RestResponse.success(result);
+    public RestResponse<EmailRes> mailPass(@RequestBody EmailReq emailReq) {
+        emailSendService.trialEmail(emailReq);
+        return RestResponse.success(new EmailRes());
     }
 }
