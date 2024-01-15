@@ -1,6 +1,7 @@
 package com.spring.tming.domain.emailVerify.service;
 
 import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.ResultCode;
 import com.spring.tming.global.validator.EmailCheckValidator;
@@ -27,12 +28,14 @@ public class EmailSendService {
     private static final String CONTENT_AFTER_AUTHNUMBER = "입니다." + "<br>" + "인증번호를 정확히 입력해주세요.";
 
     // 이메일을 어디서 보내는지, 어디로 보내는지, 인증 번호를 HTML 형식으로 어떻게 보내는지 작성.
-    public void trialEmail(EmailReq emailReq) {
+    public EmailRes trialEmail(EmailReq emailReq) {
         String email = emailReq.getEmail();
         EmailCheckValidator.validateEmail(email);
         System.out.println("이메일 인증 이메일: " + email);
         String authNumber = makeRandomCapital();
         sendEmail(email, authNumber);
+        // EmailRes 객체 생성 및 반환
+        return new EmailRes();
     }
 
     private void sendEmail(String email, String authNumber) {

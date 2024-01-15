@@ -16,7 +16,7 @@ public class EmailController {
 
     @PostMapping("/email")
     public RestResponse<EmailRes> mailPass(@RequestBody EmailReq emailReq) {
-        emailSendService.trialEmail(emailReq);
-        return RestResponse.success(new EmailRes());
+        EmailRes emailRes = emailSendService.trialEmail(emailReq);
+        return RestResponse.success(emailRes);
     }
 }
