@@ -16,6 +16,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.util.CollectionUtils;
 
 @Mapper
 public interface PostServiceMapper {
@@ -33,6 +34,9 @@ public interface PostServiceMapper {
 
     @Mapping(source = "postStacks", target = "skills")
     default List<Skill> toSkillList(List<PostStack> postStacks) {
+        if (CollectionUtils.isEmpty(postStacks)) {
+            return null;
+        }
         List<Skill> skills = new ArrayList<>();
         postStacks.forEach(postStack -> skills.add(postStack.getSkill()));
         return skills;
@@ -40,6 +44,9 @@ public interface PostServiceMapper {
 
     @Mapping(source = "jobLimits", target = "jobLimits")
     default List<PostJobLimitRes> toPostJobLimitRes(List<JobLimit> jobLimits) {
+        if (CollectionUtils.isEmpty(jobLimits)) {
+            return null;
+        }
         List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
         jobLimits.forEach(
                 jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitRes(jobLimit)));
