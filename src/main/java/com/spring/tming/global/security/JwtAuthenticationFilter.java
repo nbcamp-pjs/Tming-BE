@@ -5,6 +5,7 @@ import static com.spring.tming.global.meta.ResultCode.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.tming.domain.user.dto.request.LoginReq;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.domain.user.service.UserServiceMapper;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.jwt.JwtUtil;
 import com.spring.tming.global.redis.RedisUtil;
@@ -63,6 +64,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         refreshToken = refreshToken.split(" ")[1].trim();
 
         redisUtil.set(refreshToken, user.getUserId(), 60 * 24 * 14);
+
+        UserServiceMapper.USER_SERVICE_MAPPER.toLoginRes(user);
     }
 
     @Override
