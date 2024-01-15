@@ -1,4 +1,4 @@
-package com.spring.tming.domain.post.enums;
+package com.spring.tming.global.meta;
 
 public enum Type {
     ALL("전체조회"),
