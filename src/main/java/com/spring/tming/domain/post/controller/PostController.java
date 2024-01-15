@@ -3,12 +3,14 @@ package com.spring.tming.domain.post.controller;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
+import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostReadResList;
+import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostLikeService;
 import com.spring.tming.domain.post.service.PostService;
@@ -86,5 +88,13 @@ public class PostController {
             @RequestBody PostLikeReq postLikeReq, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postLikeReq.setUserId(userDetails.getUser().getUserId());
         return RestResponse.success(postLikeService.likePost(postLikeReq));
+    }
+
+    @PostMapping("/unlike")
+    public RestResponse<PostUnlikeRes> unlikePost(
+            @RequestBody PostUnlikeReq postUnlikeReq,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postUnlikeReq.setUserId(userDetails.getUser().getUserId());
+        return RestResponse.success(postLikeService.unlikePost(postUnlikeReq));
     }
 }

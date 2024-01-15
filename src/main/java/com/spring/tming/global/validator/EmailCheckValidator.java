@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class EmailCheckValidator {
     // 이메일 유효성 검사 정규표현식 상수화
-    private static final String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+    private static final String emailRegex = "^[a-zA-Z0-9+-.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
 
     public static void validateEmail(String email) {
         validateEmailNotEmpty(email);

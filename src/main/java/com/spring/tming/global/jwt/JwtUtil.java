@@ -1,11 +1,11 @@
 package com.spring.tming.global.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +20,8 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long ACCESS_TOKEN_TIME = 30 * 1 * 1000l;
-    private final long REFRESH_TOKEN_TIME = 60 * 60 * 1000l * 24 * 5;
+    private final long ACCESS_TOKEN_TIME = 10 * 60 * 1000L;
+    private final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretkey;
@@ -31,8 +31,8 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretkey);
-        key = Keys.hmacShaKeyFor(bytes);
+        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String createAccessToken(String username) {

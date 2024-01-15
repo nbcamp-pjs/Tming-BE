@@ -4,6 +4,7 @@ import static com.spring.tming.global.meta.ResultCode.ALREADY_LIKED_POST;
 import static com.spring.tming.global.meta.ResultCode.NOT_FOUND_POST;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_AUTHORIZATION;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
+import static com.spring.tming.global.meta.ResultCode.NOT_YET_LIKED_POST;
 
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostLike;
@@ -25,6 +26,12 @@ public class PostValidator {
     public static void checkAlreadyLiked(PostLike postLike) {
         if (isExistPostLike(postLike)) {
             throw new GlobalException(ALREADY_LIKED_POST);
+        }
+    }
+
+    public static void checkNotYetLiked(PostLike postLike) {
+        if (!isExistPostLike(postLike)) {
+            throw new GlobalException(NOT_YET_LIKED_POST);
         }
     }
 

@@ -43,8 +43,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     && jwtUtil.validateToken(refreshToken)
                     && redisUtil.hasKey(refreshToken)) {
 
-                Long userId = (Long) redisUtil.get(refreshToken);
-                User user = userRepository.findByUserId(userId);
+                String userId = redisUtil.get(refreshToken).toString();
+                User user = userRepository.findByUserId(Long.parseLong(userId));
                 UserValidator.validate(user);
                 accessToken = jwtUtil.createAccessToken(user.getUsername());
                 response.addHeader("AccessToken", accessToken);
@@ -71,8 +71,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
-    private Authentication createAuthentication(String email) {
-        User user = userRepository.findByEmail(email);
+    private Authentication createAuthentication(String username) {
+        User user = userRepository.findByUsername(username);
         UserValidator.validate(user);
         UserDetails userDetails = new UserDetailsImpl(user);
         return new UsernamePasswordAuthenticationToken(
