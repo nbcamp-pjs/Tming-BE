@@ -3,6 +3,7 @@ package com.spring.tming.domain.post.controller;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
+import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
@@ -10,6 +11,7 @@ import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostReadResList;
+import com.spring.tming.domain.post.dto.response.PostStatusUpdateRes;
 import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostLikeService;
@@ -96,5 +98,13 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postUnlikeReq.setUserId(userDetails.getUser().getUserId());
         return RestResponse.success(postLikeService.unlikePost(postUnlikeReq));
+    }
+
+    @PatchMapping("/status")
+    public RestResponse<PostStatusUpdateRes> updatePostStatus(
+            @RequestBody PostStatusUpdateReq postStatusUpdateReq,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(
+                postService.updatePostStatus(postStatusUpdateReq, userDetails.getUser()));
     }
 }

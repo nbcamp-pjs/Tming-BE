@@ -2,11 +2,13 @@ package com.spring.tming.domain.post.service;
 
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
+import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostReadResList;
+import com.spring.tming.domain.post.dto.response.PostStatusUpdateRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
@@ -200,5 +202,15 @@ public class PostService {
             default:
                 return null;
         }
+    }
+
+    @Transactional
+    public PostStatusUpdateRes updatePostStatus(PostStatusUpdateReq postStatusUpdateReq, User user) {
+        Post post = postRepository.findByPostId(postStatusUpdateReq.getPostId());
+        PostValidator.checkIsNullPost(post);
+        PostValidator.checkIsPostUser(post, user);
+
+        postRepository.save(post.toBuilder().status(postStatusUpdateReq.getStatus()).build());
+        return new PostStatusUpdateRes();
     }
 }

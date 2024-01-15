@@ -64,7 +64,7 @@ public class Post extends BaseEntity {
             orphanRemoval = true)
     private final List<JobLimit> jobLimits = new ArrayList<>();
 
-    @Builder
+    @Builder(toBuilder = true)
     private Post(
             Long postId,
             String title,
