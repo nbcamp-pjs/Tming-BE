@@ -43,15 +43,9 @@ public class EmailSendService {
         String email = emailCheckReq.getEmail();
         String authNumber = emailCheckReq.getAuthNumber();
 
-        // 인증번호 확인 로직 추가
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String storedAuthNumber = valueOperations.get(email);
-        if (storedAuthNumber == null || !storedAuthNumber.equals(authNumber)) {
-            throw new GlobalException(ResultCode.INVALID_NUMBER);
-        }
-
-        // 인증이 완료된 경우 레디스에서 해당 이메일의 인증번호 삭제
-        redisTemplate.delete(email);
+        // 이메일 및 인증번호 검증
+        EmailCheckValidator.validateAuthNumber(
+                email, redisTemplate.opsForValue().get(email), authNumber);
     }
 
     private void sendEmail(String email, String authNumber) {
@@ -90,13 +84,11 @@ public class EmailSendService {
     }
     // 임의의 6자리 숫자 반환 -> 6자리 랜덤 대문자를 반환하는 걸로 수정.
 
-    // Random 객체를 클래스레벨로 빼서 보안강화
-    private static final Random RANDOM = new Random();
-
     public String makeRandomCapital() {
+        Random r = new Random();
         StringBuilder randomCapital = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
         for (int i = 0; i < 6; i++) {
-            char ch = (char) ('A' + RANDOM.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
+            char ch = (char) ('A' + r.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
             randomCapital.append(ch); // 랜덤 생성 대문자를 직접 문자열 연결 대신 효율성 높은 StringBuilder에 추가.
         }
         return randomCapital.toString();
