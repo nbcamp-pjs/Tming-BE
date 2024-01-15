@@ -44,36 +44,12 @@ public class PostValidator {
     }
 
     public static void checkIsPostUser(Post post, User user) {
-        if (isUserIdEqual(post, user)) {
+        if (!isUserIdEqual(post, user)) {
             throw new GlobalException(POST_INVALID_AUTHORIZATION);
         }
     }
 
     private static boolean isUserIdEqual(Post post, User user) {
-        return !Objects.equals(post.getUser().getUserId(), user.getUserId());
-    }
-
-    public static void checkIsValidType(Type type) {
-        try {
-            Type checkedType = Type.valueOf(String.valueOf(type));
-        } catch (IllegalArgumentException e) {
-            throw new GlobalException(POST_INVALID_FILTER);
-        }
-    }
-
-    public static void checkIsValidSkill(Skill skill) {
-        try {
-            Skill checkedSkill = Skill.valueOf(String.valueOf(skill));
-        } catch (IllegalArgumentException e) {
-            throw new GlobalException(POST_INVALID_FILTER);
-        }
-    }
-
-    public static void checkIsValidJob(Job job) {
-        try {
-            Job checkedJob = Job.valueOf(String.valueOf(job));
-        } catch (IllegalArgumentException e) {
-            throw new GlobalException(POST_INVALID_FILTER);
-        }
+        return Objects.equals(post.getUser().getUserId(), user.getUserId());
     }
 }

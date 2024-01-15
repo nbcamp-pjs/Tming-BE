@@ -25,12 +25,12 @@ import com.spring.tming.global.meta.Status;
 import com.spring.tming.global.meta.Type;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -133,7 +133,8 @@ public class PostService {
         return new PostDeleteRes();
     }
 
-    // TODO: Redis로 조회수 올리기
+    // TODO: Redis로 조회수 올리기\
+    @Transactional(readOnly = true)
     public PostReadRes readPost(Long postId) {
         // 포스트 단건 조회
         // 1. 포스트 정보
@@ -146,8 +147,8 @@ public class PostService {
     }
 
     // TODO: 페이징처리하기
+    @Transactional(readOnly = true)
     public PostReadResList readPostList(Type type, Skill skill, Job job, User user) {
-        PostValidator.checkIsValidType(type);
         switch (type) {
             case ALL:
                 {
@@ -181,7 +182,6 @@ public class PostService {
                 }
             case SKILL:
                 {
-                    PostValidator.checkIsValidSkill(skill);
                     List<PostStack> postStacks = postStackRepository.findAllBySkill(skill);
                     List<Post> posts = new ArrayList<>();
                     postStacks.forEach(postStack -> posts.add(postStack.getPost()));
@@ -191,7 +191,6 @@ public class PostService {
                 }
             case JOB:
                 {
-                    PostValidator.checkIsValidJob(job);
                     List<JobLimit> jobLimits = jobLimitRepository.findAllByJob(job);
                     List<Post> posts = new ArrayList<>();
                     jobLimits.forEach(jobLimit -> posts.add(jobLimit.getPost()));
