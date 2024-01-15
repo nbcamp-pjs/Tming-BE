@@ -6,8 +6,6 @@ import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
-import com.spring.tming.domain.sample.dto.response.SampleGetRes;
-import com.spring.tming.domain.sample.entity.Sample;
 import com.spring.tming.global.meta.Skill;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -28,7 +26,8 @@ public interface PostServiceMapper {
         if (deadline == null) {
             return null;
         }
-        LocalDateTime localDateTime = deadline.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        LocalDateTime localDateTime =
+                deadline.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
@@ -42,10 +41,10 @@ public interface PostServiceMapper {
     @Mapping(source = "jobLimits", target = "jobLimits")
     default List<PostJobLimitRes> toPostJobLimitRes(List<JobLimit> jobLimits) {
         List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
-        jobLimits.forEach(jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitRes(jobLimit)));
+        jobLimits.forEach(
+                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitRes(jobLimit)));
         return postJobLimitRes;
     }
-
 
     PostCreateRes toPostCreateRes(Post post);
 

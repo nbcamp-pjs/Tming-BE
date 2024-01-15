@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostJobLimitRes {
-	private Job job;
-	private Integer headcount;
+    private Job job;
+    private Integer headcount;
 
-	@Builder
-	private PostJobLimitRes (Job job, Integer headcount) {
-		this.job = job;
-		this.headcount = headcount;
-	}
+    @Builder
+    private PostJobLimitRes(Job job, Integer headcount) {
+        this.job = job;
+        this.headcount = headcount;
+    }
 }

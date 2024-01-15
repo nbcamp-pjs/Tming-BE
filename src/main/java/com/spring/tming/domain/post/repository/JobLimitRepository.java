@@ -1,7 +1,7 @@
 package com.spring.tming.domain.post.repository;
 
-import com.spring.tming.global.meta.Job;
 import com.spring.tming.domain.post.entity.JobLimit;
+import com.spring.tming.global.meta.Job;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

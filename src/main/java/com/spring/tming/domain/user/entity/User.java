@@ -1,7 +1,7 @@
 package com.spring.tming.domain.user.entity;
 
-import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.entity.Role;
+import com.spring.tming.global.meta.Job;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

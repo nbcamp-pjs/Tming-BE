@@ -8,19 +8,19 @@ import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.dto.response.PostReadResList;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
-import com.spring.tming.global.meta.Job;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
-import com.spring.tming.global.meta.Skill;
-import com.spring.tming.global.meta.Status;
-import com.spring.tming.global.meta.Type;
 import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
+import com.spring.tming.global.meta.Job;
+import com.spring.tming.global.meta.Skill;
+import com.spring.tming.global.meta.Status;
+import com.spring.tming.global.meta.Type;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import jakarta.transaction.Transactional;
@@ -150,7 +150,9 @@ public class PostService {
             case ALL:
                 {
                     List<Post> posts = postRepository.findAllByOrderByCreateTimestampAsc();
-                    return PostReadResList.builder().postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts)).build();
+                    return PostReadResList.builder()
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .build();
                 }
             case LIKE:
                 {
@@ -166,7 +168,9 @@ public class PostService {
                 {
                     List<Post> posts =
                             postRepository.findAllByUserUserIdOrderByCreateTimestampAsc(user.getUserId());
-                    return PostReadResList.builder().postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts)).build();
+                    return PostReadResList.builder()
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .build();
                 }
             case MEMBER:
                 {
@@ -179,7 +183,9 @@ public class PostService {
                     List<PostStack> postStacks = postStackRepository.findAllBySkill(skill);
                     List<Post> posts = new ArrayList<>();
                     postStacks.forEach(postStack -> posts.add(postStack.getPost()));
-                    return PostReadResList.builder().postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts)).build();
+                    return PostReadResList.builder()
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .build();
                 }
             case JOB:
                 {
@@ -187,7 +193,9 @@ public class PostService {
                     List<JobLimit> jobLimits = jobLimitRepository.findAllByJob(job);
                     List<Post> posts = new ArrayList<>();
                     jobLimits.forEach(jobLimit -> posts.add(jobLimit.getPost()));
-                    return PostReadResList.builder().postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts)).build();
+                    return PostReadResList.builder()
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .build();
                 }
             default:
                 return null;
