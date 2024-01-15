@@ -2,6 +2,7 @@ package com.spring.tming.domain.post.entity;
 
 import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.global.meta.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

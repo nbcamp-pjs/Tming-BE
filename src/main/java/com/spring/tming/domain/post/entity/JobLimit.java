@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.entity;
 
+import com.spring.tming.global.meta.Job;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

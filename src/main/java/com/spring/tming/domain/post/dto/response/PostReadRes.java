@@ -1,9 +1,7 @@
 package com.spring.tming.domain.post.dto.response;
 
-import com.spring.tming.domain.post.entity.JobLimit;
-import com.spring.tming.domain.post.entity.Skill;
-import com.spring.tming.domain.post.entity.Status;
-import java.sql.Timestamp;
+import com.spring.tming.global.meta.Skill;
+import com.spring.tming.global.meta.Status;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,13 +14,13 @@ public class PostReadRes {
     private Long postId;
     private String title;
     private String content;
-    private Timestamp deadline;
+    private String deadline;
     private Long visit;
     private Long like;
     private String imageUrl;
     private Status status;
     private String username;
-    private List<JobLimit> jobLimits;
+    private List<PostJobLimitRes> jobLimits;
     private List<Skill> skills;
     //	private List<Member> members;
 
@@ -31,13 +29,13 @@ public class PostReadRes {
             Long postId,
             String title,
             String content,
-            Timestamp deadline,
+            String deadline,
             Long visit,
             Long like,
             String imageUrl,
             Status status,
             String username,
-            List<JobLimit> jobLimits,
+            List<PostJobLimitRes> jobLimits,
             List<Skill> skills
             //            List<Member> members;
             ) {

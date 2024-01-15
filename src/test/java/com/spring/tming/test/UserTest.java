@@ -1,6 +1,6 @@
 package com.spring.tming.test;
 
-import com.spring.tming.domain.post.entity.Job;
+import com.spring.tming.global.meta.Job;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.entity.Role;
 

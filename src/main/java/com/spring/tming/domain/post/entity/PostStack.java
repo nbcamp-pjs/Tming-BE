@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.entity;
 
+import com.spring.tming.global.meta.Skill;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
