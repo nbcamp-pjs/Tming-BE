@@ -152,7 +152,7 @@ public class PostService {
         switch (type) {
             case ALL:
                 {
-                    List<Post> posts = postRepository.findAllByOrderByCreateTimestampAsc();
+                    List<Post> posts = postRepository.findAllByOrderByCreateTimestampDesc();
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
                             .build();
@@ -170,7 +170,7 @@ public class PostService {
             case WRITE:
                 {
                     List<Post> posts =
-                            postRepository.findAllByUserUserIdOrderByCreateTimestampAsc(user.getUserId());
+                            postRepository.findAllByUserUserIdOrderByCreateTimestampDesc(user.getUserId());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
                             .build();
