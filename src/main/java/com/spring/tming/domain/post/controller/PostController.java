@@ -81,21 +81,6 @@ public class PostController {
         return RestResponse.success(postService.readPostList(type, skill, job, userDetails.getUser()));
     }
 
-    //    @GetMapping
-    //    public RestResponse<PostReadResList> readPostListBySkill(
-    //            @RequestParam(name = "skill") Skill skill,
-    //            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    //        return RestResponse.success(postService.readPostListBySkill(skill,
-    // userDetails.getUser()));
-    //    }
-    //
-    //    @GetMapping
-    //    public RestResponse<PostReadResList> readPostListByJob(
-    //            @RequestParam(name = "job") Job job, @AuthenticationPrincipal UserDetailsImpl
-    // userDetails) {
-    //        return RestResponse.success(postService.readPostListByJob(job, userDetails.getUser()));
-    //    }
-
     @PostMapping("/like")
     public RestResponse<PostLikeRes> likePost(
             @RequestBody PostLikeReq postLikeReq, @AuthenticationPrincipal UserDetailsImpl userDetails) {
