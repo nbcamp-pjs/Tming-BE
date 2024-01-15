@@ -12,7 +12,7 @@ public class LoginRes {
     private Long userId;
 
     @Builder
-    public LoginRes(Long userId) {
+    private LoginRes(Long userId) {
         this.userId = userId;
     }
 }
