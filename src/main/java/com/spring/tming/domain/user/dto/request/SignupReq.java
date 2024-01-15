@@ -1,6 +1,6 @@
 package com.spring.tming.domain.user.dto.request;
 
-import com.spring.tming.domain.post.entity.Job;
+import com.spring.tming.global.meta.Job;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

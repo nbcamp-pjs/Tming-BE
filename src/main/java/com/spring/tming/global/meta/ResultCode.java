@@ -31,6 +31,8 @@ public enum ResultCode {
     NOT_FOUND_POST(4002, "모집글 데이터가 없습니다."),
     ALREADY_LIKED_POST(4003, "이미 좋아요가 눌린 모집글입니다."),
     NOT_YET_LIKED_POST(4004, "아직 좋아요가 눌리지 않은 모집글입니다."),
+    POST_INVALID_AUTHORIZATION(4005, "해당 모집글에 권한이 없습니다."),
+    POST_INVALID_FILTER(4006, "지원하지 않는 전체조회 필터입니다."),
 
     NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다.");
 
