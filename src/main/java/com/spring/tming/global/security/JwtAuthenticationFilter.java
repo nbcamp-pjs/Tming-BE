@@ -89,7 +89,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
 
         refreshToken = refreshToken.split(" ")[1].trim();
-        redisUtil.set(refreshToken, user.getUserId(), 60 * 24 * 14);
+        redisUtil.set(refreshToken, user.getUserId(), JwtUtil.REFRESH_TOKEN_TIME);
 
         return UserServiceMapper.INSTANCE.toLoginRes(user);
     }
