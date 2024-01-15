@@ -67,3 +67,14 @@ endif::[]
 include::{snippets}/sample-controller-test/샘플_저장/auto-section.adoc[]
 include::{snippets}/sample-controller-test/샘플_전체_조회/auto-section.adoc[]
 include::{snippets}/sample-controller-test/샘플_단건_조회/auto-section.adoc[]
+
+== post API
+
+include::{snippets}/post-controller-test/모집글_좋아요/auto-section.adoc[]
+
+== comment API
+
+include::{snippets}/comment-controller-test/comment_저장/auto-section.adoc[]
+include::{snippets}/comment-controller-test/comment_수정/auto-section.adoc[]
+include::{snippets}/comment-controller-test/comment_삭제/auto-section.adoc[]
+include::{snippets}/comment-controller-test/post-id_comments_조회/auto-section.adoc[]
