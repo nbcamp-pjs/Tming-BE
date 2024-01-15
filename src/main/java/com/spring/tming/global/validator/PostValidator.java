@@ -4,15 +4,11 @@ import static com.spring.tming.global.meta.ResultCode.ALREADY_LIKED_POST;
 import static com.spring.tming.global.meta.ResultCode.NOT_FOUND_POST;
 import static com.spring.tming.global.meta.ResultCode.NOT_YET_LIKED_POST;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_AUTHORIZATION;
-import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.exception.GlobalException;
-import com.spring.tming.global.meta.Job;
-import com.spring.tming.global.meta.Skill;
-import com.spring.tming.global.meta.Type;
 import java.util.Objects;
 
 public class PostValidator {
