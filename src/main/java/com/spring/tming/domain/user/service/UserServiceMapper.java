@@ -11,4 +11,5 @@ public interface UserServiceMapper {
     UserServiceMapper USER_SERVICE_MAPPER = Mappers.getMapper(UserServiceMapper.class);
 
     LoginRes toLoginRes(User user);
+
 }
