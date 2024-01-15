@@ -6,6 +6,7 @@ public enum Skill {
     JAVASCRIPT("JavaScript"),
     HTML_CSS("HTML/CSS"),
     SPRING("Spring Framework"),
+    KOTLIN("Kotlin"),
     DJANGO("Django"),
     REACT("React"),
     ANGULAR("Angular"),

@@ -1,10 +1,8 @@
 package com.spring.tming.domain.user.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.spring.tming.domain.post.entity.Job;
+import com.spring.tming.global.entity.Role;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +21,13 @@ public class User {
     private String password;
     private String username;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    private String job;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Job job;
 
     private String introduce;
     private String profileImageUrl;
@@ -36,8 +38,8 @@ public class User {
             String email,
             String password,
             String username,
-            String role,
-            String job,
+            Role role,
+            Job job,
             String introduce,
             String profileImageUrl) {
         this.userId = userId;

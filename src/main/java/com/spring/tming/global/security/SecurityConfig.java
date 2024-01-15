@@ -71,6 +71,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/v1/users/signup")
                                 .permitAll()
+                                .requestMatchers("/docs/**")
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated());
 
