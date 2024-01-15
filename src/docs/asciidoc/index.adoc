@@ -71,6 +71,7 @@ include::{snippets}/sample-controller-test/샘플_단건_조회/auto-section.ado
 == post API
 
 include::{snippets}/post-controller-test/모집글_좋아요/auto-section.adoc[]
+include::{snippets}/post-controller-test/모집글_좋아요_취소/auto-section.adoc[]
 
 == comment API
 
