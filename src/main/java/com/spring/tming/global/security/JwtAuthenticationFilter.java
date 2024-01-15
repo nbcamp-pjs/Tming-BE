@@ -91,7 +91,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         refreshToken = refreshToken.split(" ")[1].trim();
         redisUtil.set(refreshToken, user.getUserId(), 60 * 24 * 14);
 
-        return UserServiceMapper.USER_SERVICE_MAPPER.toLoginRes(user);
+        return UserServiceMapper.INSTANCE.toLoginRes(user);
     }
 
     private void settingResponse(HttpServletResponse response, RestResponse<?> res)
