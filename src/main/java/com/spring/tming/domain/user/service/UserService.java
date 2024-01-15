@@ -21,7 +21,11 @@ public class UserService {
 
     @Transactional
     public SignupRes signup(SignupReq signupReq) {
+        UserValidator.validate(signupReq);
+
+        // TODO : 이메일 인증확인 추가해야됨
         EmailCheckValidator.validateEmail(signupReq.getEmail());
+
         User checkuser =
                 userRepository.findByEmailOrUsername(signupReq.getEmail(), signupReq.getUsername());
         UserValidator.duplicatedUser(checkuser);
