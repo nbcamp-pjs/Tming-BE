@@ -1,5 +1,6 @@
 package com.spring.tming.domain.emailVerify.service;
 
+import com.spring.tming.domain.emailVerify.dto.request.EmailCheckReq;
 import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
 import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.global.exception.GlobalException;
@@ -38,6 +39,21 @@ public class EmailSendService {
         return new EmailRes();
     }
 
+    public void verifyAuthNumber(EmailCheckReq emailCheckReq) {
+        String email = emailCheckReq.getEmail();
+        String authNumber = emailCheckReq.getAuthNumber();
+
+        // 인증번호 확인 로직 추가
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String storedAuthNumber = valueOperations.get(email);
+        if (storedAuthNumber == null || !storedAuthNumber.equals(authNumber)) {
+            throw new GlobalException(ResultCode.INVALID_NUMBER);
+        }
+
+        // 인증이 완료된 경우 레디스에서 해당 이메일의 인증번호 삭제
+        redisTemplate.delete(email);
+    }
+
     private void sendEmail(String email, String authNumber) {
         String toMail = email; // 인증번호를 받을 이메일 주소를 입력 받음.
         final String content = CONTENT_BEFORE_AUTHNUMBER + authNumber + CONTENT_AFTER_AUTHNUMBER;
@@ -73,11 +89,14 @@ public class EmailSendService {
         }
     }
     // 임의의 6자리 숫자 반환 -> 6자리 랜덤 대문자를 반환하는 걸로 수정.
+
+    // Random 객체를 클래스레벨로 빼서 보안강화
+    private static final Random RANDOM = new Random();
+
     public String makeRandomCapital() {
-        Random r = new Random();
         StringBuilder randomCapital = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
         for (int i = 0; i < 6; i++) {
-            char ch = (char) ('A' + r.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
+            char ch = (char) ('A' + RANDOM.nextInt(26)); // 'A'에서 'Z' 사이의 문자를 랜덤으로 선택.
             randomCapital.append(ch); // 랜덤 생성 대문자를 직접 문자열 연결 대신 효율성 높은 StringBuilder에 추가.
         }
         return randomCapital.toString();
