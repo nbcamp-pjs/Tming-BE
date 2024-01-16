@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.service;
 
+import com.spring.tming.domain.post.dto.PostJobLimitDto;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
@@ -45,7 +46,7 @@ public class PostService {
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
         // TODO: postCreateReq로 들어온 값들에 대한 검증(title, content, deadline => validation 진행)
-
+        PostValidator.checkRequest(postCreateReq.getTitle(), postCreateReq.getContent());
         // image 처리 분리 => 저장소url 가져오기
         String imageUrl = s3Provider.saveFile(image, "postImage");
         Post savedPost =
@@ -101,7 +102,7 @@ public class PostService {
     }
 
     private void savePostStackAndJobLimit(
-            List<Skill> skills, List<JobLimit> jobLimitList, Post post) {
+            List<Skill> skills, List<PostJobLimitDto> jobLimitList, Post post) {
         List<PostStack> postStacks = new ArrayList<>();
         skills.forEach(
                 skill -> {
