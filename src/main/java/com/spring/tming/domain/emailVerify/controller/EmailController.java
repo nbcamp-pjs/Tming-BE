@@ -2,6 +2,7 @@ package com.spring.tming.domain.emailVerify.controller;
 
 import com.spring.tming.domain.emailVerify.dto.request.EmailCheckReq;
 import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.response.EmailAuthRes;
 import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.domain.emailVerify.service.EmailSendService;
 import com.spring.tming.global.exception.GlobalException;
@@ -25,12 +26,12 @@ public class EmailController {
 
     // 이메일로 받은 인증번호를 확인하는 엔드포인트
     @PostMapping("/email/verify")
-    public RestResponse<Boolean> verifyEmail(@RequestBody EmailCheckReq emailCheckReq) {
+    public EmailAuthRes<Boolean> verifyEmail(@RequestBody EmailCheckReq emailCheckReq) {
         try {
             emailSendService.verifyAuthNumber(emailCheckReq);
-            return RestResponse.success(true);
+            return EmailAuthRes.success(true);
         } catch (GlobalException e) {
-            return RestResponse.error(ResultCode.INVALID_NUMBER);
+            return EmailAuthRes.error(ResultCode.INVALID_NUMBER);
         }
     }
 }
