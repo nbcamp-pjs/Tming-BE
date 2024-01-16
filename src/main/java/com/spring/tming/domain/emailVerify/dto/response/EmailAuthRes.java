@@ -3,8 +3,13 @@ package com.spring.tming.domain.emailVerify.dto.response;
 import lombok.*;
 
 @Getter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailAuthRes {
 
-    private final boolean success; // 인증 성공 여부
+    private boolean success; // 인증 성공 여부
+
+    @Builder
+    private EmailAuthRes(boolean success) {
+        this.success = success;
+    }
 }
