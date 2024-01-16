@@ -1,6 +1,5 @@
 package com.spring.tming.domain.user.entity;
 
-import com.spring.tming.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(FollowId.class)
 @Table(name = "tb_follow")
-public class Follow extends BaseEntity {
+public class Follow {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "followerId")
