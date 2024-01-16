@@ -10,7 +10,7 @@ import com.spring.tming.global.exception.GlobalException;
 public class UserValidator {
     private static final String REGEX_USERNAME = "^[a-zA-Z0-9가-힣]{4,12}$";
     private static final String REGEX_PASSWORD =
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$";
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$";
 
     public static void validate(User user) {
         if (isNullUser(user)) {

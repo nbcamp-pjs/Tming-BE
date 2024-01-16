@@ -20,8 +20,8 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long ACCESS_TOKEN_TIME = 10 * 60 * 1000L;
-    private final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L;
+    public static final long ACCESS_TOKEN_TIME = 10 * 60 * 1000L;
+    public static final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretkey;
@@ -35,13 +35,13 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(String username) {
+    public String createAccessToken(String email) {
         Date date = new Date();
 
         return BEARER_PREFIX
                 + Jwts.builder()
-                        .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, username)
+                        .setSubject(email)
+                        .claim(AUTHORIZATION_KEY, email)
                         .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
