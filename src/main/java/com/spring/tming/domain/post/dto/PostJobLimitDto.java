@@ -1,4 +1,4 @@
-package com.spring.tming.domain.post.dto.response;
+package com.spring.tming.domain.post.dto;
 
 import com.spring.tming.global.meta.Job;
 import lombok.AccessLevel;
@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostJobLimitRes {
+public class PostJobLimitDto {
     private Job job;
     private Integer headcount;
 
     @Builder
-    private PostJobLimitRes(Job job, Integer headcount) {
+    private PostJobLimitDto(Job job, Integer headcount) {
         this.job = job;
         this.headcount = headcount;
     }

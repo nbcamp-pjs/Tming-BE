@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.dto.response;
 
+import com.spring.tming.domain.post.dto.PostJobLimitDto;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.meta.Status;
 import java.util.List;
@@ -20,7 +21,7 @@ public class PostReadRes {
     private String imageUrl;
     private Status status;
     private String username;
-    private List<PostJobLimitRes> jobLimits;
+    private List<PostJobLimitDto> jobLimits;
     private List<Skill> skills;
     //	private List<Member> members;
 
@@ -35,7 +36,7 @@ public class PostReadRes {
             String imageUrl,
             Status status,
             String username,
-            List<PostJobLimitRes> jobLimits,
+            List<PostJobLimitDto> jobLimits,
             List<Skill> skills
             //            List<Member> members;
             ) {
