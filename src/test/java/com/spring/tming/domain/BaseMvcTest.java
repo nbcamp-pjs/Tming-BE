@@ -41,7 +41,8 @@ public class BaseMvcTest {
         mockUserSetup();
         var mockMvcRequestBuilders =
                 MockMvcRequestBuilders.get("http://example.com")
-                        .header("Authorization", "Bearer <<전달받은토큰값>>");
+                        .header("AccessToken", "Bearer <<전달받은토큰값>>")
+                        .header("RefreshToken", "Bearer <<전달받은토큰값>>");
         this.mockMvc =
                 MockMvcBuilders.webAppContextSetup(context)
                         .alwaysDo(JacksonResultHandlers.prepareJackson(objectMapper))
