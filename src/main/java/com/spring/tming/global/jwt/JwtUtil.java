@@ -35,13 +35,13 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(String username) {
+    public String createAccessToken(String email) {
         Date date = new Date();
 
         return BEARER_PREFIX
                 + Jwts.builder()
-                        .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, username)
+                        .setSubject(email)
+                        .claim(AUTHORIZATION_KEY, email)
                         .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)

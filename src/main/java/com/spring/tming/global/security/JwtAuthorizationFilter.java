@@ -54,12 +54,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken)) {
             Claims info = jwtUtil.getUserInfoFromToken(accessToken);
-            log.warn("try,catch문 진입전");
             try {
-                log.warn("try문 진입");
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
-                log.warn("catch문 진입");
                 log.error(e.getMessage());
                 return;
             }
