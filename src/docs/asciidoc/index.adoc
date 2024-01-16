@@ -74,6 +74,7 @@ include::{snippets}/user-controller-test/유저_프로필_조회/auto-section.ad
 include::{snippets}/user-controller-test/유저_팔로우/auto-section.adoc[]
 include::{snippets}/user-controller-test/유저_팔로우_취소/auto-section.adoc[]
 include::{snippets}/user-controller-test/유저_팔로워_전체_조회/auto-section.adoc[]
+include::{snippets}/user-controller-test/유저_팔로잉_전체_조회/auto-section.adoc[]
 
 == post API
 
