@@ -2,6 +2,7 @@ package com.spring.tming.domain.post.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +51,7 @@ class PostControllerTest extends BaseMvcTest {
         when(postLikeService.unlikePost(any())).thenReturn(postUnlikeRes);
         this.mockMvc
                 .perform(
-                        post("/v1/posts/unlike")
+                        delete("/v1/posts/unlike")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(postUnlikeReq))
                                 .principal(this.mockPrincipal))

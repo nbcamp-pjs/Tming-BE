@@ -92,7 +92,7 @@ public class PostController {
         return RestResponse.success(postLikeService.likePost(postLikeReq));
     }
 
-    @PostMapping("/unlike")
+    @DeleteMapping("/unlike")
     public RestResponse<PostUnlikeRes> unlikePost(
             @RequestBody PostUnlikeReq postUnlikeReq,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
