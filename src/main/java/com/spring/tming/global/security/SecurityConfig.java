@@ -71,6 +71,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/v1/users/signup")
                                 .permitAll()
+                                .requestMatchers("/v1/users/login")
+                                .permitAll()
                                 .requestMatchers("/v1/users/check-username")
                                 .permitAll()
                                 .requestMatchers("/v1/users/check-email")
