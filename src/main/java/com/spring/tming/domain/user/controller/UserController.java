@@ -4,6 +4,7 @@ import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.response.FollowRes;
+import com.spring.tming.domain.user.dto.response.FollowerGetResList;
 import com.spring.tming.domain.user.dto.response.SignupRes;
 import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
@@ -49,5 +50,10 @@ public class UserController {
             @RequestBody UnfollowReq unfollowReq, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         unfollowReq.setFollowerId(userDetails.getUser().getUserId());
         return RestResponse.success(userService.unfollowUser(unfollowReq));
+    }
+
+    @GetMapping("/follower/{userId}")
+    public RestResponse<FollowerGetResList> getFollowers(@PathVariable Long userId) {
+        return RestResponse.success(userService.getFollowers(userId));
     }
 }
