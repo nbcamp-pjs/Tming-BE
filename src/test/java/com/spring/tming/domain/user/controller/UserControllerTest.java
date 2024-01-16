@@ -1,9 +1,13 @@
 package com.spring.tming.domain.user.controller;
 
+import static com.spring.tming.global.meta.Job.BACKEND;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
+import com.spring.tming.domain.user.dto.request.UserUpdateReq;
 import com.spring.tming.domain.user.dto.response.FollowRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetResList;
@@ -18,13 +23,19 @@ import com.spring.tming.domain.user.dto.response.FollowingGetRes;
 import com.spring.tming.domain.user.dto.response.FollowingGetResList;
 import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
+import com.spring.tming.domain.user.dto.response.UserUpdateRes;
 import com.spring.tming.domain.user.service.UserService;
+import com.spring.tming.global.meta.Job;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 @WebMvcTest(controllers = {UserController.class})
 class UserControllerTest extends BaseMvcTest {
@@ -130,6 +141,46 @@ class UserControllerTest extends BaseMvcTest {
         when(userService.getFollowings(any())).thenReturn(followerGetResList);
         this.mockMvc
                 .perform(get("/v1/users/following/" + userId))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("유저 수정 테스트")
+    void 유저_수정() throws Exception {
+        String password = "Qwer1234!";
+        String username = "ysys";
+        Job job = BACKEND;
+        String introduce = "intro";
+        UserUpdateReq userUpdateReq =
+                UserUpdateReq.builder()
+                        .password(password)
+                        .username(username)
+                        .job(job)
+                        .introduce(introduce)
+                        .build();
+        String imageUrl = "images/sparta.png";
+        Resource fileResource = new ClassPathResource(imageUrl);
+        MockMultipartFile file =
+                new MockMultipartFile(
+                        "image",
+                        fileResource.getFilename(),
+                        IMAGE_JPEG.getType(),
+                        fileResource.getInputStream());
+        MockMultipartFile multipartFile =
+                new MockMultipartFile("multipartFile", "orig", "multipart/form-data", file.getBytes());
+        String json = objectMapper.writeValueAsString(userUpdateReq);
+        MockMultipartFile req =
+                new MockMultipartFile(
+                        "userUpdateReq", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
+        UserUpdateRes userUpdateRes = new UserUpdateRes();
+        when(userService.updateUser(any(), any())).thenReturn(userUpdateRes);
+        this.mockMvc
+                .perform(
+                        multipart(PATCH, "/v1/users")
+                                .file(multipartFile)
+                                .file(req)
+                                .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
