@@ -14,14 +14,6 @@ public class EmailCheckValidator {
         validateEmailFormat(email);
     }
 
-    public static void validateAuthNumber(
-            String email, String storedAuthNumber, String inputAuthNumber) {
-        validateEmail(email);
-        if (isAuthNumberInvalid(storedAuthNumber, inputAuthNumber)) {
-            throw new GlobalException(ResultCode.INVALID_NUMBER);
-        }
-    }
-
     private static void validateEmailNotEmpty(String email) {
         if (isEmailEmpty(email)) {
             throw new GlobalException(ResultCode.EMPTY_EMAIL);
@@ -42,9 +34,5 @@ public class EmailCheckValidator {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
-    }
-
-    private static boolean isAuthNumberInvalid(String storedAuthNumber, String inputAuthNumber) {
-        return storedAuthNumber == null || !storedAuthNumber.equals(inputAuthNumber);
     }
 }

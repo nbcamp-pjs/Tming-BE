@@ -47,7 +47,9 @@ public class EmailSendService {
         String storedAuthNumber = (String) redisUtil.get(email);
 
         // 입력받은 인증번호와 레디스에 저장된 인증번호 비교
-        return new EmailAuthRes(storedAuthNumber != null && storedAuthNumber.equals(authNumber));
+        return EmailAuthRes.builder()
+                .success(storedAuthNumber != null && storedAuthNumber.equals(authNumber))
+                .build();
     }
 
     private void sendEmail(String email, String authNumber) {
