@@ -22,7 +22,7 @@ public class PostReadRes {
     private Status status;
     private String username;
     private List<PostJobLimitDto> jobLimits;
-    private List<Skill> skills;
+    private List<String> skills;
     //	private List<Member> members;
 
     @Builder
@@ -37,7 +37,7 @@ public class PostReadRes {
             Status status,
             String username,
             List<PostJobLimitDto> jobLimits,
-            List<Skill> skills
+            List<String> skills
             //            List<Member> members;
             ) {
         this.postId = postId;

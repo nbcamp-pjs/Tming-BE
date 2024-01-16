@@ -1,12 +1,11 @@
 package com.spring.tming.domain.post.service;
 
-import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.PostJobLimitDto;
+import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
-import com.spring.tming.global.meta.Skill;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,12 +32,12 @@ public interface PostServiceMapper {
     }
 
     @Mapping(source = "postStacks", target = "skills")
-    default List<Skill> toSkillList(List<PostStack> postStacks) {
+    default List<String> toSkillList(List<PostStack> postStacks) {
         if (CollectionUtils.isEmpty(postStacks)) {
             return null;
         }
-        List<Skill> skills = new ArrayList<>();
-        postStacks.forEach(postStack -> skills.add(postStack.getSkill()));
+        List<String> skills = new ArrayList<>();
+        postStacks.forEach(postStack -> skills.add(postStack.getSkill().getDescription()));
         return skills;
     }
 
