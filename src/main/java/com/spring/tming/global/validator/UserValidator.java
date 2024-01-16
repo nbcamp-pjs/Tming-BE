@@ -3,6 +3,7 @@ package com.spring.tming.global.validator;
 import static com.spring.tming.global.meta.ResultCode.*;
 
 import com.spring.tming.domain.user.dto.request.SignupReq;
+import com.spring.tming.domain.user.dto.request.UserUpdateReq;
 import com.spring.tming.domain.user.entity.Follow;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.exception.GlobalException;
@@ -33,6 +34,15 @@ public class UserValidator {
             throw new GlobalException(VALID_USERNAME);
         }
         if (!isCorrectPasswordFormat(req.getPassword())) {
+            throw new GlobalException(VALID_PASSWORD);
+        }
+    }
+
+    public static void validate(UserUpdateReq userUpdateReq) {
+        if (!isCorrectUsernameFormat(userUpdateReq.getUsername())) {
+            throw new GlobalException(VALID_USERNAME);
+        }
+        if (!isCorrectPasswordFormat(userUpdateReq.getPassword())) {
             throw new GlobalException(VALID_PASSWORD);
         }
     }
