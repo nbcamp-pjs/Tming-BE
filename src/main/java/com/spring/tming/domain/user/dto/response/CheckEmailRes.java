@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckEmailRes {
 
-    private String email;
+    private boolean check;
 
     @Builder
-    private CheckEmailRes(String email) {
-        this.email = email;
+    private CheckEmailRes(boolean check) {
+        this.check = check;
     }
 }

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckUsernameRes {
 
-    private String username;
+    private boolean check;
 
     @Builder
-    private CheckUsernameRes(String username) {
-        this.username = username;
+    private CheckUsernameRes(boolean check) {
+        this.check = check;
     }
 }

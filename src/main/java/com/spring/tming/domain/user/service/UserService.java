@@ -80,15 +80,13 @@ public class UserService {
     @Transactional
     public CheckUsernameRes checkUsername(CheckUsernameReq checkUsernameReq) {
         User checkUser = userRepository.findByUsername(checkUsernameReq.getUsername());
-        UserValidator.duplicatedUsername(checkUser);
-        return UserServiceMapper.INSTANCE.toCheckUsernameRes(checkUser);
+        return CheckUsernameRes.builder().check(checkUser == null).build();
     }
 
     @Transactional
     public CheckEmailRes checkEmail(CheckEmailReq checkEmailReq) {
         User checkUser = userRepository.findByEmail(checkEmailReq.getEmail());
-        UserValidator.duplicatedEmail(checkUser);
-        return UserServiceMapper.INSTANCE.toCheckEmailRes(checkUser);
+        return CheckEmailRes.builder().check(checkUser == null).build();
     }
 
     @Transactional(readOnly = true)
