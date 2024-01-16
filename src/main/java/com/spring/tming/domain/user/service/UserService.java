@@ -2,10 +2,14 @@ package com.spring.tming.domain.user.service;
 
 import static com.spring.tming.global.meta.ResultCode.SYSTEM_ERROR;
 
+import com.spring.tming.domain.user.dto.request.CheckEmailReq;
+import com.spring.tming.domain.user.dto.request.CheckUsernameReq;
 import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.request.UserUpdateReq;
+import com.spring.tming.domain.user.dto.response.CheckEmailRes;
+import com.spring.tming.domain.user.dto.response.CheckUsernameRes;
 import com.spring.tming.domain.user.dto.response.FollowRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetResList;
@@ -71,6 +75,18 @@ public class UserService {
                         .build();
         userRepository.save(user);
         return new SignupRes();
+    }
+
+    @Transactional
+    public CheckUsernameRes checkUsername(CheckUsernameReq checkUsernameReq) {
+        User checkUser = userRepository.findByUsername(checkUsernameReq.getUsername());
+        return CheckUsernameRes.builder().check(checkUser == null).build();
+    }
+
+    @Transactional
+    public CheckEmailRes checkEmail(CheckEmailReq checkEmailReq) {
+        User checkUser = userRepository.findByEmail(checkEmailReq.getEmail());
+        return CheckEmailRes.builder().check(checkUser == null).build();
     }
 
     @Transactional(readOnly = true)
