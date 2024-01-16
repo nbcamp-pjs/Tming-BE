@@ -6,6 +6,8 @@ import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.response.FollowRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetResList;
+import com.spring.tming.domain.user.dto.response.FollowingGetRes;
+import com.spring.tming.domain.user.dto.response.FollowingGetResList;
 import com.spring.tming.domain.user.dto.response.SignupRes;
 import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
@@ -87,6 +89,16 @@ public class UserService {
         return FollowerGetResList.builder()
                 .followers(followerGetReses)
                 .total(followerGetReses.size())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public FollowingGetResList getFollowings(Long userId) {
+        List<FollowingGetRes> followingGetReses =
+                UserServiceMapper.INSTANCE.toFollowingGetResList(userRepository.findFollowings(userId));
+        return FollowingGetResList.builder()
+                .followings(followingGetReses)
+                .total(followingGetReses.size())
                 .build();
     }
 
