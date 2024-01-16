@@ -1,9 +1,13 @@
 package com.spring.tming.domain.user.controller;
 
+import com.spring.tming.domain.user.dto.request.CheckEmailReq;
+import com.spring.tming.domain.user.dto.request.CheckUsernameReq;
 import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.request.UserUpdateReq;
+import com.spring.tming.domain.user.dto.response.CheckEmailRes;
+import com.spring.tming.domain.user.dto.response.CheckUsernameRes;
 import com.spring.tming.domain.user.dto.response.FollowRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetResList;
 import com.spring.tming.domain.user.dto.response.FollowingGetResList;
@@ -37,6 +41,17 @@ public class UserController {
     @PostMapping("/signup")
     public RestResponse<SignupRes> signup(@RequestBody SignupReq signupReq) {
         return RestResponse.success(userService.signup(signupReq));
+    }
+
+    @PostMapping("/check-username")
+    public RestResponse<CheckUsernameRes> checkUsername(
+            @RequestBody CheckUsernameReq checkUsernameReq) {
+        return RestResponse.success(userService.checkUsername(checkUsernameReq));
+    }
+
+    @PostMapping("/check-email")
+    public RestResponse<CheckEmailRes> checkUsername(@RequestBody CheckEmailReq checkEmailReq) {
+        return RestResponse.success(userService.checkEmail(checkEmailReq));
     }
 
     @GetMapping("/{userId}")

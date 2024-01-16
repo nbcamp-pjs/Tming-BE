@@ -1,5 +1,7 @@
 package com.spring.tming.domain.user.service;
 
+import com.spring.tming.domain.user.dto.response.CheckEmailRes;
+import com.spring.tming.domain.user.dto.response.CheckUsernameRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetRes;
 import com.spring.tming.domain.user.dto.response.FollowingGetRes;
 import com.spring.tming.domain.user.dto.response.LoginRes;
@@ -30,6 +32,10 @@ public interface UserServiceMapper {
     @Mapping(source = "followings", target = "following")
     @Mapping(source = "job.description", target = "job")
     UserGetRes toUserGetRes(User user);
+
+    CheckUsernameRes toCheckUsernameRes(User user);
+
+    CheckEmailRes toCheckEmailRes(User user);
 
     LoginRes toLoginRes(User user);
 

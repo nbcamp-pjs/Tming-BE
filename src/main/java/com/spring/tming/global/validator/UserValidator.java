@@ -29,6 +29,18 @@ public class UserValidator {
         }
     }
 
+    public static void duplicatedUsername(User user) {
+        if (!isNullUser(user)) {
+            throw new GlobalException(DUPLICATED_USERNAME);
+        }
+    }
+
+    public static void duplicatedEmail(User user) {
+        if (!isNullUser(user)) {
+            throw new GlobalException(DUPLICATED_EMAIL);
+        }
+    }
+
     public static void validate(SignupReq req) {
         if (!isCorrectUsernameFormat(req.getUsername())) {
             throw new GlobalException(VALID_USERNAME);
