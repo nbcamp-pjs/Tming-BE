@@ -3,6 +3,7 @@ package com.spring.tming.global.validator;
 import static com.spring.tming.global.meta.ResultCode.*;
 
 import com.spring.tming.domain.user.dto.request.SignupReq;
+import com.spring.tming.domain.user.entity.Follow;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.exception.GlobalException;
 
@@ -34,6 +35,22 @@ public class UserValidator {
         if (!isCorrectPasswordFormat(req.getPassword())) {
             throw new GlobalException(VALID_PASSWORD);
         }
+    }
+
+    public static void checkAlreadyFollowed(Follow follow) {
+        if (isExistFollow(follow)) {
+            throw new GlobalException(ALREADY_FOLLOWED_USER);
+        }
+    }
+
+    public static void checkNotYetFollowed(Follow follow) {
+        if (!isExistFollow(follow)) {
+            throw new GlobalException(NOT_YET_FOLLOWED_USER);
+        }
+    }
+
+    private static boolean isExistFollow(Follow follow) {
+        return follow != null;
     }
 
     private static boolean isCorrectUsernameFormat(String username) {

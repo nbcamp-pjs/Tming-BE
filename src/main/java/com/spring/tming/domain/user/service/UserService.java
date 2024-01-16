@@ -1,9 +1,15 @@
 package com.spring.tming.domain.user.service;
 
+import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
+import com.spring.tming.domain.user.dto.request.UnfollowReq;
+import com.spring.tming.domain.user.dto.response.FollowRes;
 import com.spring.tming.domain.user.dto.response.SignupRes;
+import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
+import com.spring.tming.domain.user.entity.Follow;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.domain.user.repository.FollowRepository;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.entity.Role;
 import com.spring.tming.global.validator.EmailCheckValidator;
@@ -18,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -48,6 +55,26 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserGetRes getUserProfile(Long userId) {
         return UserServiceMapper.INSTANCE.toUserGetRes(getUserByUserId(userId));
+    }
+
+    @Transactional
+    public FollowRes followUser(FollowReq followReq) {
+        User follower = getUserByUserId(followReq.getFollowerId());
+        User following = getUserByUserId(followReq.getFollowingId());
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
+        UserValidator.checkAlreadyFollowed(follow);
+        followRepository.save(Follow.builder().follower(follower).following(following).build());
+        return new FollowRes();
+    }
+
+    @Transactional
+    public UnfollowRes unfollowUser(UnfollowReq unfollowReq) {
+        User follower = getUserByUserId(unfollowReq.getFollowerId());
+        User following = getUserByUserId(unfollowReq.getFollowingId());
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
+        UserValidator.checkNotYetFollowed(follow);
+        followRepository.delete(follow);
+        return new UnfollowRes();
     }
 
     private User getUserByUserId(Long userId) {
