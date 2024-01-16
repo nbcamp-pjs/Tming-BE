@@ -43,6 +43,12 @@ public class UserValidator {
         }
     }
 
+    public static void checkNotYetFollowed(Follow follow) {
+        if (!isExistFollow(follow)) {
+            throw new GlobalException(NOT_YET_FOLLOWED_USER);
+        }
+    }
+
     private static boolean isExistFollow(Follow follow) {
         return follow != null;
     }

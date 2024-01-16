@@ -2,6 +2,7 @@ package com.spring.tming.domain.user.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.user.dto.request.FollowReq;
+import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.response.FollowRes;
+import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
 import com.spring.tming.domain.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -60,6 +63,23 @@ class UserControllerTest extends BaseMvcTest {
                         post("/v1/users/follow")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(followReq))
+                                .principal(this.mockPrincipal))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("유저 팔로우 취소 테스트")
+    void 유저_팔로우_취소() throws Exception {
+        Long followingId = 1L;
+        UnfollowReq unfollowReq = UnfollowReq.builder().followingId(followingId).build();
+        UnfollowRes unfollowRes = new UnfollowRes();
+        when(userService.unfollowUser(any())).thenReturn(unfollowRes);
+        this.mockMvc
+                .perform(
+                        delete("/v1/users/unfollow")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(unfollowReq))
                                 .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().isOk());
