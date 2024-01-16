@@ -117,7 +117,7 @@ public class UserService {
         UserValidator.validate(userUpdateReq);
         User prevUser = getUserByUserId(userUpdateReq.getUserId());
         checkDuplicateUsername(userUpdateReq.getUsername());
-        if (prevUser.getProfileImageUrl() != null) {
+        if (isExistProfileImageUrl(prevUser.getProfileImageUrl())) {
             s3Provider.deleteImage(prevUser.getProfileImageUrl());
         }
 
@@ -133,6 +133,10 @@ public class UserService {
                         .profileImageUrl(profileImageUrl)
                         .build());
         return new UserUpdateRes();
+    }
+
+    private boolean isExistProfileImageUrl(String profileImageUrl) {
+        return profileImageUrl != null;
     }
 
     private String saveFile(MultipartFile multipartFile) {
