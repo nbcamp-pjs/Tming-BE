@@ -42,10 +42,6 @@ public class EmailSendService {
     public void verifyAuthNumber(EmailCheckReq emailCheckReq) {
         String email = emailCheckReq.getEmail();
         String authNumber = emailCheckReq.getAuthNumber();
-
-        // 이메일 및 인증번호 검증
-        EmailCheckValidator.validateAuthNumber(
-                email, redisTemplate.opsForValue().get(email), authNumber);
     }
 
     private void sendEmail(String email, String authNumber) {
