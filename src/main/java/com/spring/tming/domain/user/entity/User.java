@@ -3,6 +3,7 @@ package com.spring.tming.domain.user.entity;
 import com.spring.tming.global.entity.Role;
 import com.spring.tming.global.meta.Job;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,12 @@ public class User {
 
     private String introduce;
     private String profileImageUrl;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private List<Follow> followers;
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
+    private List<Follow> followings;
 
     @Builder
     private User(

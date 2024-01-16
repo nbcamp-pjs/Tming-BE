@@ -4,6 +4,10 @@ import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.response.FollowRes;
+import com.spring.tming.domain.user.dto.response.FollowerGetRes;
+import com.spring.tming.domain.user.dto.response.FollowerGetResList;
+import com.spring.tming.domain.user.dto.response.FollowingGetRes;
+import com.spring.tming.domain.user.dto.response.FollowingGetResList;
 import com.spring.tming.domain.user.dto.response.SignupRes;
 import com.spring.tming.domain.user.dto.response.UnfollowRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
@@ -14,6 +18,7 @@ import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.entity.Role;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import com.spring.tming.global.validator.UserValidator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,6 +80,26 @@ public class UserService {
         UserValidator.checkNotYetFollowed(follow);
         followRepository.delete(follow);
         return new UnfollowRes();
+    }
+
+    @Transactional(readOnly = true)
+    public FollowerGetResList getFollowers(Long userId) {
+        List<FollowerGetRes> followerGetReses =
+                UserServiceMapper.INSTANCE.toFollowerGetResList(userRepository.findFollowers(userId));
+        return FollowerGetResList.builder()
+                .followers(followerGetReses)
+                .total(followerGetReses.size())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public FollowingGetResList getFollowings(Long userId) {
+        List<FollowingGetRes> followingGetReses =
+                UserServiceMapper.INSTANCE.toFollowingGetResList(userRepository.findFollowings(userId));
+        return FollowingGetResList.builder()
+                .followings(followingGetReses)
+                .total(followingGetReses.size())
+                .build();
     }
 
     private User getUserByUserId(Long userId) {
