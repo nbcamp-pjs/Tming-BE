@@ -1,8 +1,8 @@
 package com.spring.tming.domain.user.service;
 
-import com.spring.tming.domain.user.dto.response.LoginRes;
 import com.spring.tming.domain.user.dto.response.FollowerGetRes;
 import com.spring.tming.domain.user.dto.response.FollowingGetRes;
+import com.spring.tming.domain.user.dto.response.LoginRes;
 import com.spring.tming.domain.user.dto.response.UserGetRes;
 import com.spring.tming.domain.user.entity.User;
 import java.util.List;
