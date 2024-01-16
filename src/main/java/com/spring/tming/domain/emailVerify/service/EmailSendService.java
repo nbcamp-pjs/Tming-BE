@@ -1,17 +1,17 @@
 package com.spring.tming.domain.emailVerify.service;
 
+import com.spring.tming.domain.emailVerify.dto.request.EmailCheckReq;
 import com.spring.tming.domain.emailVerify.dto.request.EmailReq;
+import com.spring.tming.domain.emailVerify.dto.response.EmailAuthRes;
 import com.spring.tming.domain.emailVerify.dto.response.EmailRes;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.ResultCode;
+import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailSendService {
-    private final StringRedisTemplate redisTemplate;
     private final JavaMailSender mailSender;
+    private final RedisUtil redisUtil;
+
     private static final String SET_FROM = "${spring.mail.username}";
     private static final String TITLE = "Tming 회원가입인증 이메일입니다.";
     private static final String CONTENT_BEFORE_AUTHNUMBER =
@@ -38,16 +39,27 @@ public class EmailSendService {
         return new EmailRes();
     }
 
+    public EmailAuthRes verifyAuthNumber(EmailCheckReq emailCheckReq) {
+        String email = emailCheckReq.getEmail();
+        String authNumber = emailCheckReq.getAuthNumber();
+
+        // 레디스에서 저장된 인증번호 가져오기
+        String storedAuthNumber = (String) redisUtil.get(email);
+
+        // 입력받은 인증번호와 레디스에 저장된 인증번호 비교
+        return EmailAuthRes.builder()
+                .success(storedAuthNumber != null && storedAuthNumber.equals(authNumber))
+                .build();
+    }
+
     private void sendEmail(String email, String authNumber) {
         String toMail = email; // 인증번호를 받을 이메일 주소를 입력 받음.
         final String content = CONTENT_BEFORE_AUTHNUMBER + authNumber + CONTENT_AFTER_AUTHNUMBER;
         mailPass(SET_FROM, toMail, TITLE, content);
+        // 레디스에 인증번호 저장
         try {
-            // 레디스에 인증번호 저장
-            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-            valueOperations.set(email, authNumber, 30, TimeUnit.MINUTES); // 30분 동안만 저장
+            redisUtil.set(email, authNumber, 30);
         } catch (Exception e) {
-            // 예외 처리
             e.printStackTrace();
             throw new GlobalException(ResultCode.REDIS_CONNECTION_FAIL);
         }
@@ -73,6 +85,7 @@ public class EmailSendService {
         }
     }
     // 임의의 6자리 숫자 반환 -> 6자리 랜덤 대문자를 반환하는 걸로 수정.
+
     public String makeRandomCapital() {
         Random r = new Random();
         StringBuilder randomCapital = new StringBuilder(); // 문자열 연산에 적합한 StringBuilder를 사용
