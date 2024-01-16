@@ -5,21 +5,24 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SignupReq {
-
-    private String email;
+public class UserUpdateReq {
+    private Long userId;
     private String password;
     private String username;
     private Job job;
+    private String introduce;
 
     @Builder
-    private SignupReq(String email, String password, String username, Job job) {
-        this.email = email;
+    private UserUpdateReq(Long userId, String password, String username, Job job, String introduce) {
+        this.userId = userId;
         this.password = password;
         this.username = username;
         this.job = job;
+        this.introduce = introduce;
     }
 }

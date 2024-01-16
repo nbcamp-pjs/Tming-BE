@@ -35,19 +35,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         String accessToken = jwtUtil.getTokenFromHeader(request, ACCESS_TOKEN_HEADER);
 
         if (StringUtils.hasText(accessToken) && !jwtUtil.validateToken(accessToken)) {
             String refreshToken = jwtUtil.getTokenFromHeader(request, REFRESH_TOKEN_HEADER);
+
             if (StringUtils.hasText(refreshToken)
                     && jwtUtil.validateToken(refreshToken)
                     && redisUtil.hasKey(refreshToken)) {
-
                 Long userId = (Long) redisUtil.get(refreshToken);
                 User user = userRepository.findByUserId(userId);
                 UserValidator.validate(user);
-                accessToken = jwtUtil.createAccessToken(user.getUsername());
-                response.addHeader("AccessToken", accessToken);
+                accessToken = jwtUtil.createAccessToken(user.getEmail()).split(" ")[1].trim();
+                response.addHeader(ACCESS_TOKEN_HEADER, BEARER_PREFIX + accessToken);
             }
         }
 

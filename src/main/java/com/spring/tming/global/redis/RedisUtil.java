@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void set(String key, Object o, int minutes) {
+    public void set(String key, Object o, long minutes) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
         redisTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
     }

@@ -4,15 +4,20 @@ import static com.spring.tming.global.meta.ResultCode.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.tming.domain.user.dto.request.LoginReq;
+import com.spring.tming.domain.user.dto.response.LoginRes;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.domain.user.service.UserServiceMapper;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.jwt.JwtUtil;
 import com.spring.tming.global.redis.RedisUtil;
+import com.spring.tming.global.response.RestResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil, RedisUtil redisUtil) {
         this.jwtUtil = jwtUtil;
@@ -51,18 +57,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain,
-            Authentication authentication) {
-        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+            Authentication authentication)
+            throws IOException {
 
-        String accessToken = jwtUtil.createAccessToken(user.getUsername());
-        String refreshToken = jwtUtil.createRefreshToken();
-
-        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
-        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
-
-        refreshToken = refreshToken.split(" ")[1].trim();
-
-        redisUtil.set(refreshToken, user.getUserId(), 60 * 24 * 14);
+        LoginRes loginRes = addTokensInHeader(authentication, response);
+        settingResponse(response, RestResponse.success(loginRes));
     }
 
     @Override
@@ -77,5 +76,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             log.error("서버 에러");
             throw new GlobalException(SYSTEM_ERROR);
         }
+    }
+
+    private LoginRes addTokensInHeader(Authentication authentication, HttpServletResponse response) {
+
+        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+
+        String accessToken = jwtUtil.createAccessToken(user.getEmail());
+        String refreshToken = jwtUtil.createRefreshToken();
+
+        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
+        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
+
+        refreshToken = refreshToken.split(" ")[1].trim();
+        redisUtil.set(refreshToken, user.getUserId(), JwtUtil.REFRESH_TOKEN_TIME);
+
+        return UserServiceMapper.INSTANCE.toLoginRes(user);
+    }
+
+    private void settingResponse(HttpServletResponse response, RestResponse<?> res)
+            throws IOException {
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+        String result = objectMapper.writeValueAsString(res);
+        response.getWriter().write(result);
     }
 }
