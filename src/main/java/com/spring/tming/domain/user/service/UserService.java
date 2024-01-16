@@ -55,6 +55,7 @@ public class UserService {
         return UserServiceMapper.INSTANCE.toUserGetRes(getUserByUserId(userId));
     }
 
+    @Transactional
     public FollowRes followUser(FollowReq followReq) {
         User follower = getUserByUserId(followReq.getFollowerId());
         User following = getUserByUserId(followReq.getFollowingId());
