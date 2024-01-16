@@ -26,11 +26,14 @@ import com.spring.tming.global.validator.EmailCheckValidator;
 import com.spring.tming.global.validator.UserValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -41,6 +44,9 @@ public class UserService {
     private final S3Provider s3Provider;
 
     private final String FOLDER_USER = "user";
+
+    @Value("${cloud.aws.s3.bucket.url}")
+    private String bucketUrl;
 
     @Transactional
     public SignupRes signup(SignupReq signupReq) {
@@ -118,10 +124,15 @@ public class UserService {
         User prevUser = getUserByUserId(userUpdateReq.getUserId());
         checkDuplicateUsername(userUpdateReq.getUsername());
         if (isExistProfileImageUrl(prevUser.getProfileImageUrl())) {
-            s3Provider.deleteImage(prevUser.getProfileImageUrl());
+            try {
+                s3Provider.deleteImage(prevUser.getProfileImageUrl());
+            } catch (Exception e) {
+                // 버그로 인해 image url이 없는 경우
+                log.warn(e.getMessage());
+            }
         }
 
-        String profileImageUrl = saveFile(multipartFile);
+        String profileImageUrl = saveFile(multipartFile).replace(bucketUrl, "");
         userRepository.save(
                 User.builder()
                         .userId(prevUser.getUserId())
