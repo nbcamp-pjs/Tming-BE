@@ -71,6 +71,7 @@ include::{snippets}/sample-controller-test/샘플_단건_조회/auto-section.ado
 == user API
 
 include::{snippets}/user-controller-test/유저_프로필_조회/auto-section.adoc[]
+include::{snippets}/user-controller-test/유저_팔로우/auto-section.adoc[]
 
 == post API
 
