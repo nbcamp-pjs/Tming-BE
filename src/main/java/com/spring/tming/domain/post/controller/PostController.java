@@ -3,6 +3,7 @@ package com.spring.tming.domain.post.controller;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
+import com.spring.tming.domain.post.dto.request.PostReadReq;
 import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
@@ -23,6 +24,7 @@ import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -82,10 +84,18 @@ public class PostController {
             @RequestParam(name = "type", defaultValue = "ALL") Type type,
             @RequestParam(name = "skill", required = false) Skill skill,
             @RequestParam(name = "job", required = false) Job job,
-            Pageable pageable,
+            @RequestParam(name = "offset", defaultValue = "0") String offset,
+            @RequestParam(name = "size", defaultValue = "10") String size,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return RestResponse.success(
-                postService.readPostList(type, skill, job, pageable, userDetails.getUsername()));
+        Pageable pageable;
+        PostReadReq dto =
+                PostReadReq.builder()
+                        .type(type)
+                        .skill(skill)
+                        .job(job)
+                        .pageRequest(PageRequest.of(Integer.parseInt(offset), Integer.parseInt(size)))
+                        .build();
+        return RestResponse.success(postService.readPostList(dto, userDetails.getUsername()));
     }
 
     @PostMapping("/like")

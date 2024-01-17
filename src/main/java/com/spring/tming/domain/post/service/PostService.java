@@ -3,6 +3,7 @@ package com.spring.tming.domain.post.service;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
+import com.spring.tming.domain.post.dto.request.PostReadReq;
 import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
@@ -20,10 +21,8 @@ import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
-import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.meta.Status;
-import com.spring.tming.global.meta.Type;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -151,12 +149,11 @@ public class PostService {
 
     // TODO: 페이징처리하기
     @Transactional(readOnly = true)
-    public PostReadResList readPostList(
-            Type type, Skill skill, Job job, Pageable pageable, String username) {
-        switch (type) {
+    public PostReadResList readPostList(PostReadReq dto, String username) {
+        switch (dto.getType()) {
             case ALL:
                 {
-                    Page<Post> posts = postRepository.getAllPost(pageable);
+                    Page<Post> posts = postRepository.getAllPost(dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
@@ -173,7 +170,7 @@ public class PostService {
                 }
             case WRITE:
                 {
-                    Page<Post> posts = postRepository.getAllPostByUser(username, pageable);
+                    Page<Post> posts = postRepository.getAllPostByUser(username, dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
@@ -185,14 +182,14 @@ public class PostService {
                 }
             case SKILL:
                 {
-                    Page<Post> posts = postRepository.getAllPostBySkill(skill, pageable);
+                    Page<Post> posts = postRepository.getAllPostBySkill(dto.getSkill(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
                 }
             case JOB:
                 {
-                    Page<Post> posts = postRepository.getAllPostByJob(job, pageable);
+                    Page<Post> posts = postRepository.getAllPostByJob(dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();

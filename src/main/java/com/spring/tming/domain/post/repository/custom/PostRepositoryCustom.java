@@ -4,15 +4,15 @@ import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 public interface PostRepositoryCustom {
 
-    Page<Post> getAllPost(Pageable pageable);
+    Page<Post> getAllPost(PageRequest pageRequest);
 
-    Page<Post> getAllPostByUser(String username, Pageable pageable);
+    Page<Post> getAllPostByUser(String username, PageRequest pageRequest);
 
-    Page<Post> getAllPostBySkill(Skill skill, Pageable pageable);
+    Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
 
-    Page<Post> getAllPostByJob(Job job, Pageable pageable);
+    Page<Post> getAllPostByJob(Job job, PageRequest pageRequest);
 }

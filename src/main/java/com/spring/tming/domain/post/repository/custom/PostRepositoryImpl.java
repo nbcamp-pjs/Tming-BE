@@ -15,7 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +26,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Post> getAllPost(Pageable pageable) {
+    public Page<Post> getAllPost(PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
         long totalCount =
@@ -42,19 +42,19 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .fetchCount();
-        return new PageImpl<>(result, pageable, totalCount);
+        return new PageImpl<>(result, pageRequest, totalCount);
     }
 
     @Override
-    public Page<Post> getAllPostByUser(String username, Pageable pageable) {
+    public Page<Post> getAllPostByUser(String username, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(QPost.post.user.username.eq(username))
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
         long totalCount =
@@ -64,11 +64,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .fetchJoin()
                         .where(QPost.post.user.username.eq(username))
                         .fetchCount();
-        return new PageImpl<>(result, pageable, totalCount);
+        return new PageImpl<>(result, pageRequest, totalCount);
     }
 
     @Override
-    public Page<Post> getAllPostBySkill(Skill skill, Pageable pageable) {
+    public Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
@@ -77,8 +77,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(skillEq(skill))
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
         long totalCount =
@@ -90,19 +90,19 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .fetchJoin()
                         .where(skillEq(skill))
                         .fetchCount();
-        return new PageImpl<>(result, pageable, totalCount);
+        return new PageImpl<>(result, pageRequest, totalCount);
     }
 
     @Override
-    public Page<Post> getAllPostByJob(Job job, Pageable pageable) {
+    public Page<Post> getAllPostByJob(Job job, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(jobEq(job))
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
         long totalCount =
@@ -112,7 +112,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .fetchJoin()
                         .where(jobEq(job))
                         .fetchCount();
-        return new PageImpl<>(result, pageable, totalCount);
+        return new PageImpl<>(result, pageRequest, totalCount);
     }
 
     private BooleanExpression skillEq(Skill skill) {
