@@ -8,8 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     Post findByPostId(Long postId);
-
-    List<Post> findAllByOrderByCreateTimestampDesc();
-
-    List<Post> findAllByUserUsernameOrderByCreateTimestampDesc(String username);
 }
