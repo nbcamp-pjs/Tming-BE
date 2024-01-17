@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.io.Serializable;
 
+// 복합키를 위한 클래스
 @Embeddable
 public class ApplicantId implements Serializable {
 
