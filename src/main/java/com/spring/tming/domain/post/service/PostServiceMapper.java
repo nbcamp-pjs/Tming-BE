@@ -6,6 +6,7 @@ import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
+import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -29,6 +30,11 @@ public interface PostServiceMapper {
         LocalDateTime localDateTime =
                 deadline.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    @Mapping(source = "status", target = "status")
+    default String toStringStatus(Status status) {
+        return status.getDescription();
     }
 
     @Mapping(source = "postStacks", target = "skills")
@@ -57,12 +63,14 @@ public interface PostServiceMapper {
     PostJobLimitDto toPostjobLimitDto(JobLimit jobLimit);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
     @Mapping(source = "jobLimits", target = "jobLimits")
     PostReadRes toPostReadRes(Post post);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "jobLimits", target = "jobLimits")
     List<PostReadRes> toPostReadResList(List<Post> posts);

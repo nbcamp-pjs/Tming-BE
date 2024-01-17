@@ -1,7 +1,6 @@
 package com.spring.tming.domain.post.dto.request;
 
 import com.spring.tming.domain.post.dto.PostJobLimitDto;
-import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.global.meta.Skill;
 import java.sql.Timestamp;
 import java.util.List;

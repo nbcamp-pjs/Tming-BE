@@ -1,8 +1,6 @@
 package com.spring.tming.domain.post.dto.response;
 
 import com.spring.tming.domain.post.dto.PostJobLimitDto;
-import com.spring.tming.global.meta.Skill;
-import com.spring.tming.global.meta.Status;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,7 +17,7 @@ public class PostReadRes {
     private Long visit;
     private Long like;
     private String imageUrl;
-    private Status status;
+    private String status;
     private String username;
     private List<PostJobLimitDto> jobLimits;
     private List<String> skills;
@@ -34,7 +32,7 @@ public class PostReadRes {
             Long visit,
             Long like,
             String imageUrl,
-            Status status,
+            String status,
             String username,
             List<PostJobLimitDto> jobLimits,
             List<String> skills
