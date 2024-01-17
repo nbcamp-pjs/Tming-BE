@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.mapstruct.control.MappingControl;
 
 @Entity
 @Getter
@@ -32,7 +31,7 @@ public class PostApply {
     private Job job;
 
     @Builder
-    private PostApply(Post post, User user, Job job){
+    private PostApply(Post post, User user, Job job) {
         this.post = post;
         this.user = user;
         this.job = job;
