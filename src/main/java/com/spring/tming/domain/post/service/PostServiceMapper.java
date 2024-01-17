@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -38,7 +39,7 @@ public interface PostServiceMapper {
     }
 
     @Mapping(source = "postStacks", target = "skills")
-    default List<String> toSkillList(List<PostStack> postStacks) {
+    default List<String> toSkillList(Set<PostStack> postStacks) {
         if (CollectionUtils.isEmpty(postStacks)) {
             return null;
         }
@@ -54,13 +55,13 @@ public interface PostServiceMapper {
         }
         List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
         jobLimits.forEach(
-                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitDto(jobLimit)));
+                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostJobLimitRes(jobLimit)));
         return postJobLimitRes;
     }
 
     PostCreateRes toPostCreateRes(Post post);
 
-    PostJobLimitRes toPostjobLimitDto(JobLimit jobLimit);
+    PostJobLimitRes toPostJobLimitRes(JobLimit jobLimit);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")

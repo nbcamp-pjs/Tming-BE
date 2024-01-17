@@ -156,9 +156,9 @@ public class PostService {
         switch (type) {
             case ALL:
                 {
-                    List<Post> posts = postRepository.findAllByOrderByCreateTimestampDesc();
+                    Page<Post> posts = postRepository.getAllPost(pageable);
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
                 }
             case LIKE:
@@ -173,11 +173,9 @@ public class PostService {
                 }
             case WRITE:
                 {
-                    List<Post> posts =
-                            postRepository.findAllByUserUsernameOrderByCreateTimestampDesc(username);
-                    Page<Post> postsTest = postRepository.getAllPostByUser(pageable, username);
+                    Page<Post> posts = postRepository.getAllPostByUser(username, pageable);
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
                 }
             case MEMBER:
@@ -187,20 +185,16 @@ public class PostService {
                 }
             case SKILL:
                 {
-                    List<PostStack> postStacks = postStackRepository.findAllBySkill(skill);
-                    List<Post> posts = new ArrayList<>();
-                    postStacks.forEach(postStack -> posts.add(postStack.getPost()));
+                    Page<Post> posts = postRepository.getAllPostBySkill(skill, pageable);
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
                 }
             case JOB:
                 {
-                    List<JobLimit> jobLimits = jobLimitRepository.findAllByJob(job);
-                    List<Post> posts = new ArrayList<>();
-                    jobLimits.forEach(jobLimit -> posts.add(jobLimit.getPost()));
+                    Page<Post> posts = postRepository.getAllPostByJob(job, pageable);
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
                 }
             default:
