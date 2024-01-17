@@ -1,5 +1,6 @@
 package com.spring.tming.domain.user.service;
 
+import static com.spring.tming.global.jwt.JwtUtil.REFRESH_TOKEN_HEADER;
 import static com.spring.tming.global.meta.ResultCode.SYSTEM_ERROR;
 
 import com.spring.tming.domain.user.dto.request.CheckEmailReq;
@@ -8,26 +9,18 @@ import com.spring.tming.domain.user.dto.request.FollowReq;
 import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.request.UserUpdateReq;
-import com.spring.tming.domain.user.dto.response.CheckEmailRes;
-import com.spring.tming.domain.user.dto.response.CheckUsernameRes;
-import com.spring.tming.domain.user.dto.response.FollowRes;
-import com.spring.tming.domain.user.dto.response.FollowerGetRes;
-import com.spring.tming.domain.user.dto.response.FollowerGetResList;
-import com.spring.tming.domain.user.dto.response.FollowingGetRes;
-import com.spring.tming.domain.user.dto.response.FollowingGetResList;
-import com.spring.tming.domain.user.dto.response.SignupRes;
-import com.spring.tming.domain.user.dto.response.UnfollowRes;
-import com.spring.tming.domain.user.dto.response.UserGetRes;
-import com.spring.tming.domain.user.dto.response.UserUpdateRes;
+import com.spring.tming.domain.user.dto.response.*;
 import com.spring.tming.domain.user.entity.Follow;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.FollowRepository;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.entity.Role;
 import com.spring.tming.global.exception.GlobalException;
+import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import com.spring.tming.global.validator.UserValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +39,7 @@ public class UserService {
     private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Provider s3Provider;
+    private final RedisUtil redisUtil;
 
     private final String FOLDER_USER = "user";
 
@@ -182,5 +176,11 @@ public class UserService {
         User user = userRepository.findByUserId(userId);
         UserValidator.validate(user);
         return user;
+    }
+
+    public LogoutRes logout(HttpServletRequest request) {
+        String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER).split(" ")[1].trim();
+        redisUtil.delete(refreshToken);
+        return new LogoutRes();
     }
 }

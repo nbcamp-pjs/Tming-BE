@@ -1,23 +1,11 @@
 package com.spring.tming.domain.user.controller;
 
-import com.spring.tming.domain.user.dto.request.CheckEmailReq;
-import com.spring.tming.domain.user.dto.request.CheckUsernameReq;
-import com.spring.tming.domain.user.dto.request.FollowReq;
-import com.spring.tming.domain.user.dto.request.SignupReq;
-import com.spring.tming.domain.user.dto.request.UnfollowReq;
-import com.spring.tming.domain.user.dto.request.UserUpdateReq;
-import com.spring.tming.domain.user.dto.response.CheckEmailRes;
-import com.spring.tming.domain.user.dto.response.CheckUsernameRes;
-import com.spring.tming.domain.user.dto.response.FollowRes;
-import com.spring.tming.domain.user.dto.response.FollowerGetResList;
-import com.spring.tming.domain.user.dto.response.FollowingGetResList;
-import com.spring.tming.domain.user.dto.response.SignupRes;
-import com.spring.tming.domain.user.dto.response.UnfollowRes;
-import com.spring.tming.domain.user.dto.response.UserGetRes;
-import com.spring.tming.domain.user.dto.response.UserUpdateRes;
+import com.spring.tming.domain.user.dto.request.*;
+import com.spring.tming.domain.user.dto.response.*;
 import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,6 +40,11 @@ public class UserController {
     @PostMapping("/check-email")
     public RestResponse<CheckEmailRes> checkUsername(@RequestBody CheckEmailReq checkEmailReq) {
         return RestResponse.success(userService.checkEmail(checkEmailReq));
+    }
+
+    @GetMapping("/logout")
+    public RestResponse<LogoutRes> logout(HttpServletRequest request) {
+        return RestResponse.success(userService.logout(request));
     }
 
     @GetMapping("/{userId}")
