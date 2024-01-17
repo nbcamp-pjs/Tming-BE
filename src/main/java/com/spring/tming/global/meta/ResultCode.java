@@ -36,7 +36,8 @@ public enum ResultCode {
     POST_INVALID_AUTHORIZATION(4005, "해당 모집글에 권한이 없습니다."),
     POST_INVALID_FILTER(4006, "지원하지 않는 전체조회 필터입니다."),
 
-    NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다.");
+    NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다."),
+    NOT_FOUND_CHATROOM(6000, "채팅방이 존재하지 않습니다.");
 
     private Integer code;
     private String message;
