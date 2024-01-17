@@ -33,7 +33,7 @@ public class ChatService {
                         .chatRoom(chatRoom)
                         .sender(user)
                         .content(chatReq.getContent())
-                        .sendTime(LocalDateTime.now())
+                        .createTime(LocalDateTime.now())
                         .build());
 
         return new ChatRes();

@@ -3,15 +3,13 @@ package com.spring.tming.domain.chat.entity;
 import com.spring.tming.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "tb_chatRoom")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +24,8 @@ public class ChatRoom implements Serializable {
     private User receiver;
 
     @Builder
-    private ChatRoom(User sender, User receiver) {
+    private ChatRoom(Long roomId,User sender, User receiver) {
+        this.roomId=roomId;
         this.sender = sender;
         this.receiver = receiver;
     }

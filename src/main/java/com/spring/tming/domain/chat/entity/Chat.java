@@ -1,5 +1,6 @@
 package com.spring.tming.domain.chat.entity;
 
+import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -10,8 +11,7 @@ import lombok.*;
 @Getter
 @Table(name = "tb_chat")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class Chat implements Serializable {
+public class Chat extends BaseEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
@@ -26,13 +26,14 @@ public class Chat implements Serializable {
 
     @Column private String content;
 
-    @Column private LocalDateTime sendTime;
+    @Column private LocalDateTime createTime;
 
     @Builder
-    private Chat(ChatRoom chatRoom, User sender, String content, LocalDateTime sendTime) {
+    private Chat(Long chatId,ChatRoom chatRoom, User sender, String content, LocalDateTime createTime) {
+        this.chatId=chatId;
         this.chatRoomId = chatRoom;
         this.sender = sender;
         this.content = content;
-        this.sendTime = sendTime;
+        this.createTime = createTime;
     }
 }

@@ -1,4 +1,4 @@
-package com.spring.tming.domain.chat.entity;
+package com.spring.tming.domain.chat.dto.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PublishMessage implements Serializable {
+public class PublishMessageRes implements Serializable {
 
     @NotNull private Long roomId;
     @NotNull private Long senderId;
