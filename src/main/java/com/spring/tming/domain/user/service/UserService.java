@@ -180,8 +180,7 @@ public class UserService {
 
     public LogoutRes logout(HttpServletRequest request) {
         String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER).split(" ")[1].trim();
-        Long userId = (Long) redisUtil.get(refreshToken);
         redisUtil.delete(refreshToken);
-        return LogoutRes.builder().userId(userId).build();
+        return new LogoutRes();
     }
 }
