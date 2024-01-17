@@ -1,7 +1,7 @@
 package com.spring.tming.domain.post.service;
 
-import com.spring.tming.domain.post.dto.PostJobLimitDto;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostJobLimitRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
@@ -48,11 +48,11 @@ public interface PostServiceMapper {
     }
 
     @Mapping(source = "jobLimits", target = "jobLimits")
-    default List<PostJobLimitDto> toPostJobLimitRes(List<JobLimit> jobLimits) {
+    default List<PostJobLimitRes> toPostJobLimitRes(List<JobLimit> jobLimits) {
         if (CollectionUtils.isEmpty(jobLimits)) {
             return null;
         }
-        List<PostJobLimitDto> postJobLimitRes = new ArrayList<>();
+        List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
         jobLimits.forEach(
                 jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitDto(jobLimit)));
         return postJobLimitRes;
@@ -60,7 +60,7 @@ public interface PostServiceMapper {
 
     PostCreateRes toPostCreateRes(Post post);
 
-    PostJobLimitDto toPostjobLimitDto(JobLimit jobLimit);
+    PostJobLimitRes toPostjobLimitDto(JobLimit jobLimit);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")

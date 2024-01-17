@@ -1,8 +1,8 @@
 package com.spring.tming.domain.post.service;
 
-import com.spring.tming.domain.post.dto.PostJobLimitDto;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
+import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
 import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
@@ -104,7 +104,7 @@ public class PostService {
     }
 
     private void savePostStackAndJobLimit(
-            List<Skill> skills, List<PostJobLimitDto> jobLimitList, Post post) {
+            List<Skill> skills, List<PostJobLimitReq> jobLimitList, Post post) {
         List<PostStack> postStacks = new ArrayList<>();
         skills.forEach(
                 skill -> {

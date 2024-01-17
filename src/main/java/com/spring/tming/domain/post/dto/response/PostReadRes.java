@@ -1,6 +1,5 @@
 package com.spring.tming.domain.post.dto.response;
 
-import com.spring.tming.domain.post.dto.PostJobLimitDto;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,7 +18,7 @@ public class PostReadRes {
     private String imageUrl;
     private String status;
     private String username;
-    private List<PostJobLimitDto> jobLimits;
+    private List<PostJobLimitRes> jobLimits;
     private List<String> skills;
     //	private List<Member> members;
 
@@ -34,7 +33,7 @@ public class PostReadRes {
             String imageUrl,
             String status,
             String username,
-            List<PostJobLimitDto> jobLimits,
+            List<PostJobLimitRes> jobLimits,
             List<String> skills
             //            List<Member> members;
             ) {
