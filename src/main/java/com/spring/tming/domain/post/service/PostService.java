@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -149,7 +151,8 @@ public class PostService {
 
     // TODO: 페이징처리하기
     @Transactional(readOnly = true)
-    public PostReadResList readPostList(Type type, Skill skill, Job job, User user) {
+    public PostReadResList readPostList(
+            Type type, Skill skill, Job job, Pageable pageable, String username) {
         switch (type) {
             case ALL:
                 {
@@ -171,7 +174,8 @@ public class PostService {
             case WRITE:
                 {
                     List<Post> posts =
-                            postRepository.findAllByUserUserIdOrderByCreateTimestampDesc(user.getUserId());
+                            postRepository.findAllByUserUsernameOrderByCreateTimestampDesc(username);
+                    Page<Post> postsTest = postRepository.getAllPostByUser(pageable, username);
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts))
                             .build();

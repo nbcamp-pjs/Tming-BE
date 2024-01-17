@@ -23,6 +23,7 @@ import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,8 +82,10 @@ public class PostController {
             @RequestParam(name = "type", defaultValue = "ALL") Type type,
             @RequestParam(name = "skill", required = false) Skill skill,
             @RequestParam(name = "job", required = false) Job job,
+            Pageable pageable,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return RestResponse.success(postService.readPostList(type, skill, job, userDetails.getUser()));
+        return RestResponse.success(
+                postService.readPostList(type, skill, job, pageable, userDetails.getUsername()));
     }
 
     @PostMapping("/like")
