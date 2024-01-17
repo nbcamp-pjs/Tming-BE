@@ -1,4 +1,4 @@
-package com.spring.tming.domain.post.entity;
+package com.spring.tming.global.meta;
 
 public enum Skill {
     JAVA("Java"),

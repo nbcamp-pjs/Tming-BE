@@ -1,14 +1,19 @@
 package com.spring.tming.domain.post.entity;
 
 import com.spring.tming.domain.model.BaseEntity;
+import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.global.meta.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
@@ -41,9 +46,9 @@ public class Post extends BaseEntity {
 
     @Column private String imageUrl;
 
-    //	@ManyToOne(fetch = FetchType.LAZY)
-    //	@JoinColumn(name = "userId")
-    //	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
 
     @OneToMany(
             mappedBy = "post",
@@ -59,7 +64,7 @@ public class Post extends BaseEntity {
             orphanRemoval = true)
     private final List<JobLimit> jobLimits = new ArrayList<>();
 
-    @Builder
+    @Builder(toBuilder = true)
     private Post(
             Long postId,
             String title,
@@ -67,7 +72,8 @@ public class Post extends BaseEntity {
             Timestamp deadline,
             Status status,
             Long visit,
-            String imageUrl) {
+            String imageUrl,
+            User user) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -75,5 +81,6 @@ public class Post extends BaseEntity {
         this.status = status;
         this.visit = visit;
         this.imageUrl = imageUrl;
+        this.user = user;
     }
 }
