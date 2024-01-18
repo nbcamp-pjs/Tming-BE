@@ -15,7 +15,7 @@ public class PublishMessageRes implements Serializable {
     private Timestamp createTimestamp;
 
     @Builder
-    PublishMessageRes(Long roomId, Long senderId, String content, Timestamp createTimestamp) {
+    private PublishMessageRes(Long roomId, Long senderId, String content, Timestamp createTimestamp) {
         this.roomId = roomId;
         this.senderId = senderId;
         this.content = content;

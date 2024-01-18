@@ -30,7 +30,7 @@ public class ChatController {
                         .createTimestamp(Timestamp.valueOf(LocalDateTime.now()))
                         .build();
 
-        template.convertAndSend("sub/v1/rooms" + publishMessage.getRoomId(), publishMessage);
+        template.convertAndSend("/sub/v1/rooms" + publishMessage.getRoomId(), publishMessage);
 
         return RestResponse.success(chatService.message(roomId, chatReq));
     }

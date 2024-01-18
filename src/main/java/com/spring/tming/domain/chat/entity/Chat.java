@@ -4,7 +4,6 @@ import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,15 +28,11 @@ public class Chat extends BaseEntity implements Serializable {
 
     @Column private String content;
 
-    @Column private Timestamp createTimestamp;
-
     @Builder
-    private Chat(
-            Long chatId, ChatRoom chatRoom, User sender, String content, Timestamp createTimestamp) {
+    private Chat(Long chatId, ChatRoom chatRoom, User sender, String content) {
         this.chatId = chatId;
         this.chatRoomId = chatRoom;
         this.sender = sender;
         this.content = content;
-        this.createTimestamp = createTimestamp;
     }
 }

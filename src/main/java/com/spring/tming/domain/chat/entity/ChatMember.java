@@ -20,12 +20,12 @@ public class ChatMember implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
-    private ChatRoom charRoomID;
+    private ChatRoom chatRoomId;
 
     @Builder
-    private ChatMember(Long id, User userId, ChatRoom charRoomID) {
+    private ChatMember(Long id, User userId, ChatRoom chatRoomId) {
         this.id = id;
         this.userId = userId;
-        this.charRoomID = charRoomID;
+        this.chatRoomId = chatRoomId;
     }
 }
