@@ -35,6 +35,8 @@ public enum ResultCode {
     NOT_YET_LIKED_POST(4004, "아직 좋아요가 눌리지 않은 모집글입니다."),
     POST_INVALID_AUTHORIZATION(4005, "해당 모집글에 권한이 없습니다."),
     POST_INVALID_FILTER(4006, "지원하지 않는 전체조회 필터입니다."),
+    POST_INVALID_TITLE(4007, "title은 30자 안으로 작성되어야 합니다."),
+    POST_INVALID_CONTENT(4008, "content는 1500자 안으로 작성되어야 합니다."),
 
     NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다."),
     NOT_FOUND_CHATROOM(6000, "채팅방이 존재하지 않습니다.");
