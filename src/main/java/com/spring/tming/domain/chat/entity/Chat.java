@@ -19,20 +19,20 @@ public class Chat extends BaseEntity implements Serializable {
     private Long chatId;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "roomId", nullable = false)
     private ChatRoom chatRoomId;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    @JoinColumn(name = "userId", nullable = false)
+    private User userId;
 
     @Column private String content;
 
     @Builder
-    private Chat(Long chatId, ChatRoom chatRoom, User sender, String content) {
+    private Chat(Long chatId, ChatRoom chatRoom, User userId, String content) {
         this.chatId = chatId;
         this.chatRoomId = chatRoom;
-        this.sender = sender;
+        this.userId = userId;
         this.content = content;
     }
 }

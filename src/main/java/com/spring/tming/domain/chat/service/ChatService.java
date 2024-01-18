@@ -24,11 +24,11 @@ public class ChatService {
     public ChatRes message(Long roomId, ChatReq chatReq) {
         User user = userRepository.findByUserId(chatReq.getSenderId());
         UserValidator.validate(user);
-        ChatRoom chatRoom = roomRepository.findByRoomId(roomId);
+        ChatRoom chatRoom = roomRepository.findByChatRoomId(roomId);
         ChatRoomValidator.validate(chatRoom);
 
         chatRepository.save(
-                Chat.builder().chatRoom(chatRoom).sender(user).content(chatReq.getContent()).build());
+                Chat.builder().chatRoom(chatRoom).userId(user).content(chatReq.getContent()).build());
 
         return new ChatRes();
     }

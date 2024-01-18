@@ -8,23 +8,21 @@ import lombok.*;
 @Entity
 @Getter
 @Table(name = "tb_chatMember")
+@IdClass(ChatMemberId.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMember implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
     private User userId;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id")
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "roomId")
     private ChatRoom chatRoomId;
 
     @Builder
-    private ChatMember(Long id, User userId, ChatRoom chatRoomId) {
-        this.id = id;
+    private ChatMember(User userId, ChatRoom chatRoomId) {
         this.userId = userId;
         this.chatRoomId = chatRoomId;
     }
