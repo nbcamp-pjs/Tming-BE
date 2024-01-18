@@ -5,6 +5,7 @@ import com.spring.tming.domain.post.dto.response.PostJobLimitRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
+import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.domain.post.entity.PostStack;
 import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
@@ -38,6 +39,9 @@ public interface PostServiceMapper {
         return status.getDescription();
     }
 
+    @Mapping(source = "postLikes", target = "like")
+    default Long toLongLike(List<PostLike> postLikes) { return (long) postLikes.size(); }
+
     @Mapping(source = "postStacks", target = "skills")
     default List<String> toSkillList(Set<PostStack> postStacks) {
         if (CollectionUtils.isEmpty(postStacks)) {
@@ -65,6 +69,7 @@ public interface PostServiceMapper {
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
     @Mapping(source = "jobLimits", target = "jobLimits")
@@ -72,6 +77,7 @@ public interface PostServiceMapper {
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "jobLimits", target = "jobLimits")
     List<PostReadRes> toPostReadResList(List<Post> posts);
