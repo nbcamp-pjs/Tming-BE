@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomRes {
+public class RoomSaveRes {
 
     private Long roomId;
 
     @Builder
-    private RoomRes(Long roomId) {
+    private RoomSaveRes(Long roomId) {
         this.roomId = roomId;
     }
 }
