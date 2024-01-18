@@ -59,11 +59,11 @@ dependencies {
 	testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.11'
 
 	// 이메일 인증을 위해 JavaMailApi를 직접 사용할 수 있도록 의존성 추가
-	implementation 'javax.mail:mail:1.4.7'
-	// Spring Context Support
-	implementation 'org.springframework:spring-context-support:5.3.9'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.623'
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	// Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

@@ -81,6 +81,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/v1/users/check-email")
                                 .permitAll()
+                                .requestMatchers("/v1/sample/**")
+                                .permitAll()
                                 .requestMatchers("/docs/**")
                                 .permitAll()
                                 .anyRequest()
