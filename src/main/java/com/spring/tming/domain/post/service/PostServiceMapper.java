@@ -6,13 +6,14 @@ import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostStack;
-import com.spring.tming.global.meta.Skill;
+import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -32,13 +33,18 @@ public interface PostServiceMapper {
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
+    @Mapping(source = "status", target = "status")
+    default String toStringStatus(Status status) {
+        return status.getDescription();
+    }
+
     @Mapping(source = "postStacks", target = "skills")
-    default List<Skill> toSkillList(List<PostStack> postStacks) {
+    default List<String> toSkillList(Set<PostStack> postStacks) {
         if (CollectionUtils.isEmpty(postStacks)) {
             return null;
         }
-        List<Skill> skills = new ArrayList<>();
-        postStacks.forEach(postStack -> skills.add(postStack.getSkill()));
+        List<String> skills = new ArrayList<>();
+        postStacks.forEach(postStack -> skills.add(postStack.getSkill().getDescription()));
         return skills;
     }
 
@@ -49,21 +55,23 @@ public interface PostServiceMapper {
         }
         List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
         jobLimits.forEach(
-                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostjobLimitRes(jobLimit)));
+                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostJobLimitRes(jobLimit)));
         return postJobLimitRes;
     }
 
     PostCreateRes toPostCreateRes(Post post);
 
-    PostJobLimitRes toPostjobLimitRes(JobLimit jobLimit);
+    PostJobLimitRes toPostJobLimitRes(JobLimit jobLimit);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
     @Mapping(source = "jobLimits", target = "jobLimits")
     PostReadRes toPostReadRes(Post post);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "jobLimits", target = "jobLimits")
     List<PostReadRes> toPostReadResList(List<Post> posts);

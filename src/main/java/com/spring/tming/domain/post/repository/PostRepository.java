@@ -1,14 +1,10 @@
 package com.spring.tming.domain.post.repository;
 
 import com.spring.tming.domain.post.entity.Post;
-import java.util.List;
+import com.spring.tming.domain.post.repository.custom.PostRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     Post findByPostId(Long postId);
-
-    List<Post> findAllByOrderByCreateTimestampDesc();
-
-    List<Post> findAllByUserUserIdOrderByCreateTimestampDesc(Long userId);
 }

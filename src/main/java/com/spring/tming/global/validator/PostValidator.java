@@ -4,6 +4,8 @@ import static com.spring.tming.global.meta.ResultCode.ALREADY_LIKED_POST;
 import static com.spring.tming.global.meta.ResultCode.NOT_FOUND_POST;
 import static com.spring.tming.global.meta.ResultCode.NOT_YET_LIKED_POST;
 import static com.spring.tming.global.meta.ResultCode.POST_INVALID_AUTHORIZATION;
+import static com.spring.tming.global.meta.ResultCode.POST_INVALID_CONTENT;
+import static com.spring.tming.global.meta.ResultCode.POST_INVALID_TITLE;
 
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostLike;
@@ -47,5 +49,22 @@ public class PostValidator {
 
     private static boolean isUserIdEqual(Post post, User user) {
         return Objects.equals(post.getUser().getUserId(), user.getUserId());
+    }
+
+    public static void checkRequest(String title, String content) {
+        if (!isValidTitle(title)) {
+            throw new GlobalException(POST_INVALID_TITLE);
+        }
+        if (!isValidContent(content)) {
+            throw new GlobalException(POST_INVALID_CONTENT);
+        }
+    }
+
+    private static boolean isValidContent(String content) {
+        return content.length() <= 1500;
+    }
+
+    private static boolean isValidTitle(String title) {
+        return title.length() <= 30;
     }
 }
