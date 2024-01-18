@@ -29,11 +29,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -149,7 +151,7 @@ public class PostService {
 
     // TODO: 페이징처리하기
     @Transactional(readOnly = true)
-    public PostReadResList readPostList(PostReadReq dto, String username) {
+    public PostReadResList readPostList(PostReadReq dto, User user) {
         switch (dto.getType()) {
             case ALL:
                 {
@@ -160,8 +162,10 @@ public class PostService {
                 }
             case LIKE:
                 {
-                    // 보류
-                    return PostReadResList.builder().build();
+                    Page<Post> posts = postRepository.getAllPostByLike(user, dto.getPageRequest());
+                    return PostReadResList.builder()
+                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .build();
                 }
             case APPLY:
                 {
@@ -170,7 +174,8 @@ public class PostService {
                 }
             case WRITE:
                 {
-                    Page<Post> posts = postRepository.getAllPostByUser(username, dto.getPageRequest());
+                    Page<Post> posts =
+                            postRepository.getAllPostByUser(user.getUsername(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
                             .build();
@@ -182,6 +187,7 @@ public class PostService {
                 }
             case SKILL:
                 {
+                    log.info("----------a-sd-f-asdfasdfasdfasdfasdfasf-------asdfasdfasdf-----");
                     Page<Post> posts = postRepository.getAllPostBySkill(dto.getSkill(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))

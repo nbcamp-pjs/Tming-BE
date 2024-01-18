@@ -40,7 +40,9 @@ public interface PostServiceMapper {
     }
 
     @Mapping(source = "postLikes", target = "like")
-    default Long toLongLike(List<PostLike> postLikes) { return (long) postLikes.size(); }
+    default Long toLongLike(List<PostLike> postLikes) {
+        return (long) postLikes.size();
+    }
 
     @Mapping(source = "postStacks", target = "skills")
     default List<String> toSkillList(Set<PostStack> postStacks) {
@@ -75,10 +77,6 @@ public interface PostServiceMapper {
     @Mapping(source = "jobLimits", target = "jobLimits")
     PostReadRes toPostReadRes(Post post);
 
-    @Mapping(source = "deadline", target = "deadline")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "postLikes", target = "like")
-    @Mapping(source = "post.user.username", target = "username")
-    @Mapping(source = "jobLimits", target = "jobLimits")
+    @Mapping(target = "skills", ignore = true)
     List<PostReadRes> toPostReadResList(List<Post> posts);
 }

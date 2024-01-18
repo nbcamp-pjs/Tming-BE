@@ -70,21 +70,21 @@ public class Post extends BaseEntity {
 
     @OneToMany(
             mappedBy = "post",
-            targetEntity = JobLimit.class,
+            targetEntity = Comment.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private final List<Comment> comments = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "post",
-            targetEntity = JobLimit.class,
+            targetEntity = PostLike.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private final List<PostLike> postLikes = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "post",
-            targetEntity = JobLimit.class,
+            targetEntity = Applicant.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private final List<Applicant> applicants = new ArrayList<>();

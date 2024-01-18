@@ -7,7 +7,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.QJobLimit;
 import com.spring.tming.domain.post.entity.QPost;
+import com.spring.tming.domain.post.entity.QPostLike;
 import com.spring.tming.domain.post.entity.QPostStack;
+import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
@@ -30,8 +32,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .orderBy(QPost.post.createTimestamp.desc())
+                        .fetch();
+        long totalCount = jpaQueryFactory.selectFrom(QPost.post).fetchCount();
+        return new PageImpl<>(result, pageRequest, totalCount);
+    }
+
+    @Override
+    public Page<Post> getAllPostByLike(User user, PageRequest pageRequest) {
+        List<Post> result =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .innerJoin(QPost.post.postLikes, QPostLike.postLike)
                         .fetchJoin()
+                        .where(QPostLike.postLike.user.eq(user))
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
@@ -75,10 +91,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.postStacks, QPostStack.postStack)
-                        .fetchJoin()
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
-                        .fetchJoin()
                         .where(skillEq(skill))
+                        .fetchJoin()
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
@@ -87,7 +101,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.postStacks, QPostStack.postStack)
-                        .fetchJoin()
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(skillEq(skill))
@@ -101,7 +114,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
+                        .innerJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(jobEq(job))
                         .offset(pageRequest.getOffset())
