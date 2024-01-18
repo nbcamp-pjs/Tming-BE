@@ -20,12 +20,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getAllPost(PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
@@ -46,6 +46,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getAllPostByUser(String username, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
@@ -68,6 +69,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
@@ -94,6 +96,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getAllPostByJob(Job job, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory

@@ -84,7 +84,7 @@ public class PostController {
             @RequestParam(name = "type", defaultValue = "ALL") Type type,
             @RequestParam(name = "skill", required = false) Skill skill,
             @RequestParam(name = "job", required = false) Job job,
-            @RequestParam(name = "offset", defaultValue = "0") String offset,
+            @RequestParam(name = "offset", defaultValue = "1") String offset,
             @RequestParam(name = "size", defaultValue = "10") String size,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Pageable pageable;
@@ -93,7 +93,7 @@ public class PostController {
                         .type(type)
                         .skill(skill)
                         .job(job)
-                        .pageRequest(PageRequest.of(Integer.parseInt(offset), Integer.parseInt(size)))
+                        .pageRequest(PageRequest.of(Integer.parseInt(offset) - 1, Integer.parseInt(size)))
                         .build();
         return RestResponse.success(postService.readPostList(dto, userDetails.getUsername()));
     }
