@@ -57,7 +57,7 @@ public class EmailSendService {
         mailPass(to, TITLE, authNumber);
         // 레디스에 인증번호 저장
         try {
-            redisUtil.set(email, authNumber, 30);
+            redisUtil.set(to, authNumber, 30);
         } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(ResultCode.REDIS_CONNECTION_FAIL);
