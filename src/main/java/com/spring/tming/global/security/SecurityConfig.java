@@ -69,6 +69,10 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                                 .permitAll()
+                                .requestMatchers("/error")
+                                .permitAll()
+                                .requestMatchers("/v1/users/email/**")
+                                .permitAll()
                                 .requestMatchers("/v1/users/signup")
                                 .permitAll()
                                 .requestMatchers("/v1/users/login")
