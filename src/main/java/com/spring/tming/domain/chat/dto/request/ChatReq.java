@@ -14,9 +14,9 @@ public class ChatReq {
     private String content;
 
     @Builder
-    private ChatReq(Long roomId,Long senderId,String content){
-        this.roomId=roomId;
-        this.senderId=senderId;
-        this.content=content;
+    private ChatReq(Long roomId, Long senderId, String content) {
+        this.roomId = roomId;
+        this.senderId = senderId;
+        this.content = content;
     }
 }

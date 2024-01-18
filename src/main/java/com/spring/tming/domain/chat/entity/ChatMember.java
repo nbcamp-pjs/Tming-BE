@@ -2,9 +2,8 @@ package com.spring.tming.domain.chat.entity;
 
 import com.spring.tming.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.io.Serializable;
+import lombok.*;
 
 @Entity
 @Getter
@@ -24,9 +23,9 @@ public class ChatMember implements Serializable {
     private ChatRoom charRoomID;
 
     @Builder
-    private  ChatMember(Long id,User userId,ChatRoom charRoomID){
-        this.id=id;
-        this.userId=userId;
-        this.charRoomID=charRoomID;
+    private ChatMember(Long id, User userId, ChatRoom charRoomID) {
+        this.id = id;
+        this.userId = userId;
+        this.charRoomID = charRoomID;
     }
 }

@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @Table(name = "tb_chat")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Chat extends BaseEntity implements Serializable{
+public class Chat extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
@@ -29,8 +29,9 @@ public class Chat extends BaseEntity implements Serializable{
     @Column private LocalDateTime createTime;
 
     @Builder
-    private Chat(Long chatId,ChatRoom chatRoom, User sender, String content, LocalDateTime createTime) {
-        this.chatId=chatId;
+    private Chat(
+            Long chatId, ChatRoom chatRoom, User sender, String content, LocalDateTime createTime) {
+        this.chatId = chatId;
         this.chatRoomId = chatRoom;
         this.sender = sender;
         this.content = content;
