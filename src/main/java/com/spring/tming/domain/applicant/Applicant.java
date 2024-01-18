@@ -1,8 +1,9 @@
 package com.spring.tming.domain.applicant;
 
+import com.spring.tming.domain.post.entity.Post;
+import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,25 +13,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tb_applicant")
-@IdClass(Applicant.class)
-public class Applicant implements Serializable {
+@IdClass(ApplicantId.class)
+public class Applicant {
 
     @Id
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "postid")
+    private Post post;
 
     @Id
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "userid")
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Job job;
 
     @Builder
-    private Applicant(Long postId, Long userId, Job job) {
-        this.postId = postId;
-        this.userId = userId;
+    private Applicant(Post post, User user, Job job) {
+        this.post = post;
+        this.user = user;
         this.job = job;
     }
 }
