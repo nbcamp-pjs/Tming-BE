@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_applicant")
 public class Applicant {
 
-    @EmbeddedId private ApplicantId id;
+    @EmbeddedId private ApplicantId applicantId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Job job;
 
     @Builder
-    private Applicant(ApplicantId id, Job job) {
-        this.id = id;
+    private Applicant(ApplicantId applicantId, Job job) {
+        this.applicantId = applicantId;
         this.job = job;
     }
 }
