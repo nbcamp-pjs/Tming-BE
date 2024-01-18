@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ApplicantReq {
+public class ApplicantSaveReq {
     private Long postId;
     private Job job;
+    private Long userId;
 
     @Builder
-    private ApplicantReq(Long postId, Job job) {
+    private ApplicantSaveReq(Long postId, Job job, Long userId) {
         this.postId = postId;
         this.job = job;
+        this.userId = userId;
     }
 }
