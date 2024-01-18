@@ -1,6 +1,6 @@
-package com.spring.tming.domain.applicant;
+package com.spring.tming.domain.applicant.entity;
 
-import com.spring.tming.global.meta.Job;
+import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,15 +8,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ApplicantSaveReq {
+public class ApplicantId implements Serializable {
+
     private Long postId;
-    private Job job;
     private Long userId;
 
     @Builder
-    private ApplicantSaveReq(Long postId, Job job, Long userId) {
+    private ApplicantId(Long postId, Long userId) {
         this.postId = postId;
-        this.job = job;
         this.userId = userId;
     }
 }
