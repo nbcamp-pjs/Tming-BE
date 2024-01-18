@@ -14,7 +14,7 @@ public class ApplicantId implements Serializable {
     private Long userId;
 
     @Builder
-    public ApplicantId(Long postId, Long userId) {
+    private ApplicantId(Long postId, Long userId) {
         this.postId = postId;
         this.userId = userId;
     }
