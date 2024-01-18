@@ -23,7 +23,7 @@ public class RoomService {
         User receiver = userRepository.findByUserId(roomReq.getUserId());
         UserValidator.validate(receiver);
 
-        User sender=userRepository.findByUserId(roomReq.getSenderId());
+        User sender = userRepository.findByUserId(roomReq.getSenderId());
 
         // 채팅방 생성
         ChatRoom createChatRoom =
@@ -31,8 +31,7 @@ public class RoomService {
         // 받는 사람 저장
         memberRepository.save(ChatMember.builder().chatRoomId(createChatRoom).userId(receiver).build());
         // 보내는 사람 저장
-        memberRepository.save(
-                ChatMember.builder().chatRoomId(createChatRoom).userId(sender).build());
+        memberRepository.save(ChatMember.builder().chatRoomId(createChatRoom).userId(sender).build());
 
         return ChatServiceMapper.INSTANCE.toRoomSaveRes(createChatRoom);
     }
