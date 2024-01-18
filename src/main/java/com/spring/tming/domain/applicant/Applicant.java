@@ -18,12 +18,12 @@ public class Applicant {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "postId", insertable = false, updatable = false)
+    @JoinColumn(name = "postId")
     private Post post;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    @JoinColumn(name = "userId")
     private User user;
 
     @Enumerated(EnumType.STRING)
