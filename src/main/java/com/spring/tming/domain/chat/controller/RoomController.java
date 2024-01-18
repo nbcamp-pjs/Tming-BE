@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/rooms")
 public class RoomController {
 
-    private final UserRepository userRepository;
-    private final ChatMemberRepository memberRepository;
-    private final ChatRoomRepository roomRepository;
-
     private final RoomService roomService;
 
     @PostMapping
