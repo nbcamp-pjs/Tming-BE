@@ -5,6 +5,7 @@ import com.spring.tming.domain.chat.dto.response.ChatRes;
 import com.spring.tming.domain.chat.dto.response.PublishMessageRes;
 import com.spring.tming.domain.chat.service.ChatService;
 import com.spring.tming.global.response.RestResponse;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -23,8 +24,11 @@ public class ChatController {
     public RestResponse<ChatRes> message(
             @DestinationVariable("room-id") Long roomId, ChatReq chatReq) {
         PublishMessageRes publishMessage =
-                new PublishMessageRes(
-                        chatReq.getRoomId(), chatReq.getSenderId(), chatReq.getContent(), LocalDateTime.now());
+                PublishMessageRes.builder()
+                        .roomId(chatReq.getRoomId())
+                        .senderId(chatReq.getSenderId())
+                        .createTimestamp(Timestamp.valueOf(LocalDateTime.now()))
+                        .build();
 
         template.convertAndSend("sub/v1/rooms" + publishMessage.getRoomId(), publishMessage);
 

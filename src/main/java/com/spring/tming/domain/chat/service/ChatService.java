@@ -10,6 +10,7 @@ import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.validator.ChatRoomValidator;
 import com.spring.tming.global.validator.UserValidator;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class ChatService {
                         .chatRoom(chatRoom)
                         .sender(user)
                         .content(chatReq.getContent())
-                        .createTime(LocalDateTime.now())
+                        .createTimestamp(Timestamp.valueOf(LocalDateTime.now()))
                         .build());
 
         return new ChatRes();
