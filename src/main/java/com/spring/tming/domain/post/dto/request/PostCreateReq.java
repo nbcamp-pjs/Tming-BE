@@ -1,6 +1,5 @@
 package com.spring.tming.domain.post.dto.request;
 
-import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.global.meta.Skill;
 import java.sql.Timestamp;
 import java.util.List;
@@ -15,7 +14,7 @@ public class PostCreateReq {
     private String title;
     private String content;
     private Timestamp deadline;
-    private List<JobLimit> jobLimits;
+    private List<PostJobLimitReq> jobLimits;
     private List<Skill> skills;
 
     @Builder
@@ -23,7 +22,7 @@ public class PostCreateReq {
             String title,
             String content,
             Timestamp deadline,
-            List<JobLimit> jobLimits,
+            List<PostJobLimitReq> jobLimits,
             List<Skill> skills) {
         this.title = title;
         this.content = content;

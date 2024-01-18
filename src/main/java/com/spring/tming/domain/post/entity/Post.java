@@ -18,7 +18,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,7 +57,7 @@ public class Post extends BaseEntity {
             targetEntity = PostStack.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private final List<PostStack> postStacks = new ArrayList<>();
+    private final Set<PostStack> postStacks = new HashSet<>();
 
     @OneToMany(
             mappedBy = "post",

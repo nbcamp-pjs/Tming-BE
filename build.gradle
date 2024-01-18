@@ -41,6 +41,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -56,11 +59,25 @@ dependencies {
 	testImplementation 'capital.scalable:spring-auto-restdocs-core:2.0.11'
 
 	// 이메일 인증을 위해 JavaMailApi를 직접 사용할 수 있도록 의존성 추가
-	implementation 'javax.mail:mail:1.4.7'
-	// Spring Context Support
-	implementation 'org.springframework:spring-context-support:5.3.9'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.623'
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// Querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+sourceSets {
+	main.java.srcDirs += querydslDir
+}
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
 spotless {
@@ -78,6 +95,7 @@ spotless {
 	}
 }
 
+tasks.named("spotlessJavaCheck").configure { dependsOn("spotlessApply") }
 // 의존성을 설정해줌 test 끝나고 spotlessjava 수행되도록
 tasks.named("spotlessJava").configure { dependsOn("compileTestJava") }
 
