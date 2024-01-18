@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApplicantId implements Serializable {
 
-    private Long postId;
-    private Long userId;
+    private Long post;
+    private Long user;
 
     @Builder
-    private ApplicantId(Long postId, Long userId) {
-        this.postId = postId;
-        this.userId = userId;
+    private ApplicantId(Long post, Long user) {
+        this.post = post;
+        this.user = user;
     }
 }
