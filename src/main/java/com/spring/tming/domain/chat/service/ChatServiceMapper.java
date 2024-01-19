@@ -1,5 +1,6 @@
 package com.spring.tming.domain.chat.service;
 
+import com.spring.tming.domain.chat.dto.response.RoomFindRes;
 import com.spring.tming.domain.chat.dto.response.RoomSaveRes;
 import com.spring.tming.domain.chat.entity.ChatRoom;
 import org.mapstruct.Mapper;
@@ -12,4 +13,8 @@ public interface ChatServiceMapper {
 
     @Mapping(source = "chatRoomId", target = "roomId")
     RoomSaveRes toRoomSaveRes(ChatRoom chatRoom);
+
+    @Mapping(source = "chatRoomId", target = "roomId")
+    @Mapping(source = "chatRoomName", target = "roomName")
+    RoomFindRes toRoomFindRes(ChatRoom chatRoom);
 }

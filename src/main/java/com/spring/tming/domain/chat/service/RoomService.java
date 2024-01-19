@@ -1,6 +1,8 @@
 package com.spring.tming.domain.chat.service;
 
+import com.spring.tming.domain.chat.dto.request.RoomFindReq;
 import com.spring.tming.domain.chat.dto.request.RoomSaveReq;
+import com.spring.tming.domain.chat.dto.response.RoomFindRes;
 import com.spring.tming.domain.chat.dto.response.RoomSaveRes;
 import com.spring.tming.domain.chat.entity.ChatMember;
 import com.spring.tming.domain.chat.entity.ChatRoom;
@@ -8,6 +10,7 @@ import com.spring.tming.domain.chat.repository.ChatMemberRepository;
 import com.spring.tming.domain.chat.repository.ChatRoomRepository;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
+import com.spring.tming.global.validator.ChatRoomValidator;
 import com.spring.tming.global.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +37,12 @@ public class RoomService {
         memberRepository.save(ChatMember.builder().chatRoomId(createChatRoom).userId(sender).build());
 
         return ChatServiceMapper.INSTANCE.toRoomSaveRes(createChatRoom);
+    }
+
+    public RoomFindRes findRoom(RoomFindReq roomFindReq) {
+        ChatRoom chatRoom = roomRepository.findByChatRoomId(roomFindReq.getRoomId());
+        ChatRoomValidator.validate(chatRoom);
+
+        return ChatServiceMapper.INSTANCE.toRoomFindRes(chatRoom);
     }
 }
