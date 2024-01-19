@@ -1,5 +1,7 @@
 package com.spring.tming.domain.post.entity;
 
+import com.spring.tming.domain.applicant.entity.Applicant;
+import com.spring.tming.domain.comment.entity.Comment;
 import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Status;
@@ -65,6 +67,27 @@ public class Post extends BaseEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private final List<JobLimit> jobLimits = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "post",
+            targetEntity = Comment.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "post",
+            targetEntity = PostLike.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<PostLike> postLikes = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "post",
+            targetEntity = Applicant.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private final List<Applicant> applicants = new ArrayList<>();
 
     @Builder(toBuilder = true)
     private Post(

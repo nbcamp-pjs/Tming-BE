@@ -95,7 +95,7 @@ public class PostController {
                         .job(job)
                         .pageRequest(PageRequest.of(Integer.parseInt(offset) - 1, Integer.parseInt(size)))
                         .build();
-        return RestResponse.success(postService.readPostList(dto, userDetails.getUsername()));
+        return RestResponse.success(postService.readPostList(dto, userDetails.getUser()));
     }
 
     @PostMapping("/like")
