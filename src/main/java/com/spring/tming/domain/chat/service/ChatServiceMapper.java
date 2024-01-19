@@ -14,7 +14,5 @@ public interface ChatServiceMapper {
     @Mapping(source = "chatRoomId", target = "roomId")
     RoomSaveRes toRoomSaveRes(ChatRoom chatRoom);
 
-    @Mapping(source = "chatRoomId", target = "roomId")
-    @Mapping(source = "chatRoomName", target = "roomName")
     RoomFindRes toRoomFindRes(ChatRoom chatRoom);
 }

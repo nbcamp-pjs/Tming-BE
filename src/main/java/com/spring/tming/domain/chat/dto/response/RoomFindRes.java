@@ -6,12 +6,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoomFindRes {
 
-    private Long roomId;
-    private String roomName;
+    private Long chatRoomId;
+    private String chatRoomName;
 
     @Builder
-    private RoomFindRes(Long roomId, String roomName) {
-        this.roomId = roomId;
-        this.roomName = roomName;
+    private RoomFindRes(Long chatRoomId, String chatRoomName) {
+        this.chatRoomId = chatRoomId;
+        this.chatRoomName = chatRoomName;
     }
 }
