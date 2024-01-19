@@ -17,6 +17,16 @@ public interface UserServiceMapper {
 
     UserServiceMapper INSTANCE = Mappers.getMapper(UserServiceMapper.class);
 
+    @Mapping(source = "user", target = "followed")
+    default boolean toIsFollowed(User user) {
+        if (CollectionUtils.isEmpty(user.getFollowers())) {
+            return false;
+        }
+
+        return user.getFollowers().stream()
+                .anyMatch(follow -> user.getUserId().equals(follow.getFollower().getUserId()));
+    }
+
     @Mapping(source = "followings", target = "following")
     @Mapping(source = "followers", target = "follower")
     default int toFollowCnt(List<Follow> follows) {
@@ -26,6 +36,7 @@ public interface UserServiceMapper {
         return follows.size();
     }
 
+    @Mapping(source = "user", target = "followed")
     @Mapping(source = "followers", target = "follower")
     @Mapping(source = "followings", target = "following")
     @Mapping(source = "job.description", target = "job")
