@@ -16,6 +16,7 @@ public class UserGetRes {
     private int following;
     private int follower;
     private String profileImageUrl;
+    private Boolean followed;
 
     @Builder
     private UserGetRes(
@@ -26,7 +27,8 @@ public class UserGetRes {
             String introduce,
             int following,
             int follower,
-            String profileImageUrl) {
+            String profileImageUrl,
+            boolean followed) {
         this.userId = userId;
         this.email = email;
         this.username = username;
@@ -35,5 +37,6 @@ public class UserGetRes {
         this.following = following;
         this.follower = follower;
         this.profileImageUrl = profileImageUrl;
+        this.followed = followed;
     }
 }
