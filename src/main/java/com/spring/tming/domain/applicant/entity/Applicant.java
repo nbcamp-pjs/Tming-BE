@@ -1,4 +1,4 @@
-package com.spring.tming.domain.applicant;
+package com.spring.tming.domain.applicant.entity;
 
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.user.entity.User;

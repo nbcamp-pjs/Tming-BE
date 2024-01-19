@@ -1,6 +1,6 @@
 package com.spring.tming.domain.post.entity;
 
-import com.spring.tming.domain.applicant.Applicant;
+import com.spring.tming.domain.applicant.entity.Applicant;
 import com.spring.tming.domain.comment.entity.Comment;
 import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.user.entity.User;

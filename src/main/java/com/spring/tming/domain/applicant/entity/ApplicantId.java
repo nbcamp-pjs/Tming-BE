@@ -1,4 +1,4 @@
-package com.spring.tming.domain.applicant;
+package com.spring.tming.domain.applicant.entity;
 
 import java.io.Serializable;
 import lombok.AccessLevel;
@@ -14,8 +14,8 @@ public class ApplicantId implements Serializable {
     private Long user;
 
     @Builder
-    private ApplicantId(Long postId, Long userId) {
-        this.post = postId;
-        this.user = userId;
+    private ApplicantId(Long post, Long user) {
+        this.post = post;
+        this.user = user;
     }
 }
