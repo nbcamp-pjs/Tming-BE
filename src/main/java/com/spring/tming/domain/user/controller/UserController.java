@@ -48,8 +48,10 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public RestResponse<UserGetRes> getUserProfile(@PathVariable Long userId) {
-        return RestResponse.success(userService.getUserProfile(userId));
+    public RestResponse<UserGetRes> getUserProfile(
+            @PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(
+                userService.getUserProfile(userId, userDetails.getUser().getUserId()));
     }
 
     @PostMapping("/follow")

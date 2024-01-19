@@ -84,8 +84,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserGetRes getUserProfile(Long userId) {
-        return UserServiceMapper.INSTANCE.toUserGetRes(getUserByUserId(userId));
+    public UserGetRes getUserProfile(Long userId, Long myUserId) {
+        User user = getUserByUserId(userId);
+        return UserServiceMapper.INSTANCE.toUserGetRes(user, myUserId);
     }
 
     @Transactional
