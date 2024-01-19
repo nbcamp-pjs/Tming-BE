@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.service;
 
+import com.spring.tming.domain.post.dto.response.PostAllReadRes;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostJobLimitRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
@@ -77,6 +78,12 @@ public interface PostServiceMapper {
     @Mapping(source = "jobLimits", target = "jobLimits")
     PostReadRes toPostReadRes(Post post);
 
-    @Mapping(target = "skills", ignore = true)
-    List<PostReadRes> toPostReadResList(List<Post> posts);
+    @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "postLikes", target = "like")
+    @Mapping(source = "post.user.username", target = "username")
+    @Mapping(source = "jobLimits", target = "jobLimits")
+    PostAllReadRes toPostAllReadResList(Post post);
+
+    List<PostAllReadRes> toPostAllReadResList(List<Post> posts);
 }

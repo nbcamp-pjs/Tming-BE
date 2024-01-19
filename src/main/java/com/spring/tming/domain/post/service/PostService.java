@@ -29,13 +29,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -157,14 +155,14 @@ public class PostService {
                 {
                     Page<Post> posts = postRepository.getAllPost(dto.getPageRequest());
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .build();
                 }
             case LIKE:
                 {
                     Page<Post> posts = postRepository.getAllPostByLike(user, dto.getPageRequest());
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .build();
                 }
             case APPLY:
@@ -177,7 +175,7 @@ public class PostService {
                     Page<Post> posts =
                             postRepository.getAllPostByUser(user.getUsername(), dto.getPageRequest());
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .build();
                 }
             case MEMBER:
@@ -187,17 +185,16 @@ public class PostService {
                 }
             case SKILL:
                 {
-                    log.info("----------a-sd-f-asdfasdfasdfasdfasdfasf-------asdfasdfasdf-----");
                     Page<Post> posts = postRepository.getAllPostBySkill(dto.getSkill(), dto.getPageRequest());
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .build();
                 }
             case JOB:
                 {
                     Page<Post> posts = postRepository.getAllPostByJob(dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
-                            .postReadRes(PostServiceMapper.INSTANCE.toPostReadResList(posts.getContent()))
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .build();
                 }
             default:
