@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final long EXPIRATION_TIME = 10;
+    private static final long EXPIRATION_TIME = 24 * 10 * 10;
 
     public void set(String key, Object o, long minutes) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
