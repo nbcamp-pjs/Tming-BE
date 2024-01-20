@@ -1,5 +1,6 @@
 package com.spring.tming.domain.applicant.entity;
 
+import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
@@ -14,8 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tb_applicant")
 @IdClass(ApplicantId.class)
-public class Applicant {
-
+public class Applicant extends BaseEntity {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "postId")
