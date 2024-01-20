@@ -19,30 +19,34 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
-import com.spring.tming.domain.post.util.VisitHandler;
 import com.spring.tming.domain.user.entity.User;
-import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.meta.Status;
+import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final PostStackRepository postStackRepository;
     private final JobLimitRepository jobLimitRepository;
-    private final UserRepository userRepository;
     private final S3Provider s3Provider;
+    private final RedisUtil redisUtil;
+
+    private final long EXPIRATION_TIME_SECONDS = 24 * 60 * 60;
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
@@ -136,14 +140,34 @@ public class PostService {
     }
 
     // TODO: Redis로 조회수 올리기
-    @Transactional(readOnly = true)
+    @Transactional
     public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
+        log.info(String.valueOf(post.getJobLimits() == null));
         PostValidator.checkIsNullPost(post);
-        Long visit = VisitHandler.increaseVisit(user, postId);
-        Post readPost = postRepository.save(post.toBuilder().visit(visit).build());
+        List<Object> abcd = redisUtil.getValuesList("USER" + user.getUserId().toString());
+        if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
+                && !redisUtil
+                        .getValuesList("USER" + user.getUserId().toString())
+                        .contains(postId.toString())) {
+            redisUtil.setValuesList("USER" + user.getUserId().toString(), postId.toString());
+            postRepository.save(
+                    Post.builder()
+                            .postId(post.getPostId())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .deadline(post.getDeadline())
+                            .status(post.getStatus())
+                            .visit(post.getVisit() + 1)
+                            .imageUrl(post.getImageUrl())
+                            .user(post.getUser())
+                            .build());
+            Post changedPost = postRepository.findByPostId(postId);
+            return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
+        }
+
         // TODO: members 추가하기
-        return PostServiceMapper.INSTANCE.toPostReadRes(readPost);
+        return PostServiceMapper.INSTANCE.toPostReadRes(post);
     }
 
     // TODO: APPLY, MEMBER
@@ -206,7 +230,15 @@ public class PostService {
         Post post = postRepository.findByPostId(postStatusUpdateReq.getPostId());
         PostValidator.checkIsNullPost(post);
         PostValidator.checkIsPostUser(post, user);
-
+        //        Post changedPost = Post.builder()
+        //                .postId(post.getPostId())
+        //                .title(post.getTitle())
+        //                .content(post.getContent())
+        //            .deadline(post.getDeadline())
+        //            .status(postStatusUpdateReq.getStatus())
+        //            .visit(post.getVisit())
+        //            .imageUrl(post.getImageUrl())
+        //                .build();
         postRepository.save(post.toBuilder().status(postStatusUpdateReq.getStatus()).build());
         return new PostStatusUpdateRes();
     }

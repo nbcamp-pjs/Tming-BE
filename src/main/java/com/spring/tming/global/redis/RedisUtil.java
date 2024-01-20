@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
+    private static final long EXPIRATION_TIME = 10;
 
     public void set(String key, Object o, long minutes) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
@@ -30,12 +31,16 @@ public class RedisUtil {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
-    public void setValuesList(String key, Integer data) {
+    public void setValuesList(String key, String data) {
+        Long len = redisTemplate.opsForList().size(key);
         redisTemplate.opsForList().rightPush(key, data);
+        if (len == 0) {
+            redisTemplate.expire(key, EXPIRATION_TIME, TimeUnit.SECONDS);
+        }
     }
 
     public List<Object> getValuesList(String key) {
         Long len = redisTemplate.opsForList().size(key);
-        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len-1);
+        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len - 1);
     }
 }
