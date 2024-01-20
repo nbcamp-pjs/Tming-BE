@@ -45,8 +45,7 @@ public class PostService {
     private final JobLimitRepository jobLimitRepository;
     private final S3Provider s3Provider;
     private final RedisUtil redisUtil;
-
-    private final long EXPIRATION_TIME_SECONDS = 24 * 60 * 60;
+    private static final String VISIT_KEY = "USER";
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
@@ -146,9 +145,9 @@ public class PostService {
         PostValidator.checkIsNullPost(post);
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
                 && !redisUtil
-                        .getValuesList("USER" + user.getUserId().toString())
+                        .getValuesList(VISIT_KEY + user.getUserId().toString())
                         .contains(postId.toString())) {
-            redisUtil.setValuesList("USER" + user.getUserId().toString(), postId.toString());
+            redisUtil.setValuesList(VISIT_KEY + user.getUserId().toString(), postId.toString());
             postRepository.save(
                     Post.builder()
                             .postId(post.getPostId())
