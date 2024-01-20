@@ -63,8 +63,11 @@ class UserControllerTest extends BaseMvcTest {
                         .follower(follower)
                         .profileImageUrl(profileImageUrl)
                         .build();
-        when(userService.getUserProfile(any())).thenReturn(userGetRes);
-        this.mockMvc.perform(get("/v1/users/" + userId)).andDo(print()).andExpect(status().isOk());
+        when(userService.getUserProfile(any(), any())).thenReturn(userGetRes);
+        this.mockMvc
+                .perform(get("/v1/users/" + userId).principal(this.mockPrincipal))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
