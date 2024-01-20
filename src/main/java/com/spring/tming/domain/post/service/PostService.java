@@ -139,13 +139,11 @@ public class PostService {
         return new PostDeleteRes();
     }
 
-    // TODO: Redis로 조회수 올리기
     @Transactional
     public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
         log.info(String.valueOf(post.getJobLimits() == null));
         PostValidator.checkIsNullPost(post);
-        List<Object> abcd = redisUtil.getValuesList("USER" + user.getUserId().toString());
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
                 && !redisUtil
                         .getValuesList("USER" + user.getUserId().toString())
@@ -230,15 +228,6 @@ public class PostService {
         Post post = postRepository.findByPostId(postStatusUpdateReq.getPostId());
         PostValidator.checkIsNullPost(post);
         PostValidator.checkIsPostUser(post, user);
-        //        Post changedPost = Post.builder()
-        //                .postId(post.getPostId())
-        //                .title(post.getTitle())
-        //                .content(post.getContent())
-        //            .deadline(post.getDeadline())
-        //            .status(postStatusUpdateReq.getStatus())
-        //            .visit(post.getVisit())
-        //            .imageUrl(post.getImageUrl())
-        //                .build();
         postRepository.save(post.toBuilder().status(postStatusUpdateReq.getStatus()).build());
         return new PostStatusUpdateRes();
     }
