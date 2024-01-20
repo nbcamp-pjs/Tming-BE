@@ -1,5 +1,7 @@
 package com.spring.tming.global.redis;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,5 +28,14 @@ public class RedisUtil {
 
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    public void setValuesList(String key, Integer data) {
+        redisTemplate.opsForList().rightPush(key, data);
+    }
+
+    public List<Object> getValuesList(String key) {
+        Long len = redisTemplate.opsForList().size(key);
+        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len-1);
     }
 }

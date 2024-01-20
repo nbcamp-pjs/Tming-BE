@@ -76,7 +76,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public RestResponse<PostReadRes> readPost(
             @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return RestResponse.success(postService.readPost(postId));
+        return RestResponse.success(postService.readPost(postId, userDetails.getUser()));
     }
 
     @GetMapping

@@ -19,6 +19,7 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
+import com.spring.tming.domain.post.util.VisitHandler;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.meta.Skill;
@@ -45,7 +46,6 @@ public class PostService {
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
-        // TODO: postCreateReq로 들어온 값들에 대한 검증(title, content, deadline => validation 진행)
         PostValidator.checkRequest(postCreateReq.getTitle(), postCreateReq.getContent());
         // image 처리 분리 => 저장소url 가져오기
         String imageUrl = s3Provider.saveFile(image, "postImage");
@@ -70,6 +70,7 @@ public class PostService {
     @Transactional
     public PostUpdateRes updatePost(PostUpdateReq postUpdateReq, MultipartFile image, User user)
             throws IOException {
+        PostValidator.checkRequest(postUpdateReq.getTitle(), postUpdateReq.getContent());
         // 해당하는 기존 모집글의 정보를 가져온다.
         Post post = postRepository.findByPostId(postUpdateReq.getPostId());
         // post가 없는 경우 validation 처리
@@ -134,20 +135,18 @@ public class PostService {
         return new PostDeleteRes();
     }
 
-    // TODO: Redis로 조회수 올리기\
+    // TODO: Redis로 조회수 올리기
     @Transactional(readOnly = true)
-    public PostReadRes readPost(Long postId) {
-        // 포스트 단건 조회
-        // 1. 포스트 정보
-        // 2. like에서 count해서 가져오기 (보류)
-        // 3. member에서 정보 가져오기 (보류)
+    public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
         PostValidator.checkIsNullPost(post);
-        // TODO: like, members 추가하기
-        return PostServiceMapper.INSTANCE.toPostReadRes(post);
+        Long visit = VisitHandler.increaseVisit(user, postId);
+        Post readPost = postRepository.save(post.toBuilder().visit(visit).build());
+        // TODO: members 추가하기
+        return PostServiceMapper.INSTANCE.toPostReadRes(readPost);
     }
 
-    // TODO: 페이징처리하기
+    // TODO: APPLY, MEMBER
     @Transactional(readOnly = true)
     public PostReadResList readPostList(PostReadReq dto, User user) {
         switch (dto.getType()) {
