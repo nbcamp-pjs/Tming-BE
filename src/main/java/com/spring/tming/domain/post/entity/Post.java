@@ -54,39 +54,19 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(
-            mappedBy = "post",
-            targetEntity = PostStack.class,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", targetEntity = PostStack.class, cascade = CascadeType.ALL)
     private final Set<PostStack> postStacks = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "post",
-            targetEntity = JobLimit.class,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", targetEntity = JobLimit.class, cascade = CascadeType.ALL)
     private final List<JobLimit> jobLimits = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "post",
-            targetEntity = Comment.class,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", targetEntity = Comment.class, cascade = CascadeType.ALL)
     private final List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "post",
-            targetEntity = PostLike.class,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", targetEntity = PostLike.class, cascade = CascadeType.ALL)
     private final List<PostLike> postLikes = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "post",
-            targetEntity = Applicant.class,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "post", targetEntity = Applicant.class, cascade = CascadeType.ALL)
     private final List<Applicant> applicants = new ArrayList<>();
 
     @Builder(toBuilder = true)

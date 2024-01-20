@@ -20,32 +20,35 @@ import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.post.util.ImageFileHandler;
 import com.spring.tming.domain.user.entity.User;
-import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.meta.Status;
+import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final PostStackRepository postStackRepository;
     private final JobLimitRepository jobLimitRepository;
-    private final UserRepository userRepository;
     private final S3Provider s3Provider;
+    private final RedisUtil redisUtil;
+    private static final String VISIT_KEY = "USER";
 
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
-        // TODO: postCreateReq로 들어온 값들에 대한 검증(title, content, deadline => validation 진행)
         PostValidator.checkRequest(postCreateReq.getTitle(), postCreateReq.getContent());
         // image 처리 분리 => 저장소url 가져오기
         String imageUrl = s3Provider.saveFile(image, "postImage");
@@ -70,6 +73,7 @@ public class PostService {
     @Transactional
     public PostUpdateRes updatePost(PostUpdateReq postUpdateReq, MultipartFile image, User user)
             throws IOException {
+        PostValidator.checkRequest(postUpdateReq.getTitle(), postUpdateReq.getContent());
         // 해당하는 기존 모집글의 정보를 가져온다.
         Post post = postRepository.findByPostId(postUpdateReq.getPostId());
         // post가 없는 경우 validation 처리
@@ -134,20 +138,36 @@ public class PostService {
         return new PostDeleteRes();
     }
 
-    // TODO: Redis로 조회수 올리기\
-    @Transactional(readOnly = true)
-    public PostReadRes readPost(Long postId) {
-        // 포스트 단건 조회
-        // 1. 포스트 정보
-        // 2. like에서 count해서 가져오기 (보류)
-        // 3. member에서 정보 가져오기 (보류)
+    @Transactional
+    public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
+        log.info(String.valueOf(post.getJobLimits() == null));
         PostValidator.checkIsNullPost(post);
-        // TODO: like, members 추가하기
+        if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
+                && !redisUtil
+                        .getValuesList(VISIT_KEY + user.getUserId().toString())
+                        .contains(postId.toString())) {
+            redisUtil.setValuesList(VISIT_KEY + user.getUserId().toString(), postId.toString());
+            postRepository.save(
+                    Post.builder()
+                            .postId(post.getPostId())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .deadline(post.getDeadline())
+                            .status(post.getStatus())
+                            .visit(post.getVisit() + 1)
+                            .imageUrl(post.getImageUrl())
+                            .user(post.getUser())
+                            .build());
+            Post changedPost = postRepository.findByPostId(postId);
+            return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
+        }
+
+        // TODO: members 추가하기
         return PostServiceMapper.INSTANCE.toPostReadRes(post);
     }
 
-    // TODO: 페이징처리하기
+    // TODO: APPLY, MEMBER
     @Transactional(readOnly = true)
     public PostReadResList readPostList(PostReadReq dto, User user) {
         switch (dto.getType()) {
@@ -207,7 +227,6 @@ public class PostService {
         Post post = postRepository.findByPostId(postStatusUpdateReq.getPostId());
         PostValidator.checkIsNullPost(post);
         PostValidator.checkIsPostUser(post, user);
-
         postRepository.save(post.toBuilder().status(postStatusUpdateReq.getStatus()).build());
         return new PostStatusUpdateRes();
     }
