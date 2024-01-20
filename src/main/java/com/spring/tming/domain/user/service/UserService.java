@@ -1,6 +1,5 @@
 package com.spring.tming.domain.user.service;
 
-import static com.spring.tming.global.jwt.JwtUtil.REFRESH_TOKEN_HEADER;
 import static com.spring.tming.global.meta.ResultCode.SYSTEM_ERROR;
 
 import com.spring.tming.domain.user.dto.request.CheckEmailReq;
@@ -20,7 +19,6 @@ import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.EmailCheckValidator;
 import com.spring.tming.global.validator.UserValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -177,11 +175,5 @@ public class UserService {
         User user = userRepository.findByUserId(userId);
         UserValidator.validate(user);
         return user;
-    }
-
-    public LogoutRes logout(HttpServletRequest request) {
-        String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER).split(" ")[1].trim();
-        redisUtil.delete(refreshToken);
-        return new LogoutRes();
     }
 }
