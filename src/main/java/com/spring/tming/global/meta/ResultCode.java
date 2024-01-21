@@ -42,9 +42,6 @@ public enum ResultCode {
     NOT_FOUND_CHATROOM(6000, "채팅방이 존재하지 않습니다."),
 
     // 모집글 신청 관련
-    APPLICANT_SUCCESS(7000, "신청이 성공적으로 처리되었습니다."),
-    APPLICANT_CANCEL_SUCCESS(7001, "신청 취소가 성공적으로 처리되었습니다."),
-    APPLICANT_LIST_SUCCESS(7002, "신청 목록 조회가 성공적으로 처리되었습니다."),
     ALREADY_APPLIED_POST(7003, "이미 신청한 모집글입니다."),
     NOT_YET_APPLIED_POST(7004, "아직 신청하지 않은 모집글입니다.");
 
