@@ -1,10 +1,10 @@
 package com.spring.tming.domain.applicant.service;
 
-import com.spring.tming.domain.applicant.repository.ApplicantRepository;
 import com.spring.tming.domain.applicant.dto.request.ApplicantCancelReq;
 import com.spring.tming.domain.applicant.dto.request.ApplicantSaveReq;
 import com.spring.tming.domain.applicant.dto.response.*;
 import com.spring.tming.domain.applicant.entity.Applicant;
+import com.spring.tming.domain.applicant.repository.ApplicantRepository;
 import com.spring.tming.domain.applicant.validator.ApplicantValidator;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.repository.PostRepository;

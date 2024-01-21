@@ -1,10 +1,19 @@
 package com.spring.tming.domain.applicant.entity;
 
-import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
