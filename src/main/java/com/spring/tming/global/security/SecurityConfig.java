@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,6 +31,8 @@ public class SecurityConfig {
     private final RedisUtil redisUtil;
     private final UserRepository userRepository;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final LogoutHandlerImpl logoutHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,6 +55,11 @@ public class SecurityConfig {
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
         return new JwtAuthorizationFilter(jwtUtil, redisUtil, userRepository);
+    }
+
+    @Bean
+    public ExceptionHandlerFilter exceptionHandlerFilter() {
+        return new ExceptionHandlerFilter();
     }
 
     @Bean
@@ -90,6 +99,14 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(exceptionHandlerFilter(), LogoutFilter.class);
+
+        http.logout(
+                logout -> {
+                    logout.logoutUrl("/v1/users/logout");
+                    logout.addLogoutHandler(logoutHandler);
+                    logout.logoutSuccessHandler(logoutSuccessHandler);
+                });
 
         return http.build();
     }

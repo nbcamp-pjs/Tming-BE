@@ -5,7 +5,6 @@ import com.spring.tming.domain.user.dto.response.*;
 import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,14 +41,11 @@ public class UserController {
         return RestResponse.success(userService.checkEmail(checkEmailReq));
     }
 
-    @GetMapping("/logout")
-    public RestResponse<LogoutRes> logout(HttpServletRequest request) {
-        return RestResponse.success(userService.logout(request));
-    }
-
     @GetMapping("/{userId}")
-    public RestResponse<UserGetRes> getUserProfile(@PathVariable Long userId) {
-        return RestResponse.success(userService.getUserProfile(userId));
+    public RestResponse<UserGetRes> getUserProfile(
+            @PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return RestResponse.success(
+                userService.getUserProfile(userId, userDetails.getUser().getUserId()));
     }
 
     @PostMapping("/follow")

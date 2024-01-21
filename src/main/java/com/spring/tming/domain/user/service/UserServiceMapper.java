@@ -7,8 +7,10 @@ import com.spring.tming.domain.user.dto.response.UserGetRes;
 import com.spring.tming.domain.user.entity.Follow;
 import com.spring.tming.domain.user.entity.User;
 import java.util.List;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.util.CollectionUtils;
 
@@ -16,6 +18,16 @@ import org.springframework.util.CollectionUtils;
 public interface UserServiceMapper {
 
     UserServiceMapper INSTANCE = Mappers.getMapper(UserServiceMapper.class);
+
+    @Named("toFollowed")
+    default boolean toFollowed(User user, @Context Long myUserId) {
+        if (CollectionUtils.isEmpty(user.getFollowings())) {
+            return false;
+        }
+
+        return user.getFollowings().stream()
+                .anyMatch(follow -> myUserId.equals(follow.getFollower().getUserId()));
+    }
 
     @Mapping(source = "followings", target = "following")
     @Mapping(source = "followers", target = "follower")
@@ -26,10 +38,11 @@ public interface UserServiceMapper {
         return follows.size();
     }
 
+    @Mapping(source = "user", qualifiedByName = "toFollowed", target = "followed")
     @Mapping(source = "followers", target = "follower")
     @Mapping(source = "followings", target = "following")
     @Mapping(source = "job.description", target = "job")
-    UserGetRes toUserGetRes(User user);
+    UserGetRes toUserGetRes(User user, @Context Long myUserId);
 
     LoginRes toLoginRes(User user);
 
