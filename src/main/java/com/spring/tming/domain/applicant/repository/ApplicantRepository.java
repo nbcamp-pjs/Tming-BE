@@ -1,4 +1,4 @@
-package com.spring.tming.domain.applicant.dto.repository;
+package com.spring.tming.domain.applicant.repository;
 
 import com.spring.tming.domain.applicant.entity.Applicant;
 import com.spring.tming.domain.applicant.entity.ApplicantId;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface ApplicantRepository extends JpaRepository<Applicant, ApplicantId> {
 
     Applicant findByPostAndUser(Post post, User user);
-    // Applicant findByPostAndUserAndJob(Post post, User user, Job job);
 
     List<Applicant> findByPostPostId(Long postId);
 }

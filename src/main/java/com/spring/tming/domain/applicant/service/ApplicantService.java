@@ -1,6 +1,6 @@
 package com.spring.tming.domain.applicant.service;
 
-import com.spring.tming.domain.applicant.dto.repository.ApplicantRepository;
+import com.spring.tming.domain.applicant.repository.ApplicantRepository;
 import com.spring.tming.domain.applicant.dto.request.ApplicantCancelReq;
 import com.spring.tming.domain.applicant.dto.request.ApplicantSaveReq;
 import com.spring.tming.domain.applicant.dto.response.*;
