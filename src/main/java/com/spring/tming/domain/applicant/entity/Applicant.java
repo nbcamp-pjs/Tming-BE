@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tb_applicant")
 @IdClass(ApplicantId.class)
-public class Applicant extends BaseEntity {
+public class Applicant {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "postId")
