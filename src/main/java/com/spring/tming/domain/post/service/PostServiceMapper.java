@@ -57,51 +57,27 @@ public interface PostServiceMapper {
         return skills;
     }
 
-    @Mapping(source = "jobLimits", target = "jobLimits")
-    default List<PostJobLimitRes> toPostJobLimitRes(List<JobLimit> jobLimits) {
-        if (CollectionUtils.isEmpty(jobLimits)) {
-            return null;
-        }
-        List<PostJobLimitRes> postJobLimitRes = new ArrayList<>();
-        jobLimits.forEach(
-                jobLimit -> postJobLimitRes.add(PostServiceMapper.INSTANCE.toPostJobLimitRes(jobLimit)));
-        return postJobLimitRes;
-    }
-
-    @Mapping(source = "members", target = "members")
-    default List<PostMemberRes> toPostMemberRes(List<Member> members) {
-        if (CollectionUtils.isEmpty(members)) {
-            return null;
-        }
-        List<PostMemberRes> postMemberRes = new ArrayList<>();
-        members.forEach(
-                member ->
-                        postMemberRes.add(
-                                PostMemberRes.builder()
-                                        .userId(member.getUser().getUserId())
-                                        .profileImageUrl(member.getUser().getProfileImageUrl())
-                                        .build()));
-        return postMemberRes;
-    }
-
     PostCreateRes toPostCreateRes(Post post);
 
-    PostJobLimitRes toPostJobLimitRes(JobLimit jobLimit);
+    List<PostJobLimitRes> toPostJobLimitResList(List<JobLimit> jobLimits);
+
+    @Mapping(source = "user.userId", target = "userId")
+    @Mapping(source = "user.profileImageUrl", target = "profileImageUrl")
+    PostMemberRes toPostMemberRes(Member member);
+
+    List<PostMemberRes> toPostMemberResList(List<Member> members);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
-    @Mapping(source = "jobLimits", target = "jobLimits")
-    @Mapping(source = "members", target = "members")
     PostReadRes toPostReadRes(Post post);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
-    @Mapping(source = "jobLimits", target = "jobLimits")
     PostAllReadRes toPostAllReadResList(Post post);
 
     List<PostAllReadRes> toPostAllReadResList(List<Post> posts);
