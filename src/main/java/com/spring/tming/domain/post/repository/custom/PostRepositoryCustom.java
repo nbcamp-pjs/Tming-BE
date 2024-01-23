@@ -17,6 +17,8 @@ public interface PostRepositoryCustom {
 
     Page<Post> getAllPostByUser(String username, PageRequest pageRequest);
 
+    Page<Post> getAllPostByMember(User user, PageRequest pageRequest);
+
     Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
 
     Page<Post> getAllPostByJob(Job job, PageRequest pageRequest);

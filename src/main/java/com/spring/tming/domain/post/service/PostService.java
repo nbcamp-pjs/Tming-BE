@@ -201,8 +201,10 @@ public class PostService {
                 }
             case MEMBER:
                 {
-                    // 보류
-                    return PostReadResList.builder().build();
+                    Page<Post> posts = postRepository.getAllPostByMember(user, dto.getPageRequest());
+                    return PostReadResList.builder()
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .build();
                 }
             case SKILL:
                 {
