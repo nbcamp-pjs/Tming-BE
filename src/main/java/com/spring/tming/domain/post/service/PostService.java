@@ -163,7 +163,6 @@ public class PostService {
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
         }
 
-        // TODO: members 추가하기
         return PostServiceMapper.INSTANCE.toPostReadRes(post);
     }
 

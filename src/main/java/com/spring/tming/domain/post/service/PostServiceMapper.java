@@ -1,8 +1,10 @@
 package com.spring.tming.domain.post.service;
 
+import com.spring.tming.domain.members.entity.Member;
 import com.spring.tming.domain.post.dto.response.PostAllReadRes;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostJobLimitRes;
+import com.spring.tming.domain.post.dto.response.PostMemberRes;
 import com.spring.tming.domain.post.dto.response.PostReadRes;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
@@ -66,6 +68,22 @@ public interface PostServiceMapper {
         return postJobLimitRes;
     }
 
+    @Mapping(source = "members", target = "members")
+    default List<PostMemberRes> toPostMemberRes(List<Member> members) {
+        if (CollectionUtils.isEmpty(members)) {
+            return null;
+        }
+        List<PostMemberRes> postMemberRes = new ArrayList<>();
+        members.forEach(
+                member ->
+                        postMemberRes.add(
+                                PostMemberRes.builder()
+                                        .userId(member.getUser().getUserId())
+                                        .profileImageUrl(member.getUser().getProfileImageUrl())
+                                        .build()));
+        return postMemberRes;
+    }
+
     PostCreateRes toPostCreateRes(Post post);
 
     PostJobLimitRes toPostJobLimitRes(JobLimit jobLimit);
@@ -76,6 +94,7 @@ public interface PostServiceMapper {
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
     @Mapping(source = "jobLimits", target = "jobLimits")
+    @Mapping(source = "members", target = "members")
     PostReadRes toPostReadRes(Post post);
 
     @Mapping(source = "deadline", target = "deadline")
