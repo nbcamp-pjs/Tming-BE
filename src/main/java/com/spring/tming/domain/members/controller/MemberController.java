@@ -1,7 +1,7 @@
 package com.spring.tming.domain.members.controller;
 
-import com.spring.tming.domain.members.dto.request.emitMemberReq;
-import com.spring.tming.domain.members.dto.response.emitMemberRes;
+import com.spring.tming.domain.members.dto.request.EmitMemberReq;
+import com.spring.tming.domain.members.dto.response.EmitMemberRes;
 import com.spring.tming.domain.members.service.MemberService;
 import com.spring.tming.global.response.RestResponse;
 import com.spring.tming.global.security.UserDetailsImpl;
@@ -10,17 +10,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/posts/{postId}/members")
+@RequestMapping("/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
     @DeleteMapping
-    public RestResponse<emitMemberRes> emitMember(
-            @PathVariable(name = "postId") Long postId,
+    public RestResponse<EmitMemberRes> emitMember(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody emitMemberReq request) {
-        return RestResponse.success(memberService.emitMember(postId, userDetails.getUser(), request));
+            @RequestBody EmitMemberReq request) {
+        return RestResponse.success(memberService.emitMember(userDetails.getUser(), request));
     }
 }

@@ -1,7 +1,7 @@
 package com.spring.tming.domain.members.service;
 
-import com.spring.tming.domain.members.dto.request.emitMemberReq;
-import com.spring.tming.domain.members.dto.response.emitMemberRes;
+import com.spring.tming.domain.members.dto.request.EmitMemberReq;
+import com.spring.tming.domain.members.dto.response.EmitMemberRes;
 import com.spring.tming.domain.members.entity.Member;
 import com.spring.tming.domain.members.repository.MemberRepository;
 import com.spring.tming.domain.post.entity.Post;
@@ -24,12 +24,12 @@ public class MemberService {
     private final PostRepository postRepository;
 
     @Transactional
-    public emitMemberRes emitMember(Long postId, User user, emitMemberReq request) {
-        Post post = getPost(postId, user);
+    public EmitMemberRes emitMember(User user, EmitMemberReq request) {
+        Post post = getPost(request.getPostId(), user);
         User emitUser = getUser(request.getUserId());
-        Member member = memberCheck(post, emitUser);
+        Member member = getMember(post, emitUser);
         memberRepository.delete(member);
-        return new emitMemberRes();
+        return new EmitMemberRes();
     }
 
     private Post getPost(Long postId, User user) {
@@ -44,7 +44,7 @@ public class MemberService {
         return user;
     }
 
-    private Member memberCheck(Post post, User user) {
+    private Member getMember(Post post, User user) {
         Member member = memberRepository.findByPostAndUser(post, user);
         MemberValidator.validate(member);
         return member;

@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class emitMemberReq {
+public class EmitMemberReq {
+    private Long postId;
     private Long userId;
 
     @Builder
-    private emitMemberReq(Long userId) {
+    private EmitMemberReq(Long postId, Long userId) {
+        this.postId = postId;
         this.userId = userId;
     }
 }
