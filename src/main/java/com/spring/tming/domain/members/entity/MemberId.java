@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MembersId implements Serializable {
+public class MemberId implements Serializable {
 
     private Long post;
     private Long user;
 
     @Builder
-    private MembersId(Long post, Long user) {
+    private MemberId(Long post, Long user) {
         this.post = post;
         this.user = user;
     }

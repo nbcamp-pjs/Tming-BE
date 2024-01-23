@@ -1,3 +1,3 @@
 package com.spring.tming.domain.members.controller;
 
-public class MembersController {}
+public class MemberController {}

@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tb_members")
-@IdClass(MembersId.class)
-public class Members {
+@IdClass(MemberId.class)
+public class Member {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "postId")
@@ -30,7 +30,7 @@ public class Members {
     private Job job;
 
     @Builder
-    private Members(Post post, User user, Job job) {
+    private Member(Post post, User user, Job job) {
         this.post = post;
         this.user = user;
         this.job = job;
