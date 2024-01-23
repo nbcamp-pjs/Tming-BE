@@ -4,6 +4,7 @@ import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.tming.domain.applicant.entity.QApplicant;
 import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.QJobLimit;
@@ -64,6 +65,28 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public Page<Post> getAllPostByApply(User user, PageRequest pageRequest) {
+        List<Post> result =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.applicants, QApplicant.applicant)
+                        .fetchJoin()
+                        .where(QApplicant.applicant.user.eq(user))
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .orderBy(QPost.post.createTimestamp.desc())
+                        .fetch();
+        long totalCount =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.applicants, QApplicant.applicant)
+                        .fetchJoin()
+                        .where(QApplicant.applicant.user.eq(user))
+                        .fetchCount();
+        return new PageImpl<>(result, pageRequest, totalCount);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> getAllPostByUser(String username, PageRequest pageRequest) {
         List<Post> result =
@@ -118,7 +141,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
-                        //                        .where(jobIn(job))
+//                        .where(jobIn(job))
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
@@ -154,10 +177,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return QPostStack.postStack.skill.eq(skill);
     }
 
-    //    private BooleanExpression jobIn(Job job) {
-    //        if (job == null) {
-    //            throw new GlobalException(POST_INVALID_FILTER);
-    //        }
-    //        return QJobLimit.jobLimit.job.in(job);
-    //    }
+//    private BooleanExpression jobIn(Job job) {
+//        if (job == null) {
+//            throw new GlobalException(POST_INVALID_FILTER);
+//        }
+//        return QPost.post.jobLimits.any().job.eq(job);
+//    }
 }
