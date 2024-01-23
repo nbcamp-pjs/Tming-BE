@@ -5,7 +5,6 @@ import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.tming.domain.applicant.entity.QApplicant;
-import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.QJobLimit;
 import com.spring.tming.domain.post.entity.QPost;
@@ -16,7 +15,6 @@ import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -136,30 +134,30 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     @Transactional(readOnly = true)
     public Page<Post> getAllPostByJob(Job job, PageRequest pageRequest) {
-        List<Post> posts =
+        List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
-//                        .where(jobIn(job))
+                        .where(jobIn(job))
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
-        List<Post> result =
-                posts.stream()
-                        .filter(
-                                post -> {
-                                    boolean check = false;
-                                    for (JobLimit jobLimit : post.getJobLimits()) {
-                                        if (jobLimit.getJob().equals(job)) {
-                                            check = true;
-                                            break;
-                                        }
-                                    }
-                                    return check;
-                                })
-                        .collect(Collectors.toList());
+        //        List<Post> result =
+        //                posts.stream()
+        //                        .filter(
+        //                                post -> {
+        //                                    boolean check = false;
+        //                                    for (JobLimit jobLimit : post.getJobLimits()) {
+        //                                        if (jobLimit.getJob().equals(job)) {
+        //                                            check = true;
+        //                                            break;
+        //                                        }
+        //                                    }
+        //                                    return check;
+        //                                })
+        //                        .collect(Collectors.toList());
 
         long totalCount =
                 jpaQueryFactory
@@ -177,10 +175,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return QPostStack.postStack.skill.eq(skill);
     }
 
-//    private BooleanExpression jobIn(Job job) {
-//        if (job == null) {
-//            throw new GlobalException(POST_INVALID_FILTER);
-//        }
-//        return QPost.post.jobLimits.any().job.eq(job);
-//    }
+    private BooleanExpression jobIn(Job job) {
+        if (job == null) {
+            throw new GlobalException(POST_INVALID_FILTER);
+        }
+        return QPost.post.jobLimits.any().job.eq(job);
+    }
 }
