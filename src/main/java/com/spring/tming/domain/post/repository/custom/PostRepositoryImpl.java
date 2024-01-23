@@ -144,20 +144,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
-        //        List<Post> result =
-        //                posts.stream()
-        //                        .filter(
-        //                                post -> {
-        //                                    boolean check = false;
-        //                                    for (JobLimit jobLimit : post.getJobLimits()) {
-        //                                        if (jobLimit.getJob().equals(job)) {
-        //                                            check = true;
-        //                                            break;
-        //                                        }
-        //                                    }
-        //                                    return check;
-        //                                })
-        //                        .collect(Collectors.toList());
 
         long totalCount =
                 jpaQueryFactory
