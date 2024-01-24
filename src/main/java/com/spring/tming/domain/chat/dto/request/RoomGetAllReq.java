@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomAllReq {
+public class RoomGetAllReq {
     private Long userId;
 
     @Builder
-    private RoomAllReq(Long userId) {
+    private RoomGetAllReq(Long userId) {
         this.userId = userId;
     }
 }
