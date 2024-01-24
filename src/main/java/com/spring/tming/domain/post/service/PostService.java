@@ -163,7 +163,6 @@ public class PostService {
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
         }
 
-        // TODO: members 추가하기
         return PostServiceMapper.INSTANCE.toPostReadRes(post);
     }
 
@@ -202,8 +201,10 @@ public class PostService {
                 }
             case MEMBER:
                 {
-                    // 보류
-                    return PostReadResList.builder().build();
+                    Page<Post> posts = postRepository.getAllPostByMember(user, dto.getPageRequest());
+                    return PostReadResList.builder()
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .build();
                 }
             case SKILL:
                 {

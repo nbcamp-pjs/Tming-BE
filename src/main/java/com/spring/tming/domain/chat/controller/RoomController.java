@@ -1,6 +1,8 @@
 package com.spring.tming.domain.chat.controller;
 
+import com.spring.tming.domain.chat.dto.request.RoomGetAllReq;
 import com.spring.tming.domain.chat.dto.request.RoomSaveReq;
+import com.spring.tming.domain.chat.dto.response.RoomGetAllResList;
 import com.spring.tming.domain.chat.dto.response.RoomSaveRes;
 import com.spring.tming.domain.chat.service.RoomService;
 import com.spring.tming.global.response.RestResponse;
@@ -22,5 +24,13 @@ public class RoomController {
 
         roomReq.setSenderId(userDetails.getUser().getUserId());
         return RestResponse.success(roomService.createRoom(roomReq));
+    }
+
+    @GetMapping
+    public RestResponse<RoomGetAllResList> getAllRoom(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        RoomGetAllReq roomGetAllReq = RoomGetAllReq.builder().userId(userDetails.getUser().getUserId()).build();
+
+        return RestResponse.success(roomService.getAllRoom(roomGetAllReq));
     }
 }
