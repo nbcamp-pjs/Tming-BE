@@ -18,6 +18,16 @@ public class ApplicantValidator {
         }
     }
 
+    public static void checkNotApplied(Applicant applicant) {
+        if (!isNullApplicant(applicant)) {
+            throw new GlobalException(ResultCode.NOT_FOUND_APPLICANT);
+        }
+    }
+
+    private static boolean isNullApplicant(Applicant applicant) {
+        return applicant == null;
+    }
+
     private static boolean isExistApplicant(Applicant applicant) {
         return applicant != null;
     }
