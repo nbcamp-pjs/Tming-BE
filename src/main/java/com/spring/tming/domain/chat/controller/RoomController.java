@@ -29,7 +29,8 @@ public class RoomController {
     @GetMapping
     public RestResponse<RoomGetAllResList> getAllRoom(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        RoomGetAllReq roomGetAllReq = RoomGetAllReq.builder().userId(userDetails.getUser().getUserId()).build();
+        RoomGetAllReq roomGetAllReq =
+                RoomGetAllReq.builder().userId(userDetails.getUser().getUserId()).build();
 
         return RestResponse.success(roomService.getAllRoom(roomGetAllReq));
     }

@@ -50,7 +50,9 @@ public class RoomService {
 
     public RoomGetAllResList getAllRoom(RoomGetAllReq roomGetAllReq) {
         RoomInfoReq roomInfoReq =
-                RoomInfoReq.builder().userId(userRepository.findByUserId(roomGetAllReq.getUserId())).build();
+                RoomInfoReq.builder()
+                        .userId(userRepository.findByUserId(roomGetAllReq.getUserId()))
+                        .build();
         RoomInfoResList roomInfoResList = getRoomList(roomInfoReq);
         List<RoomGetAllRes> roomGetAllResList = new ArrayList<>();
         for (RoomInfoRes roomInfoRes : roomInfoResList.getRoomInfoRese()) {
