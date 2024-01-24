@@ -1,9 +1,6 @@
 package com.spring.tming.domain.chat.service;
 
-import com.spring.tming.domain.chat.dto.request.RoomGetAllReq;
-import com.spring.tming.domain.chat.dto.request.RoomInfoReq;
-import com.spring.tming.domain.chat.dto.request.RoomMessageReq;
-import com.spring.tming.domain.chat.dto.request.RoomSaveReq;
+import com.spring.tming.domain.chat.dto.request.*;
 import com.spring.tming.domain.chat.dto.response.*;
 import com.spring.tming.domain.chat.entity.Chat;
 import com.spring.tming.domain.chat.entity.ChatMember;
@@ -47,10 +44,34 @@ public class RoomService {
 
         return ChatRoomServiceMapper.INSTANCE.toRoomSaveRes(createChatRoom);
     }
+    // 채팅방 단건조회
+    public RoomGetRes getFindRoom(RoomGetReq roomGetReq) {
+        RoomMessageReq roomMessageReq =
+                RoomMessageReq.builder()
+                        .roomId(roomGetReq.getRoomId())
+                        .userId(roomGetReq.getUserId())
+                        .build();
+        RoomMessageResList roomMessageResList = getMessageRoom(roomMessageReq);
 
+        ChatRoom chatRoom = roomRepository.findByChatRoomId(roomGetReq.getRoomId());
+        ChatMember receiver =
+                memberRepository.findByChatRoomIdAndUserIdNot(
+                        chatRoom, userRepository.findByUserId(roomGetReq.getUserId()));
+
+        return RoomGetRes.builder()
+                .chatRoomId(chatRoom.getChatRoomId())
+                .chatRoomName(chatRoom.getChatRoomName())
+                .userId(receiver.getUserId().getUserId())
+                .roomMessageResList(roomMessageResList)
+                .build();
+    }
+
+    // 채팅방 전체 조회
     public RoomGetAllResList getAllRoom(RoomGetAllReq roomGetAllReq) {
         RoomInfoReq roomInfoReq =
-                RoomInfoReq.builder().userId(userRepository.findByUserId(roomGetAllReq.getUserId())).build();
+                RoomInfoReq.builder()
+                        .userId(userRepository.findByUserId(roomGetAllReq.getUserId()))
+                        .build();
         RoomInfoResList roomInfoResList = getRoomList(roomInfoReq);
         List<RoomGetAllRes> roomGetAllResList = new ArrayList<>();
         for (RoomInfoRes roomInfoRes : roomInfoResList.getRoomInfoRese()) {
@@ -75,6 +96,7 @@ public class RoomService {
         return RoomGetAllResList.builder().roomGetAllReses(roomGetAllResList).build();
     }
 
+    // 채팅방 정보
     public RoomInfoResList getRoomList(RoomInfoReq roomInfoReq) { // req->user
         // 유저아이디 ->채팅방 아이디
         List<ChatMember> chatMemberList = memberRepository.findByUserId(roomInfoReq.getUserId());
@@ -87,7 +109,7 @@ public class RoomService {
                     roomRepository.findByChatRoomId(chatMember.getChatRoomId().getChatRoomId());
             ChatMember receiver =
                     memberRepository.findByChatRoomIdAndUserIdNot(chatRoom, roomInfoReq.getUserId());
-            System.out.println("user RECEIVER ID NOT" + receiver.getUserId().getUserId());
+
             RoomInfoRes roomInfoRes =
                     RoomInfoRes.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
@@ -101,8 +123,9 @@ public class RoomService {
         return RoomInfoResList.builder().roomInfoRese(roomInfoResList).build();
     }
 
+    // 채팅 메세지 전체 조회
     public RoomMessageResList getMessageRoom(RoomMessageReq roomMessageReq) {
-        // 유저아이디 채팅방아이디->채팅 전체조회
+        // 유저아이디,채팅방아이디->채팅 전체조회
         ChatRoom chatRoom = roomRepository.findByChatRoomId(roomMessageReq.getRoomId());
         ChatRoomValidator.validate(chatRoom);
 
@@ -114,6 +137,7 @@ public class RoomService {
         return RoomMessageResList.builder().roomMessageRes(roomMessageResList).build();
     }
 
+    // 마지막 메세지 조회
     public Chat lastChat(Long roomId) {
         Chat lastChat = chatRepository.findTop1ByChatRoomIdChatRoomIdOrderByCreateTimestampDesc(roomId);
 
