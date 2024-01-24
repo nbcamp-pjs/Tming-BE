@@ -94,6 +94,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/docs/**")
                                 .permitAll()
+                                .requestMatchers("/ws")
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated());
 
