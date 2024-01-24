@@ -13,7 +13,11 @@ public interface PostRepositoryCustom {
 
     Page<Post> getAllPostByLike(User user, PageRequest pageRequest);
 
+    Page<Post> getAllPostByApply(User user, PageRequest pageRequest);
+
     Page<Post> getAllPostByUser(String username, PageRequest pageRequest);
+
+    Page<Post> getAllPostByMember(User user, PageRequest pageRequest);
 
     Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
 

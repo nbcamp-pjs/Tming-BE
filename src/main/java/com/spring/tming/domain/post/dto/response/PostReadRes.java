@@ -20,7 +20,7 @@ public class PostReadRes {
     private String username;
     private List<PostJobLimitRes> jobLimits;
     private List<String> skills;
-    //	private List<Member> members;
+    private List<PostMemberRes> members;
 
     @Builder
     private PostReadRes(
@@ -34,9 +34,8 @@ public class PostReadRes {
             String status,
             String username,
             List<PostJobLimitRes> jobLimits,
-            List<String> skills
-            //            List<Member> members;
-            ) {
+            List<String> skills,
+            List<PostMemberRes> members) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -48,6 +47,6 @@ public class PostReadRes {
         this.username = username;
         this.jobLimits = jobLimits;
         this.skills = skills;
-        //        this.members = member;
+        this.members = members;
     }
 }

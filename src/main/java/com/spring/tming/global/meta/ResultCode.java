@@ -44,7 +44,11 @@ public enum ResultCode {
 
     // 모집글 신청 관련
     ALREADY_APPLIED_POST(7003, "이미 신청한 모집글입니다."),
-    NOT_YET_APPLIED_POST(7004, "아직 신청하지 않은 모집글입니다.");
+    NOT_YET_APPLIED_POST(7004, "아직 신청하지 않은 모집글입니다."),
+
+    NOT_FOUND_MEMBER(8000, "멤버가 존재하지 않습니다."),
+    ALREADY_ADMITTED_MEMBER(8001, "이미 승인된 팀원입니다."),
+    ALREADY_CANCELED_MEMBER(8002, "신청자 목록에 존재하지 않는 멤버입니다.");
 
     private Integer code;
     private String message;

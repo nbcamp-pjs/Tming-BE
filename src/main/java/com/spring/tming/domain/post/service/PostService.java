@@ -163,11 +163,10 @@ public class PostService {
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
         }
 
-        // TODO: members 추가하기
         return PostServiceMapper.INSTANCE.toPostReadRes(post);
     }
 
-    // TODO: APPLY, MEMBER
+    // TODO: MEMBER
     @Transactional(readOnly = true)
     public PostReadResList readPostList(PostReadReq dto, User user) {
         switch (dto.getType()) {
@@ -187,8 +186,10 @@ public class PostService {
                 }
             case APPLY:
                 {
-                    // 보류
-                    return PostReadResList.builder().build();
+                    Page<Post> posts = postRepository.getAllPostByApply(user, dto.getPageRequest());
+                    return PostReadResList.builder()
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .build();
                 }
             case WRITE:
                 {
@@ -200,8 +201,10 @@ public class PostService {
                 }
             case MEMBER:
                 {
-                    // 보류
-                    return PostReadResList.builder().build();
+                    Page<Post> posts = postRepository.getAllPostByMember(user, dto.getPageRequest());
+                    return PostReadResList.builder()
+                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .build();
                 }
             case SKILL:
                 {
