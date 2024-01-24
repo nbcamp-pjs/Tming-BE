@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomGetRes {
+public class RoomInfoRes {
     private Long chatRoomId;
     private String chatRoomName;
     private Long userId;
 
     @Builder
-    private RoomGetRes(Long chatRoomId, String chatRoomName, Long userId) {
+    private RoomInfoRes(Long chatRoomId, String chatRoomName, Long userId) {
         this.chatRoomId = chatRoomId;
         this.chatRoomName = chatRoomName;
         this.userId = userId;

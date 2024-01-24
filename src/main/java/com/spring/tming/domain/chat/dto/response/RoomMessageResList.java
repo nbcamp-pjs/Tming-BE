@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomReadResList {
+public class RoomMessageResList {
 
-    private List<RoomReadRes> roomReadRese;
+    private List<RoomMessageRes> roomMessageRese;
 
     @Builder
-    private RoomReadResList(List<RoomReadRes> roomReadRes) {
-        this.roomReadRese = roomReadRes;
+    private RoomMessageResList(List<RoomMessageRes> roomMessageRes) {
+        this.roomMessageRese = roomMessageRes;
     }
 }

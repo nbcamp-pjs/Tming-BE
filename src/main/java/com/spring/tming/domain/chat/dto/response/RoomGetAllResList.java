@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomAllResList {
-    private List<RoomAllRes> roomAllReses;
+public class RoomGetAllResList {
+    private List<RoomGetAllRes> roomGetAllReses;
 
     @Builder
-    private RoomAllResList(List<RoomAllRes> roomAllReses) {
-        this.roomAllReses = roomAllReses;
+    private RoomGetAllResList(List<RoomGetAllRes> roomGetAllReses) {
+        this.roomGetAllReses = roomGetAllReses;
     }
 }

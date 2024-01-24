@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomGetReq {
+public class RoomInfoReq {
     private User userId;
 
     @Builder
-    private RoomGetReq(User userId) {
+    private RoomInfoReq(User userId) {
         this.userId = userId;
     }
 }

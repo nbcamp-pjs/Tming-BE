@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomReadRes {
+public class RoomMessageRes {
 
     private Long userId;
     private String content;
 
     @Builder
-    private RoomReadRes(Long userId, String content) {
+    private RoomMessageRes(Long userId, String content) {
         this.userId = userId;
         this.content = content;
     }
