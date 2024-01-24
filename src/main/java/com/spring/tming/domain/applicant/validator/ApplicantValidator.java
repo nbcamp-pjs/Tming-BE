@@ -20,7 +20,7 @@ public class ApplicantValidator {
 
     public static void checkCancelBeforeAdmit(Applicant applicant) {
         if (!isNullApplicant(applicant)) {
-            throw new GlobalException(ResultCode.ALREADY_CANCELED_APPLICANT);
+            throw new GlobalException(ResultCode.NOT_FOUND_APPLICANT);
         }
     }
 

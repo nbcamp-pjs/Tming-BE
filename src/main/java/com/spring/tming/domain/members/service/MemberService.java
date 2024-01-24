@@ -37,8 +37,8 @@ public class MemberService {
         User user = getUser(memberAdmitReq.getUserId());
         Post post = getPost(memberAdmitReq.getPostId(), user);
         Member member = memberRepository.findByPostAndUser(post, user);
-        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
         MemberValidator.checkAlreadyAdmitted(member);
+        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
         ApplicantValidator.checkCancelBeforeAdmit(applicant);
         memberRepository.save(
                 Member.builder().user(user).post(post).job(memberAdmitReq.getJob()).build());

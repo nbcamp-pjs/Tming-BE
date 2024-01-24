@@ -48,7 +48,7 @@ public enum ResultCode {
 
     NOT_FOUND_MEMBER(8000, "멤버가 존재하지 않습니다."),
     ALREADY_ADMITTED_MEMBER(8001, "이미 승인된 팀원입니다."),
-    ALREADY_CANCELED_APPLICANT(8002, "신청자 목록에 존재하지 않는 멤버입니다.");
+    NOT_FOUND_APPLICANT(8002, "신청자 목록에 존재하지 않는 멤버입니다.");
 
     private Integer code;
     private String message;
