@@ -18,6 +18,16 @@ public class ApplicantValidator {
         }
     }
 
+    public static void checkCancelBeforeAdmit(Applicant applicant) {
+        if (!isNullApplicant(applicant)) {
+            throw new GlobalException(ResultCode.ALREADY_CANCELED_APPLICANT);
+        }
+    }
+
+    private static boolean isNullApplicant(Applicant applicant) {
+        return applicant == null;
+    }
+
     private static boolean isExistApplicant(Applicant applicant) {
         return applicant != null;
     }

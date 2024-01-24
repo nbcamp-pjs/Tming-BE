@@ -1,6 +1,8 @@
 package com.spring.tming.domain.members.service;
 
 import com.spring.tming.domain.applicant.entity.Applicant;
+import com.spring.tming.domain.applicant.repository.ApplicantRepository;
+import com.spring.tming.domain.applicant.validator.ApplicantValidator;
 import com.spring.tming.domain.members.dto.request.EmitMemberReq;
 import com.spring.tming.domain.members.dto.request.MemberAdmitReq;
 import com.spring.tming.domain.members.dto.response.EmitMemberRes;
@@ -28,14 +30,16 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final ApplicantRepository applicantRepository;
 
     @Transactional
     public MemberAdmitRes admitMember(MemberAdmitReq memberAdmitReq) {
         User user = getUser(memberAdmitReq.getUserId());
         Post post = getPost(memberAdmitReq.getPostId(), user);
         Member member = memberRepository.findByPostAndUser(post, user);
+        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
         MemberValidator.checkAlreadyAdmitted(member);
-        MemberValidator.checkCancelBeforeAdmit(Applicant.builder().build());
+        ApplicantValidator.checkCancelBeforeAdmit(applicant);
         memberRepository.save(
                 Member.builder().user(user).post(post).job(memberAdmitReq.getJob()).build());
         return new MemberAdmitRes();
