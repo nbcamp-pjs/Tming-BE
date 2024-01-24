@@ -1,5 +1,6 @@
 package com.spring.tming.global.jwt;
 
+import com.spring.tming.global.validator.TokenValidator;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -85,5 +86,10 @@ public class JwtUtil {
 
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    public String getTokenWithoutBearer(String token) {
+        TokenValidator.validate(token);
+        return token.split(" ")[1].trim();
     }
 }

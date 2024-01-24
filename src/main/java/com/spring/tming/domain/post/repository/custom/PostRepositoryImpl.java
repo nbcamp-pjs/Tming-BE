@@ -4,10 +4,14 @@ import static com.spring.tming.global.meta.ResultCode.POST_INVALID_FILTER;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.tming.domain.applicant.entity.QApplicant;
+import com.spring.tming.domain.members.entity.QMember;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.QJobLimit;
 import com.spring.tming.domain.post.entity.QPost;
+import com.spring.tming.domain.post.entity.QPostLike;
 import com.spring.tming.domain.post.entity.QPostStack;
+import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
@@ -30,8 +34,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .orderBy(QPost.post.createTimestamp.desc())
+                        .fetch();
+        long totalCount = jpaQueryFactory.selectFrom(QPost.post).fetchCount();
+        return new PageImpl<>(result, pageRequest, totalCount);
+    }
+
+    @Override
+    public Page<Post> getAllPostByLike(User user, PageRequest pageRequest) {
+        List<Post> result =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .innerJoin(QPost.post.postLikes, QPostLike.postLike)
                         .fetchJoin()
+                        .where(QPostLike.postLike.user.eq(user))
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
@@ -41,6 +59,28 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
+                        .fetchCount();
+        return new PageImpl<>(result, pageRequest, totalCount);
+    }
+
+    @Override
+    public Page<Post> getAllPostByApply(User user, PageRequest pageRequest) {
+        List<Post> result =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.applicants, QApplicant.applicant)
+                        .fetchJoin()
+                        .where(QApplicant.applicant.user.eq(user))
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .orderBy(QPost.post.createTimestamp.desc())
+                        .fetch();
+        long totalCount =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.applicants, QApplicant.applicant)
+                        .fetchJoin()
+                        .where(QApplicant.applicant.user.eq(user))
                         .fetchCount();
         return new PageImpl<>(result, pageRequest, totalCount);
     }
@@ -69,14 +109,34 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public Page<Post> getAllPostByMember(User user, PageRequest pageRequest) {
+        List<Post> result =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.members, QMember.member)
+                        .fetchJoin()
+                        .where(QMember.member.user.eq(user))
+                        .offset(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .orderBy(QPost.post.createTimestamp.desc())
+                        .fetch();
+        long totalCount =
+                jpaQueryFactory
+                        .selectFrom(QPost.post)
+                        .leftJoin(QPost.post.members, QMember.member)
+                        .fetchJoin()
+                        .where(QMember.member.user.eq(user))
+                        .fetchCount();
+        return new PageImpl<>(result, pageRequest, totalCount);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest) {
         List<Post> result =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.postStacks, QPostStack.postStack)
-                        .fetchJoin()
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(skillEq(skill))
                         .offset(pageRequest.getOffset())
@@ -87,8 +147,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.postStacks, QPostStack.postStack)
-                        .fetchJoin()
-                        .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
                         .where(skillEq(skill))
                         .fetchCount();
@@ -103,17 +161,18 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
-                        .where(jobEq(job))
+                        .where(jobIn(job))
                         .offset(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .orderBy(QPost.post.createTimestamp.desc())
                         .fetch();
+
         long totalCount =
                 jpaQueryFactory
                         .selectFrom(QPost.post)
                         .leftJoin(QPost.post.jobLimits, QJobLimit.jobLimit)
                         .fetchJoin()
-                        .where(jobEq(job))
+                        .where(jobIn(job))
                         .fetchCount();
         return new PageImpl<>(result, pageRequest, totalCount);
     }
@@ -125,10 +184,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return QPostStack.postStack.skill.eq(skill);
     }
 
-    private BooleanExpression jobEq(Job job) {
+    private BooleanExpression jobIn(Job job) {
         if (job == null) {
             throw new GlobalException(POST_INVALID_FILTER);
         }
-        return QJobLimit.jobLimit.job.eq(job);
+        return QPost.post.jobLimits.any().job.eq(job);
     }
 }

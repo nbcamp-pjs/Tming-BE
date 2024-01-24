@@ -1,6 +1,7 @@
 package com.spring.tming.domain.post.repository.custom;
 
 import com.spring.tming.domain.post.entity.Post;
+import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,13 @@ public interface PostRepositoryCustom {
 
     Page<Post> getAllPost(PageRequest pageRequest);
 
+    Page<Post> getAllPostByLike(User user, PageRequest pageRequest);
+
+    Page<Post> getAllPostByApply(User user, PageRequest pageRequest);
+
     Page<Post> getAllPostByUser(String username, PageRequest pageRequest);
+
+    Page<Post> getAllPostByMember(User user, PageRequest pageRequest);
 
     Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
 

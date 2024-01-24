@@ -76,7 +76,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public RestResponse<PostReadRes> readPost(
             @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return RestResponse.success(postService.readPost(postId));
+        return RestResponse.success(postService.readPost(postId, userDetails.getUser()));
     }
 
     @GetMapping
@@ -95,7 +95,7 @@ public class PostController {
                         .job(job)
                         .pageRequest(PageRequest.of(Integer.parseInt(offset) - 1, Integer.parseInt(size)))
                         .build();
-        return RestResponse.success(postService.readPostList(dto, userDetails.getUsername()));
+        return RestResponse.success(postService.readPostList(dto, userDetails.getUser()));
     }
 
     @PostMapping("/like")

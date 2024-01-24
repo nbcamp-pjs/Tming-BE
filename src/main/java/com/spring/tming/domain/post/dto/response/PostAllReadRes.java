@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostReadRes {
+public class PostAllReadRes {
     private Long postId;
     private String title;
     private String content;
@@ -19,11 +19,9 @@ public class PostReadRes {
     private String status;
     private String username;
     private List<PostJobLimitRes> jobLimits;
-    private List<String> skills;
-    private List<PostMemberRes> members;
 
     @Builder
-    private PostReadRes(
+    private PostAllReadRes(
             Long postId,
             String title,
             String content,
@@ -33,9 +31,7 @@ public class PostReadRes {
             String imageUrl,
             String status,
             String username,
-            List<PostJobLimitRes> jobLimits,
-            List<String> skills,
-            List<PostMemberRes> members) {
+            List<PostJobLimitRes> jobLimits) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -46,7 +42,5 @@ public class PostReadRes {
         this.status = status;
         this.username = username;
         this.jobLimits = jobLimits;
-        this.skills = skills;
-        this.members = members;
     }
 }

@@ -1,6 +1,5 @@
 package com.spring.tming.domain.post.dto.response;
 
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,11 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostReadResList {
-    private List<PostAllReadRes> postAllReadRes;
+public class PostMemberRes {
+    private Long userId;
+    private String profileImageUrl;
 
     @Builder
-    private PostReadResList(List<PostAllReadRes> postAllReadRes) {
-        this.postAllReadRes = postAllReadRes;
+    private PostMemberRes(Long userId, String profileImageUrl) {
+        this.userId = userId;
+        this.profileImageUrl = profileImageUrl;
     }
 }
