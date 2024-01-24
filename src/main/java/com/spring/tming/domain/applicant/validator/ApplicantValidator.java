@@ -18,7 +18,7 @@ public class ApplicantValidator {
         }
     }
 
-    public static void checkCancelBeforeAdmit(Applicant applicant) {
+    public static void checkNotApplied(Applicant applicant) {
         if (!isNullApplicant(applicant)) {
             throw new GlobalException(ResultCode.NOT_FOUND_APPLICANT);
         }
