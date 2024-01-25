@@ -21,6 +21,7 @@ public class PostReadRes {
     private List<PostJobLimitRes> jobLimits;
     private List<String> skills;
     private List<PostMemberRes> members;
+    private boolean liked;
 
     @Builder
     private PostReadRes(
@@ -35,7 +36,8 @@ public class PostReadRes {
             String username,
             List<PostJobLimitRes> jobLimits,
             List<String> skills,
-            List<PostMemberRes> members) {
+            List<PostMemberRes> members,
+            boolean liked) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -48,5 +50,6 @@ public class PostReadRes {
         this.jobLimits = jobLimits;
         this.skills = skills;
         this.members = members;
+        this.liked = liked;
     }
 }

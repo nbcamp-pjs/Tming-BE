@@ -18,8 +18,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.util.CollectionUtils;
 
@@ -57,6 +59,15 @@ public interface PostServiceMapper {
         return skills;
     }
 
+    @Named("isCheckLiked")
+    default boolean isCheckLiked(List<PostLike> postLikes, @Context Long userId) {
+        if (CollectionUtils.isEmpty(postLikes)) {
+            return false;
+        }
+
+        return postLikes.stream().anyMatch(postLike -> userId.equals(postLike.getUser().getUserId()));
+    }
+
     PostCreateRes toPostCreateRes(Post post);
 
     List<PostJobLimitRes> toPostJobLimitResList(List<JobLimit> jobLimits);
@@ -72,7 +83,8 @@ public interface PostServiceMapper {
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
     @Mapping(source = "postStacks", target = "skills")
-    PostReadRes toPostReadRes(Post post);
+    @Mapping(source = "post.postLikes", qualifiedByName = "isCheckLiked", target = "liked")
+    PostReadRes toPostReadRes(Post post, @Context Long userId);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "status", target = "status")
