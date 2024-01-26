@@ -17,15 +17,18 @@ import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
+import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
 import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
+import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostLikeService;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.security.UserDetailsImpl;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @WebMvcTest(controllers = {PostController.class})
 class PostControllerTest extends BaseMvcTest {
@@ -81,7 +86,6 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("모집글 생성 테스트")
     void createPostTest() throws Exception {
         // given
@@ -90,8 +94,8 @@ class PostControllerTest extends BaseMvcTest {
         String content = "content";
         Timestamp deadline = Timestamp.valueOf(LocalDateTime.now());
         List<PostJobLimitReq> jobLimits =
-                new ArrayList<>(List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build()));
-        List<Skill> skills = new ArrayList<>(List.of(Skill.JAVA, Skill.SPRING));
+                List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build());
+        List<Skill> skills = List.of(Skill.JAVA, Skill.SPRING);
         PostCreateReq postCreateReq =
                 PostCreateReq.builder()
                         .title(title)
@@ -100,18 +104,21 @@ class PostControllerTest extends BaseMvcTest {
                         .jobLimits(jobLimits)
                         .skills(skills)
                         .build();
-        String imageUrl = "images/sparta.png";
-        Resource fileResource = new ClassPathResource(imageUrl);
-        MockMultipartFile file =
-            new MockMultipartFile(
-                "sparta",
-                fileResource.getFilename(),
-                IMAGE_PNG.getType(),
-                fileResource.getInputStream());
-        MockMultipartFile imageFile =
-                new MockMultipartFile("image", "sample", "multipart/form-data", file.getBytes());
+
+        Resource resource = new ClassPathResource("images/sparta.png");
+        byte[] imageBytes = StreamUtils.copyToByteArray(resource.getInputStream());
+        MockMultipartFile imageFile = new MockMultipartFile(
+            "image",
+            "sparta.png",
+            "image/png",
+            imageBytes);
 
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        String json = objectMapper.writeValueAsString(postCreateReq);
+        MockMultipartFile request =
+            new MockMultipartFile(
+                "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
 
         PostCreateRes postCreateRes = PostCreateRes.builder().postId(postId).build();
 
@@ -124,18 +131,70 @@ class PostControllerTest extends BaseMvcTest {
                         .perform(
                                 multipart("/v1/posts")
                                         .file(imageFile)
-                                        .file("request", objectMapper.writeValueAsBytes(postCreateReq))
+                                        .file(request)
                                         .principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
         // then
         String responseJson = result.getResponse().getContentAsString();
+        System.out.println(responseJson);
         assertThat(responseJson).isNotNull();
     }
 
     @Test
-    void updatePostTest() {}
+    @DisplayName("모집글 수정 테스트")
+    void updatePostTest() throws Exception {
+        // given
+        Long postId = 1L;
+        String title = "title";
+        String content = "content";
+        Timestamp deadline = Timestamp.valueOf(LocalDateTime.now());
+        List<PostJobLimitReq> jobLimits =
+            List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build());
+        List<Skill> skills = List.of(Skill.JAVA, Skill.SPRING);
+        PostUpdateReq postUpdateReq =
+            PostUpdateReq.builder()
+                .title(title)
+                .content(content)
+                .deadline(deadline)
+                .jobLimits(jobLimits)
+                .skills(skills)
+                .build();
+
+        Resource resource = new ClassPathResource("images/sparta.png");
+        byte[] imageBytes = StreamUtils.copyToByteArray(resource.getInputStream());
+        MockMultipartFile imageFile = new MockMultipartFile(
+            "image",
+            "sparta.png",
+            "image/png",
+            imageBytes);
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        String json = objectMapper.writeValueAsString(postUpdateReq);
+        MockMultipartFile request =
+            new MockMultipartFile(
+                "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
+
+        PostUpdateRes postUpdateRes = new PostUpdateRes();
+        when(postService.updatePost(eq(postUpdateReq), eq(imageFile), eq(userDetails.getUser())))
+            .thenReturn(postUpdateRes);
+
+        // when
+        MvcResult result = mockMvc.perform(
+                multipart("/v1/posts")
+                    .file(imageFile)
+                    .file(request)
+                    .principal(this.mockPrincipal))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // then
+        String responseJson = result.getResponse().getContentAsString();
+        assertThat(responseJson).isNotNull();
+    }
 
     @Test
     void deletePostTest() {}
