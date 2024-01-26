@@ -30,13 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -47,6 +45,7 @@ public class PostService {
     private final RedisUtil redisUtil;
     private static final String VISIT_KEY = "USER";
 
+    @Transactional
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
         PostValidator.checkRequest(postCreateReq.getTitle(), postCreateReq.getContent());
@@ -141,7 +140,6 @@ public class PostService {
     @Transactional
     public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
-        log.info(String.valueOf(post.getJobLimits() == null));
         PostValidator.checkIsNullPost(post);
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
                 && !redisUtil
@@ -160,10 +158,10 @@ public class PostService {
                             .user(post.getUser())
                             .build());
             Post changedPost = postRepository.findByPostId(postId);
-            return PostServiceMapper.INSTANCE.toPostReadRes(changedPost);
+            return PostServiceMapper.INSTANCE.toPostReadRes(changedPost, user.getUserId());
         }
 
-        return PostServiceMapper.INSTANCE.toPostReadRes(post);
+        return PostServiceMapper.INSTANCE.toPostReadRes(post, user.getUserId());
     }
 
     // TODO: MEMBER

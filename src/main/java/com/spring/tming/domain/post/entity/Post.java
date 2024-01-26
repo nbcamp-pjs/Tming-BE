@@ -38,9 +38,11 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @Column private String title;
+    @Column(length = 30)
+    private String title;
 
-    @Column private String content;
+    @Column(length = 1500)
+    private String content;
 
     @Column private Timestamp deadline;
 
