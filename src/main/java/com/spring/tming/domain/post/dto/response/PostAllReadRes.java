@@ -1,6 +1,5 @@
 package com.spring.tming.domain.post.dto.response;
 
-import java.sql.Timestamp;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +19,8 @@ public class PostAllReadRes {
     private String status;
     private String username;
     private List<PostJobLimitRes> jobLimits;
-    private Timestamp createTimestamp;
+    private String createTimestamp;
+
     @Builder
     private PostAllReadRes(
             Long postId,
@@ -33,7 +33,7 @@ public class PostAllReadRes {
             String status,
             String username,
             List<PostJobLimitRes> jobLimits,
-            Timestamp createTimestamp) {
+            String createTimestamp) {
         this.postId = postId;
         this.title = title;
         this.content = content;

@@ -21,6 +21,7 @@ import java.util.Set;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.util.CollectionUtils;
@@ -29,13 +30,16 @@ import org.springframework.util.CollectionUtils;
 public interface PostServiceMapper {
     PostServiceMapper INSTANCE = Mappers.getMapper(PostServiceMapper.class);
 
-    @Mapping(source = "deadline", target = "deadline")
-    default String toStringTimestamp(Timestamp deadline) {
-        if (deadline == null) {
+    @Mappings({
+        @Mapping(source = "deadline", target = "deadline"),
+        @Mapping(source = "createTimestamp", target = "createTimestamp")
+    })
+    default String toStringTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
             return null;
         }
         LocalDateTime localDateTime =
-                deadline.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                timestamp.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
@@ -79,6 +83,7 @@ public interface PostServiceMapper {
     List<PostMemberRes> toPostMemberResList(List<Member> members);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "createTimestamp", target = "createTimestamp")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
@@ -87,6 +92,7 @@ public interface PostServiceMapper {
     PostReadRes toPostReadRes(Post post, @Context Long userId);
 
     @Mapping(source = "deadline", target = "deadline")
+    @Mapping(source = "createTimestamp", target = "createTimestamp")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
