@@ -1,5 +1,6 @@
 package com.spring.tming.domain.post.dto.response;
 
+import java.sql.Timestamp;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class PostReadRes {
     private List<String> skills;
     private List<PostMemberRes> members;
     private boolean liked;
+    private Timestamp createTimestamp;
 
     @Builder
     private PostReadRes(
@@ -37,7 +39,8 @@ public class PostReadRes {
             List<PostJobLimitRes> jobLimits,
             List<String> skills,
             List<PostMemberRes> members,
-            boolean liked) {
+            boolean liked,
+            Timestamp createTimestamp) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -51,5 +54,6 @@ public class PostReadRes {
         this.skills = skills;
         this.members = members;
         this.liked = liked;
+        this.createTimestamp = createTimestamp;
     }
 }
