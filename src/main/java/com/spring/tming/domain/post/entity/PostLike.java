@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_postLike")
 public class PostLike {
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     @Builder
