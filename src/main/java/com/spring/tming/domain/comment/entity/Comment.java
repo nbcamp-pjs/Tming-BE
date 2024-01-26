@@ -3,7 +3,6 @@ package com.spring.tming.domain.comment.entity;
 import com.spring.tming.domain.model.BaseEntity;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.user.entity.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
