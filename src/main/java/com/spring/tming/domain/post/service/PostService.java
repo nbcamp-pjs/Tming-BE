@@ -163,7 +163,7 @@ public class PostService {
                             .build());
             Post changedPost = postRepository.findByPostId(postId);
             changedPost.setCreateTimestamp(createTimestamp);
-//            Timestamp c = changedPost.getCreateTimestamp();
+            //            Timestamp c = changedPost.getCreateTimestamp();
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost, user.getUserId());
         }
 
