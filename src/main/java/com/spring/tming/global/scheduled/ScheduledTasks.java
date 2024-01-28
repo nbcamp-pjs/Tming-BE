@@ -6,25 +6,29 @@ import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class ScheduledTasks {
     private final PostRepository postRepository;
 
-    @Scheduled(fixedRate = 24 * 60 * 60 * 1000)
+    @Transactional
+    @Scheduled(cron = "0 0 3 * * *")
     public void checkAndHandleExpiredPosts() {
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime currentSeoulInstant = ZonedDateTime.now(seoulZoneId);
         List<Post> posts =
                 postRepository.findAllByDeadlineBeforeAndStatus(
                         Timestamp.valueOf(currentSeoulInstant.toLocalDateTime()), Status.OPEN);
+        List<Post> changedPosts = new ArrayList<>();
         for (Post post : posts) {
-            postRepository.save(
+            changedPosts.add(
                     Post.builder()
                             .postId(post.getPostId())
                             .title(post.getTitle())
@@ -36,5 +40,6 @@ public class ScheduledTasks {
                             .user(post.getUser())
                             .build());
         }
+        postRepository.saveAll(changedPosts);
     }
 }
