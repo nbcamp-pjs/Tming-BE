@@ -33,6 +33,7 @@ public class RedisUtil {
 
     public void setValuesList(String key, String data) {
         Long len = redisTemplate.opsForList().size(key);
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         redisTemplate.opsForList().rightPush(key, data);
         if (len == 0) {
             redisTemplate.expire(key, EXPIRATION_TIME, TimeUnit.SECONDS);
