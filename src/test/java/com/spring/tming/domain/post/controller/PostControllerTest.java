@@ -12,11 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
+import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
 import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
@@ -30,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -181,7 +184,32 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    void deletePostTest() {}
+    @Disabled
+    @DisplayName("모집글 삭제 테스트")
+    void deletePostTest() throws Exception {
+        // given
+        Long postId = 1L;
+        PostDeleteReq postDeleteReq =
+            PostDeleteReq.builder()
+                .postId(postId)
+                .build();
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        PostDeleteRes postDeleteRes = new PostDeleteRes();
+        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())));
+
+        // when
+        MvcResult result =
+            mockMvc
+                .perform(
+                    delete("/v1/posts")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(postDeleteReq))
+                        .principal(this.mockPrincipal))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 
     @Test
     void readPostTest() {}

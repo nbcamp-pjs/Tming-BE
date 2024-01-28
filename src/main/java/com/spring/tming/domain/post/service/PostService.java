@@ -225,7 +225,7 @@ public class PostService {
                             .build();
                 }
             default:
-                return null;
+                return PostReadResList.builder().build();
         }
     }
 
