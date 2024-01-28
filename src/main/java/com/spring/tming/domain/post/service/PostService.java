@@ -176,52 +176,61 @@ public class PostService {
         switch (dto.getType()) {
             case ALL:
                 {
-                    Page<Post> posts = postRepository.getAllPost(dto.getPageRequest());
+                    Page<Post> posts =
+                            postRepository.getAllPost(dto.getSkill(), dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .totalCount(posts.getTotalElements())
+                            .totalPage(posts.getTotalPages())
+                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
                             .build();
                 }
             case LIKE:
                 {
-                    Page<Post> posts = postRepository.getAllPostByLike(user, dto.getPageRequest());
+                    Page<Post> posts =
+                            postRepository.getAllPostByLike(
+                                    user, dto.getSkill(), dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .totalCount(posts.getTotalElements())
+                            .totalPage(posts.getTotalPages())
+                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
                             .build();
                 }
             case APPLY:
                 {
-                    Page<Post> posts = postRepository.getAllPostByApply(user, dto.getPageRequest());
+                    Page<Post> posts =
+                            postRepository.getAllPostByApply(
+                                    user, dto.getSkill(), dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .totalCount(posts.getTotalElements())
+                            .totalPage(posts.getTotalPages())
+                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
                             .build();
                 }
             case WRITE:
                 {
                     Page<Post> posts =
-                            postRepository.getAllPostByUser(user.getUsername(), dto.getPageRequest());
+                            postRepository.getAllPostByUser(
+                                    user, dto.getSkill(), dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .totalCount(posts.getTotalElements())
+                            .totalPage(posts.getTotalPages())
+                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
                             .build();
                 }
             case MEMBER:
                 {
-                    Page<Post> posts = postRepository.getAllPostByMember(user, dto.getPageRequest());
+                    Page<Post> posts =
+                            postRepository.getAllPostByMember(
+                                    user, dto.getSkill(), dto.getJob(), dto.getPageRequest());
                     return PostReadResList.builder()
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
-                            .build();
-                }
-            case SKILL:
-                {
-                    Page<Post> posts = postRepository.getAllPostBySkill(dto.getSkill(), dto.getPageRequest());
-                    return PostReadResList.builder()
-                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
-                            .build();
-                }
-            case JOB:
-                {
-                    Page<Post> posts = postRepository.getAllPostByJob(dto.getJob(), dto.getPageRequest());
-                    return PostReadResList.builder()
-                            .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
+                            .totalCount(posts.getTotalElements())
+                            .totalPage(posts.getTotalPages())
+                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
                             .build();
                 }
             default:

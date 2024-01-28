@@ -9,17 +9,17 @@ import org.springframework.data.domain.PageRequest;
 
 public interface PostRepositoryCustom {
 
-    Page<Post> getAllPost(PageRequest pageRequest);
+    Page<Post> getAllPost(Skill skill, Job job, PageRequest pageRequest);
 
-    Page<Post> getAllPostByLike(User user, PageRequest pageRequest);
+    Page<Post> getAllPostByLike(User user, Skill skill, Job job, PageRequest pageRequest);
 
-    Page<Post> getAllPostByApply(User user, PageRequest pageRequest);
+    Page<Post> getAllPostByApply(User user, Skill skill, Job job, PageRequest pageRequest);
 
-    Page<Post> getAllPostByUser(String username, PageRequest pageRequest);
+    Page<Post> getAllPostByUser(User user, Skill skill, Job job, PageRequest pageRequest);
 
-    Page<Post> getAllPostByMember(User user, PageRequest pageRequest);
+    Page<Post> getAllPostByMember(User user, Skill skill, Job job, PageRequest pageRequest);
 
-    Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
-
-    Page<Post> getAllPostByJob(Job job, PageRequest pageRequest);
+    //    Page<Post> getAllPostBySkill(Skill skill, PageRequest pageRequest);
+    //
+    //    Page<Post> getAllPostByJob(Job job, PageRequest pageRequest);
 }
