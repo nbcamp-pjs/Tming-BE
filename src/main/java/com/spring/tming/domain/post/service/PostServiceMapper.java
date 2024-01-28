@@ -11,7 +11,6 @@ import com.spring.tming.domain.post.entity.JobLimit;
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.entity.PostLike;
 import com.spring.tming.domain.post.entity.PostStack;
-import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -67,11 +66,6 @@ public interface PostServiceMapper {
         return skills;
     }
 
-    @Mapping(source = "job", target = "job")
-    default String toStringJob(Job job) {
-        return job.name();
-    }
-
     @Named("isCheckLiked")
     default boolean isCheckLiked(List<PostLike> postLikes, @Context Long userId) {
         if (CollectionUtils.isEmpty(postLikes)) {
@@ -92,11 +86,6 @@ public interface PostServiceMapper {
             }
         }
         return null;
-        //        return applicants.stream()
-        //            .filter(applicant -> userId.equals(applicant.getUser().getUserId()))
-        //            .findFirst()
-        //            .map(applicant -> userId)
-        //            .orElse(null);
     }
 
     @Named("isCheckApproval")
@@ -110,15 +99,13 @@ public interface PostServiceMapper {
 
     PostCreateRes toPostCreateRes(Post post);
 
-    @Mapping(source = "job", target = "job")
-    List<PostJobLimitRes> toPostJobLimitResList(List<JobLimit> jobLimits);
+    @Mapping(source = "job.description", target = "job")
+    PostJobLimitRes toPostJobLimitResList(JobLimit jobLimits);
 
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "user.profileImageUrl", target = "profileImageUrl")
     @Mapping(source = "user.username", target = "username")
     PostMemberRes toPostMemberRes(Member member);
-
-    List<PostMemberRes> toPostMemberResList(List<Member> members);
 
     @Mapping(source = "deadline", target = "deadline")
     @Mapping(source = "createTimestamp", target = "createTimestamp")

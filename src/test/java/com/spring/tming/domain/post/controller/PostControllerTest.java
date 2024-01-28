@@ -32,13 +32,13 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
@@ -184,31 +184,35 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("모집글 삭제 테스트")
     void deletePostTest() throws Exception {
         // given
         Long postId = 1L;
-        PostDeleteReq postDeleteReq =
-            PostDeleteReq.builder()
-                .postId(postId)
-                .build();
+        PostDeleteReq postDeleteReq = PostDeleteReq.builder().postId(postId).build();
 
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
 
         PostDeleteRes postDeleteRes = new PostDeleteRes();
-        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())));
+        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())))
+                .thenReturn(postDeleteRes);
 
         // when
         MvcResult result =
-            mockMvc
-                .perform(
-                    delete("/v1/posts")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(postDeleteReq))
-                        .principal(this.mockPrincipal))
-                .andExpect(status().isOk())
-                .andReturn();
+                mockMvc
+                        .perform(
+                                delete("/v1/posts")
+                                        .contentType("application/json")
+                                        .content(objectMapper.writeValueAsString(postDeleteReq))
+                                        .principal(this.mockPrincipal))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        // then
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        //        String responseBody = result.getResponse().getContentAsString();
+        //        PostDeleteRes actualPostDeleteRes = objectMapper.readValue(responseBody,
+        // PostDeleteRes.class);
+        //        assertThat(actualPostDeleteRes).isEqualTo(postDeleteRes);
     }
 
     @Test

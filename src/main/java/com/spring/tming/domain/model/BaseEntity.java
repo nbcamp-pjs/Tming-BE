@@ -13,7 +13,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @MappedSuperclass
 public class BaseEntity implements Serializable {
-    @Column @CreationTimestamp private Timestamp createTimestamp;
+    @Column(updatable = false)
+    @CreationTimestamp
+    private Timestamp createTimestamp;
 
     @Column @UpdateTimestamp private Timestamp updateTimestamp;
 }

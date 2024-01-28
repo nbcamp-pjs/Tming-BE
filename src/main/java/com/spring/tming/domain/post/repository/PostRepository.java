@@ -2,7 +2,6 @@ package com.spring.tming.domain.post.repository;
 
 import com.spring.tming.domain.post.entity.Post;
 import com.spring.tming.domain.post.repository.custom.PostRepositoryCustom;
-import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Status;
 import java.sql.Timestamp;
 import java.util.List;
