@@ -8,12 +8,14 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberAdmitReq {
     private Long userId;
+    private Long hostId;
     private Long postId;
     private Job job;
 
     @Builder
-    private MemberAdmitReq(Long userId, Long postId, Job job) {
+    private MemberAdmitReq(Long userId, Long hostId, Long postId, Job job) {
         this.userId = userId;
+        this.hostId = hostId;
         this.postId = postId;
         this.job = job;
     }

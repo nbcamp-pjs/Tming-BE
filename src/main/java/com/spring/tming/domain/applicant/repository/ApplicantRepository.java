@@ -14,4 +14,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, ApplicantI
     Applicant findByPostAndUser(Post post, User user);
 
     List<Applicant> findByPostPostId(Long postId);
+
+    void deleteByUserAndPost(User user, Post post);
 }

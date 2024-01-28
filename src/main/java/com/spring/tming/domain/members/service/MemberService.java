@@ -35,19 +35,24 @@ public class MemberService {
     @Transactional
     public MemberAdmitRes admitMember(MemberAdmitReq memberAdmitReq) {
         User user = getUser(memberAdmitReq.getUserId());
-        Post post = getPost(memberAdmitReq.getPostId(), user);
+        Post post = getPost(memberAdmitReq.getPostId(), memberAdmitReq.getHostId());
         Member member = memberRepository.findByPostAndUser(post, user);
         MemberValidator.checkAlreadyAdmitted(member);
-        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
-        ApplicantValidator.checkNotApplied(applicant);
+        deleteApplicant(user, post);
         memberRepository.save(
                 Member.builder().user(user).post(post).job(memberAdmitReq.getJob()).build());
         return new MemberAdmitRes();
     }
 
+    private void deleteApplicant(User user, Post post) {
+        Applicant applicant = applicantRepository.findByPostAndUser(post, user);
+        ApplicantValidator.checkNotYetApplied(applicant);
+        applicantRepository.deleteByUserAndPost(user, post);
+    }
+
     @Transactional
     public EmitMemberRes emitMember(User user, EmitMemberReq request) {
-        Post post = getPost(request.getPostId(), user);
+        Post post = getPost(request.getPostId(), user.getUserId());
         User emitUser = getUser(request.getUserId());
         Member member = getMember(post, emitUser);
         memberRepository.delete(member);
@@ -64,8 +69,8 @@ public class MemberService {
                 .build();
     }
 
-    private Post getPost(Long postId, User user) {
-        Post post = postRepository.findByPostIdAndUser(postId, user);
+    private Post getPost(Long postId, Long userId) {
+        Post post = postRepository.findByPostIdAndUserUserId(postId, userId);
         PostValidator.checkIsNullPost(post);
         return post;
     }

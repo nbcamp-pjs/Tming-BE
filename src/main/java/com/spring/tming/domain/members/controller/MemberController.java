@@ -23,7 +23,7 @@ public class MemberController {
     public RestResponse<MemberAdmitRes> admitMember(
             @RequestBody MemberAdmitReq memberAdmitReq,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        memberAdmitReq.setUserId(userDetails.getUser().getUserId());
+        memberAdmitReq.setHostId(userDetails.getUser().getUserId());
         return RestResponse.success(memberService.admitMember(memberAdmitReq));
     }
 
