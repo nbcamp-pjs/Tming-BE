@@ -12,7 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     Post findByPostId(Long postId);
 
-    Post findByPostIdAndUser(Long postId, User user);
+    Post findByPostIdAndUserUserId(Long postId, Long userId);
 
     List<Post> findAllByDeadlineBeforeAndStatus(Timestamp currentSeoulInstant, Status open);
 }
