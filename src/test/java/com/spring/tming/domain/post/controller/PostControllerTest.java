@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -103,11 +102,11 @@ class PostControllerTest extends BaseMvcTest {
         String imageUrl = "images/sparta.png";
         Resource fileResource = new ClassPathResource(imageUrl);
         MockMultipartFile file =
-            new MockMultipartFile(
-                "sparta",
-                fileResource.getFilename(),
-                IMAGE_PNG.getType(),
-                fileResource.getInputStream());
+                new MockMultipartFile(
+                        "sparta",
+                        fileResource.getFilename(),
+                        IMAGE_PNG.getType(),
+                        fileResource.getInputStream());
         MockMultipartFile imageFile =
                 new MockMultipartFile("image", "sample", "multipart/form-data", file.getBytes());
 
