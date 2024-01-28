@@ -19,6 +19,7 @@ public class PostAllReadRes {
     private String status;
     private String username;
     private List<PostJobLimitRes> jobLimits;
+    private String createTimestamp;
 
     @Builder
     private PostAllReadRes(
@@ -31,7 +32,8 @@ public class PostAllReadRes {
             String imageUrl,
             String status,
             String username,
-            List<PostJobLimitRes> jobLimits) {
+            List<PostJobLimitRes> jobLimits,
+            String createTimestamp) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -42,5 +44,6 @@ public class PostAllReadRes {
         this.status = status;
         this.username = username;
         this.jobLimits = jobLimits;
+        this.createTimestamp = createTimestamp;
     }
 }

@@ -26,6 +26,7 @@ import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import com.spring.tming.global.validator.PostValidator;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class PostService {
     private final S3Provider s3Provider;
     private final RedisUtil redisUtil;
     private static final String VISIT_KEY = "USER";
+    private static final String VISIT_VALUE = "POST";
 
     @Transactional
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
@@ -140,12 +142,14 @@ public class PostService {
     @Transactional
     public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
+        Timestamp createTimestamp = post.getCreateTimestamp();
         PostValidator.checkIsNullPost(post);
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
                 && !redisUtil
                         .getValuesList(VISIT_KEY + user.getUserId().toString())
-                        .contains(postId.toString())) {
-            redisUtil.setValuesList(VISIT_KEY + user.getUserId().toString(), postId.toString());
+                        .contains(VISIT_VALUE + postId.toString())) {
+            redisUtil.setValuesList(
+                    VISIT_KEY + user.getUserId().toString(), VISIT_VALUE + postId.toString());
             postRepository.save(
                     Post.builder()
                             .postId(post.getPostId())
@@ -158,6 +162,8 @@ public class PostService {
                             .user(post.getUser())
                             .build());
             Post changedPost = postRepository.findByPostId(postId);
+            changedPost.setCreateTimestamp(createTimestamp);
+            //            Timestamp c = changedPost.getCreateTimestamp();
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost, user.getUserId());
         }
 
@@ -219,7 +225,7 @@ public class PostService {
                             .build();
                 }
             default:
-                return null;
+                return PostReadResList.builder().build();
         }
     }
 

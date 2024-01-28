@@ -22,6 +22,9 @@ public class PostReadRes {
     private List<String> skills;
     private List<PostMemberRes> members;
     private boolean liked;
+    private String createTimestamp;
+    private Long applicantId;
+    private boolean approval;
 
     @Builder
     private PostReadRes(
@@ -37,7 +40,10 @@ public class PostReadRes {
             List<PostJobLimitRes> jobLimits,
             List<String> skills,
             List<PostMemberRes> members,
-            boolean liked) {
+            boolean liked,
+            String createTimestamp,
+            Long applicantId,
+            boolean approval) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -51,5 +57,8 @@ public class PostReadRes {
         this.skills = skills;
         this.members = members;
         this.liked = liked;
+        this.createTimestamp = createTimestamp;
+        this.applicantId = applicantId;
+        this.approval = approval;
     }
 }

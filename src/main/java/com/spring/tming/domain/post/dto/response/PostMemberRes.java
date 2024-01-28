@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 public class PostMemberRes {
     private Long userId;
     private String profileImageUrl;
+    private String username;
 
     @Builder
-    private PostMemberRes(Long userId, String profileImageUrl) {
+    private PostMemberRes(Long userId, String profileImageUrl, String username) {
         this.userId = userId;
         this.profileImageUrl = profileImageUrl;
+        this.username = username;
     }
 }

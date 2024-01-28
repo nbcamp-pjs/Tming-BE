@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,32 +12,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
+import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
+import com.spring.tming.domain.post.dto.request.PostUpdateReq;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
+import com.spring.tming.domain.post.dto.response.PostDeleteRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
 import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
+import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostLikeService;
 import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.security.UserDetailsImpl;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.StreamUtils;
 
 @WebMvcTest(controllers = {PostController.class})
 class PostControllerTest extends BaseMvcTest {
@@ -80,7 +84,6 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("모집글 생성 테스트")
     void createPostTest() throws Exception {
         // given
@@ -89,8 +92,8 @@ class PostControllerTest extends BaseMvcTest {
         String content = "content";
         Timestamp deadline = Timestamp.valueOf(LocalDateTime.now());
         List<PostJobLimitReq> jobLimits =
-                new ArrayList<>(List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build()));
-        List<Skill> skills = new ArrayList<>(List.of(Skill.JAVA, Skill.SPRING));
+                List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build());
+        List<Skill> skills = List.of(Skill.JAVA, Skill.SPRING);
         PostCreateReq postCreateReq =
                 PostCreateReq.builder()
                         .title(title)
@@ -99,18 +102,18 @@ class PostControllerTest extends BaseMvcTest {
                         .jobLimits(jobLimits)
                         .skills(skills)
                         .build();
-        String imageUrl = "images/sparta.png";
-        Resource fileResource = new ClassPathResource(imageUrl);
-        MockMultipartFile file =
-                new MockMultipartFile(
-                        "sparta",
-                        fileResource.getFilename(),
-                        IMAGE_PNG.getType(),
-                        fileResource.getInputStream());
+
+        Resource resource = new ClassPathResource("images/sparta.png");
+        byte[] imageBytes = StreamUtils.copyToByteArray(resource.getInputStream());
         MockMultipartFile imageFile =
-                new MockMultipartFile("image", "sample", "multipart/form-data", file.getBytes());
+                new MockMultipartFile("image", "sparta.png", "image/png", imageBytes);
 
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        String json = objectMapper.writeValueAsString(postCreateReq);
+        MockMultipartFile request =
+                new MockMultipartFile(
+                        "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
 
         PostCreateRes postCreateRes = PostCreateRes.builder().postId(postId).build();
 
@@ -121,10 +124,8 @@ class PostControllerTest extends BaseMvcTest {
         MvcResult result =
                 mockMvc
                         .perform(
-                                multipart("/v1/posts")
-                                        .file(imageFile)
-                                        .file("request", objectMapper.writeValueAsBytes(postCreateReq))
-                                        .principal(this.mockPrincipal))
+                                multipart("/v1/posts").file(imageFile).file(request).principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
@@ -134,10 +135,85 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    void updatePostTest() {}
+    @DisplayName("모집글 수정 테스트")
+    void updatePostTest() throws Exception {
+        // given
+        Long postId = 1L;
+        String title = "title";
+        String content = "content";
+        Timestamp deadline = Timestamp.valueOf(LocalDateTime.now());
+        List<PostJobLimitReq> jobLimits =
+                List.of(PostJobLimitReq.builder().headcount(1).job(Job.BACKEND).build());
+        List<Skill> skills = List.of(Skill.JAVA, Skill.SPRING);
+        PostUpdateReq postUpdateReq =
+                PostUpdateReq.builder()
+                        .title(title)
+                        .content(content)
+                        .deadline(deadline)
+                        .jobLimits(jobLimits)
+                        .skills(skills)
+                        .build();
+
+        Resource resource = new ClassPathResource("images/sparta.png");
+        byte[] imageBytes = StreamUtils.copyToByteArray(resource.getInputStream());
+        MockMultipartFile imageFile =
+                new MockMultipartFile("image", "sparta.png", "image/png", imageBytes);
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        String json = objectMapper.writeValueAsString(postUpdateReq);
+        MockMultipartFile request =
+                new MockMultipartFile(
+                        "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
+
+        PostUpdateRes postUpdateRes = new PostUpdateRes();
+        when(postService.updatePost(eq(postUpdateReq), eq(imageFile), eq(userDetails.getUser())))
+                .thenReturn(postUpdateRes);
+
+        // when
+        MvcResult result =
+                mockMvc
+                        .perform(
+                                multipart("/v1/posts").file(imageFile).file(request).principal(this.mockPrincipal))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        // then
+        String responseJson = result.getResponse().getContentAsString();
+        assertThat(responseJson).isNotNull();
+    }
 
     @Test
-    void deletePostTest() {}
+    @DisplayName("모집글 삭제 테스트")
+    void deletePostTest() throws Exception {
+        // given
+        Long postId = 1L;
+        PostDeleteReq postDeleteReq = PostDeleteReq.builder().postId(postId).build();
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        PostDeleteRes postDeleteRes = new PostDeleteRes();
+        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())))
+                .thenReturn(postDeleteRes);
+
+        // when
+        MvcResult result =
+                mockMvc
+                        .perform(
+                                delete("/v1/posts")
+                                        .contentType("application/json")
+                                        .content(objectMapper.writeValueAsString(postDeleteReq))
+                                        .principal(this.mockPrincipal))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        // then
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        //        String responseBody = result.getResponse().getContentAsString();
+        //        PostDeleteRes actualPostDeleteRes = objectMapper.readValue(responseBody,
+        // PostDeleteRes.class);
+        //        assertThat(actualPostDeleteRes).isEqualTo(postDeleteRes);
+    }
 
     @Test
     void readPostTest() {}
