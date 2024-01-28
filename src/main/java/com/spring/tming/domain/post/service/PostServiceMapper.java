@@ -105,6 +105,7 @@ public interface PostServiceMapper {
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "user.profileImageUrl", target = "profileImageUrl")
     @Mapping(source = "user.username", target = "username")
+    @Mapping(source = "job.description", target = "job")
     PostMemberRes toPostMemberRes(Member member);
 
     @Mapping(source = "deadline", target = "deadline")

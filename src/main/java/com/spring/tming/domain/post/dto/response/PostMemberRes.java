@@ -11,11 +11,13 @@ public class PostMemberRes {
     private Long userId;
     private String profileImageUrl;
     private String username;
+    private String job;
 
     @Builder
-    private PostMemberRes(Long userId, String profileImageUrl, String username) {
+    private PostMemberRes(Long userId, String profileImageUrl, String username, String job) {
         this.userId = userId;
         this.profileImageUrl = profileImageUrl;
         this.username = username;
+        this.job = job;
     }
 }
