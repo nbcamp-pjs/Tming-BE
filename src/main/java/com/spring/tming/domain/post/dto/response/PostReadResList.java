@@ -10,9 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostReadResList {
     private List<PostAllReadRes> postAllReadRes;
+    private Long totalCount;
+    private Integer totalPage;
+    private Integer pageNumber;
 
     @Builder
-    private PostReadResList(List<PostAllReadRes> postAllReadRes) {
+    private PostReadResList(
+            List<PostAllReadRes> postAllReadRes, Long totalCount, Integer totalPage, Integer pageNumber) {
         this.postAllReadRes = postAllReadRes;
+        this.totalCount = totalCount;
+        this.totalPage = totalPage;
+        this.pageNumber = pageNumber;
     }
 }
