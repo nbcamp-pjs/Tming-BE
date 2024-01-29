@@ -17,6 +17,7 @@ public class PostUpdateReq {
     private Timestamp deadline;
     private List<PostJobLimitReq> jobLimits;
     private List<Skill> skills;
+    private String imageUrl;
 
     @Builder
     private PostUpdateReq(
@@ -25,12 +26,14 @@ public class PostUpdateReq {
             String content,
             Timestamp deadline,
             List<PostJobLimitReq> jobLimits,
-            List<Skill> skills) {
+            List<Skill> skills,
+            String imageUrl) {
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.deadline = deadline;
         this.jobLimits = jobLimits;
         this.skills = skills;
+        this.imageUrl = imageUrl;
     }
 }
