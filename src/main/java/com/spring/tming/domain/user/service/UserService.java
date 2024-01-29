@@ -148,6 +148,7 @@ public class UserService {
                         .email(prevUser.getEmail())
                         .password(passwordEncoder.encode(userUpdateReq.getPassword()))
                         .username(userUpdateReq.getUsername())
+                        .role(prevUser.getRole())
                         .job(userUpdateReq.getJob())
                         .introduce(userUpdateReq.getIntroduce())
                         .profileImageUrl(profileImageUrl)
