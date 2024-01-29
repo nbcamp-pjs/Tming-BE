@@ -17,6 +17,7 @@ public class PostAllReadRes {
     private Long like;
     private String imageUrl;
     private String status;
+    private Long userId;
     private String username;
     private List<PostJobLimitRes> jobLimits;
     private String createTimestamp;
@@ -31,6 +32,7 @@ public class PostAllReadRes {
             Long like,
             String imageUrl,
             String status,
+            Long userId,
             String username,
             List<PostJobLimitRes> jobLimits,
             String createTimestamp) {
@@ -42,6 +44,7 @@ public class PostAllReadRes {
         this.like = like;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.userId = userId;
         this.username = username;
         this.jobLimits = jobLimits;
         this.createTimestamp = createTimestamp;
