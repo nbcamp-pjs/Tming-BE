@@ -1,5 +1,7 @@
 package com.spring.tming.domain.post.service;
 
+import static com.spring.tming.global.meta.ResultCode.SYSTEM_ERROR;
+
 import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
@@ -18,8 +20,8 @@ import com.spring.tming.domain.post.entity.PostStack;
 import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
-import com.spring.tming.domain.post.util.ImageFileHandler;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.meta.Status;
 import com.spring.tming.global.redis.RedisUtil;
@@ -31,11 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -46,13 +51,17 @@ public class PostService {
     private final RedisUtil redisUtil;
     private static final String VISIT_KEY = "USER";
     private static final String VISIT_VALUE = "POST";
+    private final String FOLDER_POST = "post";
+
+    @Value("${cloud.aws.s3.bucket.url}")
+    private String bucketUrl;
 
     @Transactional
     public PostCreateRes createPost(PostCreateReq postCreateReq, MultipartFile image, User user)
             throws IOException {
         PostValidator.checkRequest(postCreateReq.getTitle(), postCreateReq.getContent());
         // image 처리 분리 => 저장소url 가져오기
-        String imageUrl = s3Provider.saveFile(image, "postImage");
+
         Post savedPost =
                 postRepository.save(
                         Post.builder()
@@ -61,7 +70,7 @@ public class PostService {
                                 .deadline(postCreateReq.getDeadline())
                                 .status(Status.OPEN)
                                 .visit(0L)
-                                .imageUrl(imageUrl)
+                                .imageUrl(saveFile(image))
                                 .user(user)
                                 .build());
 
@@ -81,8 +90,6 @@ public class PostService {
         PostValidator.checkIsNullPost(post);
         // 모집글의 작성자와 인증된 유저가 같은지 확인 (validation)
         PostValidator.checkIsPostUser(post, user);
-        // 수정한 이미지 파일 처리
-        String imageUrl = ImageFileHandler.checkUpdateImage(post, image);
 
         // 업데이트한 Post 만들기
         Post updatedPost =
@@ -94,7 +101,7 @@ public class PostService {
                                 .deadline(postUpdateReq.getDeadline())
                                 .status(post.getStatus())
                                 .visit(post.getVisit())
-                                .imageUrl(imageUrl)
+                                .imageUrl(getImageUrl(postUpdateReq, post, image))
                                 .user(user)
                                 .build());
 
@@ -104,6 +111,43 @@ public class PostService {
 
         savePostStackAndJobLimit(postUpdateReq.getSkills(), postUpdateReq.getJobLimits(), updatedPost);
         return new PostUpdateRes();
+    }
+
+    private String getImageUrl(PostUpdateReq postUpdateReq, Post post, MultipartFile multipartFile) {
+        String profileImageUrl = saveFile(multipartFile);
+        if (profileImageUrl == null) {
+            return postUpdateReq.getImageUrl();
+        }
+
+        deleteImage(post.getImageUrl());
+        return profileImageUrl;
+    }
+
+    private void deleteImage(String profileImageUrl) {
+        if (isExistProfileImageUrl(profileImageUrl)) {
+            try {
+                s3Provider.deleteImage(profileImageUrl);
+            } catch (Exception e) {
+                // 버그로 인해 image url이 없는 경우
+                log.warn(e.getMessage());
+            }
+        }
+    }
+
+    private boolean isExistProfileImageUrl(String imageUrl) {
+        return imageUrl != null;
+    }
+
+    private String saveFile(MultipartFile multipartFile) {
+        try {
+            String url = s3Provider.saveFile(multipartFile, FOLDER_POST);
+            if (url != null) {
+                url = url.replace(bucketUrl, "");
+            }
+            return url;
+        } catch (Exception e) {
+            throw new GlobalException(SYSTEM_ERROR);
+        }
     }
 
     private void savePostStackAndJobLimit(
