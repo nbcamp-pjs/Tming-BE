@@ -131,7 +131,7 @@ public class UserService {
     public UserUpdateRes updateUser(UserUpdateReq userUpdateReq, MultipartFile multipartFile) {
         UserValidator.validate(userUpdateReq);
         User prevUser = getUserByUserId(userUpdateReq.getUserId());
-        checkDuplicateUsername(userUpdateReq.getUsername());
+        checkDuplicateUsername(userUpdateReq, userUpdateReq.getUsername());
         if (isExistProfileImageUrl(prevUser.getProfileImageUrl())) {
             try {
                 s3Provider.deleteImage(prevUser.getProfileImageUrl());
@@ -167,8 +167,8 @@ public class UserService {
         }
     }
 
-    private void checkDuplicateUsername(String username) {
-        UserValidator.duplicatedUser(userRepository.findByUsername(username));
+    private void checkDuplicateUsername(UserUpdateReq userUpdateReq, String username) {
+        UserValidator.duplicatedUpdateUser(userUpdateReq, userRepository.findByUsername(username));
     }
 
     private User getUserByUserId(Long userId) {
