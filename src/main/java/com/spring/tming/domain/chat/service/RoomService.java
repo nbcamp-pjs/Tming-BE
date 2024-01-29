@@ -12,8 +12,8 @@ import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.validator.ChatRoomValidator;
 import com.spring.tming.global.validator.UserValidator;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,80 +46,77 @@ public class RoomService {
     }
     // 채팅방 단건조회
     public RoomGetRes getFindRoom(RoomGetReq roomGetReq) {
+        // 채팅내용 불러오기
         RoomMessageReq roomMessageReq =
-                RoomMessageReq.builder()
-                        .roomId(roomGetReq.getRoomId())
-                        .userId(roomGetReq.getUserId())
-                        .build();
+                ChatRoomServiceMapper.INSTANCE.toRoomMessageReq(
+                        memberRepository.findByUserIdUserId(roomGetReq.getUserId()));
         RoomMessageResList roomMessageResList = getMessageRoom(roomMessageReq);
 
+        // 채팅방 불러오기
         ChatRoom chatRoom = roomRepository.findByChatRoomId(roomGetReq.getRoomId());
-        ChatMember receiver =
-                memberRepository.findByChatRoomIdAndUserIdNot(
-                        chatRoom, userRepository.findByUserId(roomGetReq.getUserId()));
+
+        // 채팅 다수 상대 조회
+        List<ChatMember> chatUserList = memberRepository.findByChatRoomId(chatRoom);
 
         return RoomGetRes.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
                 .chatRoomName(chatRoom.getChatRoomName())
-                .userId(receiver.getUserId().getUserId())
+                .chatUserList(chatUserList)
                 .roomMessageResList(roomMessageResList)
                 .build();
     }
 
     // 채팅방 전체 조회
     public RoomGetAllResList getAllRoom(RoomGetAllReq roomGetAllReq) {
-        RoomInfoReq roomInfoReq =
-                RoomInfoReq.builder()
-                        .userId(userRepository.findByUserId(roomGetAllReq.getUserId()))
-                        .build();
-        RoomInfoResList roomInfoResList = getRoomList(roomInfoReq);
-        List<RoomGetAllRes> roomGetAllResList = new ArrayList<>();
-        for (RoomInfoRes roomInfoRes : roomInfoResList.getRoomInfoRese()) {
-            RoomMessageReq roomMessageReq =
-                    RoomMessageReq.builder()
-                            .roomId(roomInfoRes.getChatRoomId())
-                            .userId(roomGetAllReq.getUserId())
-                            .build();
-            RoomMessageResList roomMessageResList = getMessageRoom(roomMessageReq);
 
-            RoomLastChatRes roomLastChatRes =
-                    ChatRoomServiceMapper.INSTANCE.toRoomLastChatRes(lastChat(roomInfoRes.getChatRoomId()));
-            RoomGetAllRes roomGetAllRes =
-                    RoomGetAllRes.builder()
-                            .userId(roomGetAllReq.getUserId())
-                            .roomInfoRes(roomInfoRes)
-                            .roomLastChatRes(roomLastChatRes)
-                            .build();
-            roomGetAllResList.add(roomGetAllRes);
-        }
+        RoomInfoReq roomInfoReq =
+                ChatRoomServiceMapper.INSTANCE.toRoomInfoReq(
+                        userRepository.findByUserId(roomGetAllReq.getUserId()));
+
+        // 채팅방 전체 불러오기
+        RoomInfoResList roomInfoResList = getRoomList(roomInfoReq);
+        List<RoomGetAllRes> roomGetAllResList =
+                roomInfoResList.getRoomInfoRese().stream()
+                        .map(
+                                roomInfoRes -> {
+                                    // 전체 채팅
+                                    RoomMessageReq roomMessageReq =
+                                            ChatRoomServiceMapper.INSTANCE.toRoomMessageReq(
+                                                    memberRepository.findByUserIdUserId(roomInfoRes.getUserId()));
+                                    RoomMessageResList roomMessageResList = getMessageRoom(roomMessageReq);
+                                    // 마지막 채팅
+                                    RoomLastChatRes roomLastChatRes =
+                                            ChatRoomServiceMapper.INSTANCE.toRoomLastChatRes(
+                                                    lastChat(roomInfoRes.getChatRoomId()));
+
+                                    return RoomGetAllRes.builder()
+                                            .userId(roomGetAllReq.getUserId())
+                                            .roomInfoRes(roomInfoRes)
+                                            .roomLastChatRes(roomLastChatRes)
+                                            .build();
+                                })
+                        .collect(Collectors.toList());
 
         return RoomGetAllResList.builder().roomGetAllReses(roomGetAllResList).build();
     }
 
-    // 채팅방 정보
     public RoomInfoResList getRoomList(RoomInfoReq roomInfoReq) { // req->user
         // 유저아이디 ->채팅방 아이디
         List<ChatMember> chatMemberList = memberRepository.findByUserId(roomInfoReq.getUserId());
         ChatRoomValidator.checkRoomList(chatMemberList.get(0));
-        List<RoomInfoRes> roomInfoResList = new ArrayList<>();
-
-        for (ChatMember chatMember : chatMemberList) {
-            // 상대방 아이디
-            ChatRoom chatRoom =
-                    roomRepository.findByChatRoomId(chatMember.getChatRoomId().getChatRoomId());
-            ChatMember receiver =
-                    memberRepository.findByChatRoomIdAndUserIdNot(chatRoom, roomInfoReq.getUserId());
-
-            RoomInfoRes roomInfoRes =
-                    RoomInfoRes.builder()
-                            .chatRoomId(chatRoom.getChatRoomId())
-                            .chatRoomName(chatRoom.getChatRoomName())
-                            .userId(receiver.getUserId().getUserId())
-                            .build();
-
-            roomInfoResList.add(roomInfoRes);
-        }
-
+        // 채팅방 정보(roomId, roomName, receiverId)
+        List<RoomInfoRes> roomInfoResList =
+                chatMemberList.stream()
+                        .map(
+                                chatMember -> {
+                                    ChatRoom chatRoom =
+                                            roomRepository.findByChatRoomId(chatMember.getChatRoomId().getChatRoomId());
+                                    return ChatRoomServiceMapper.INSTANCE.toRoomInfoRes(
+                                            chatRoom,
+                                            memberRepository.findByChatRoomIdAndUserIdNot(
+                                                    chatRoom, roomInfoReq.getUserId()));
+                                })
+                        .collect(Collectors.toList());
         return RoomInfoResList.builder().roomInfoRese(roomInfoResList).build();
     }
 
@@ -139,6 +136,7 @@ public class RoomService {
 
     // 마지막 메세지 조회
     public Chat lastChat(Long roomId) {
+
         Chat lastChat = chatRepository.findTop1ByChatRoomIdChatRoomIdOrderByCreateTimestampDesc(roomId);
 
         return lastChat;

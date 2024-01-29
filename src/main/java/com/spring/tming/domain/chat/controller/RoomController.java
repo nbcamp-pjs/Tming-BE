@@ -40,6 +40,7 @@ public class RoomController {
     @GetMapping("/{roomId}")
     public RestResponse<RoomGetRes> getFindRoom(
             @PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         RoomGetReq roomGetReq =
                 RoomGetReq.builder().roomId(roomId).userId(userDetails.getUser().getUserId()).build();
 
