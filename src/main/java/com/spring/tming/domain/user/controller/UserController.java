@@ -75,7 +75,7 @@ public class UserController {
     @PatchMapping
     public RestResponse<UserUpdateRes> updateUser(
             @RequestPart UserUpdateReq userUpdateReq,
-            @RequestPart MultipartFile multipartFile,
+            @RequestPart(required = false) MultipartFile multipartFile,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userUpdateReq.setUserId(userDetails.getUser().getUserId());
         return RestResponse.success(userService.updateUser(userUpdateReq, multipartFile));

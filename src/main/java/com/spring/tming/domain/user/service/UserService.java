@@ -40,6 +40,7 @@ public class UserService {
     private final RedisUtil redisUtil;
 
     private final String FOLDER_USER = "user";
+    private final String DEFAULT_IMAGE = "test/loopy-goonchim.png";
 
     @Value("${cloud.aws.s3.bucket.url}")
     private String bucketUrl;
@@ -64,6 +65,7 @@ public class UserService {
                         .username(signupReq.getUsername())
                         .role(Role.USER)
                         .job(signupReq.getJob())
+                        .profileImageUrl(DEFAULT_IMAGE)
                         .build();
         userRepository.save(user);
         return new SignupRes();
@@ -132,16 +134,7 @@ public class UserService {
         UserValidator.validate(userUpdateReq);
         User prevUser = getUserByUserId(userUpdateReq.getUserId());
         checkDuplicateUsername(userUpdateReq, userUpdateReq.getUsername());
-        if (isExistProfileImageUrl(prevUser.getProfileImageUrl())) {
-            try {
-                s3Provider.deleteImage(prevUser.getProfileImageUrl());
-            } catch (Exception e) {
-                // 버그로 인해 image url이 없는 경우
-                log.warn(e.getMessage());
-            }
-        }
 
-        String profileImageUrl = saveFile(multipartFile).replace(bucketUrl, "");
         userRepository.save(
                 User.builder()
                         .userId(prevUser.getUserId())
@@ -151,9 +144,30 @@ public class UserService {
                         .role(prevUser.getRole())
                         .job(userUpdateReq.getJob())
                         .introduce(userUpdateReq.getIntroduce())
-                        .profileImageUrl(profileImageUrl)
+                        .profileImageUrl(getImageUrl(userUpdateReq, prevUser, multipartFile))
                         .build());
         return new UserUpdateRes();
+    }
+
+    private String getImageUrl(UserUpdateReq userUpdateReq, User user, MultipartFile multipartFile) {
+        String profileImageUrl = saveFile(multipartFile);
+        if (profileImageUrl == null) {
+            return userUpdateReq.getProfileImageUrl();
+        }
+
+        deleteImage(user.getProfileImageUrl());
+        return profileImageUrl;
+    }
+
+    private void deleteImage(String profileImageUrl) {
+        if (isExistProfileImageUrl(profileImageUrl)) {
+            try {
+                s3Provider.deleteImage(profileImageUrl);
+            } catch (Exception e) {
+                // 버그로 인해 image url이 없는 경우
+                log.warn(e.getMessage());
+            }
+        }
     }
 
     private boolean isExistProfileImageUrl(String profileImageUrl) {
@@ -162,7 +176,11 @@ public class UserService {
 
     private String saveFile(MultipartFile multipartFile) {
         try {
-            return s3Provider.saveFile(multipartFile, FOLDER_USER);
+            String url = s3Provider.saveFile(multipartFile, FOLDER_USER);
+            if (url != null) {
+                url = url.replace(bucketUrl, "");
+            }
+            return url;
         } catch (Exception e) {
             throw new GlobalException(SYSTEM_ERROR);
         }
