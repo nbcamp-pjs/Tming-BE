@@ -14,9 +14,9 @@ public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
     private static final long EXPIRATION_TIME = 24 * 60 * 60;
 
-    public void set(String key, Object o, long minutes) {
+    public void set(String key, Object o, long seconds) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
-        redisTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(key, o, seconds, TimeUnit.SECONDS);
     }
 
     public Object get(String key) {
