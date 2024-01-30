@@ -142,8 +142,8 @@ public class PostService {
     @Transactional
     public PostReadRes readPost(Long postId, User user) {
         Post post = postRepository.findByPostId(postId);
-        Timestamp createTimestamp = post.getCreateTimestamp();
         PostValidator.checkIsNullPost(post);
+        Timestamp createTimestamp = post.getCreateTimestamp();
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())
                 && !redisUtil
                         .getValuesList(VISIT_KEY + user.getUserId().toString())
@@ -163,7 +163,6 @@ public class PostService {
                             .build());
             Post changedPost = postRepository.findByPostId(postId);
             changedPost.setCreateTimestamp(createTimestamp);
-            //            Timestamp c = changedPost.getCreateTimestamp();
             return PostServiceMapper.INSTANCE.toPostReadRes(changedPost, user.getUserId());
         }
 
@@ -182,7 +181,7 @@ public class PostService {
                             .postAllReadRes(PostServiceMapper.INSTANCE.toPostAllReadResList(posts.getContent()))
                             .totalCount(posts.getTotalElements())
                             .totalPage(posts.getTotalPages())
-                            .pageNumber(dto.getPageRequest().getPageNumber() + 1)
+                            .pageNumber(posts.getNumber() + 1)
                             .build();
                 }
             case LIKE:
