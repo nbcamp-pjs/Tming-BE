@@ -192,8 +192,8 @@ public class PostService {
                 && !redisUtil
                         .getValuesList(VISIT_KEY + user.getUserId().toString())
                         .contains(VISIT_VALUE + postId.toString())) {
-            redisUtil.setValuesList(
-                    VISIT_KEY + user.getUserId().toString(), VISIT_VALUE + postId.toString());
+            String postIdString = postId.toString();
+            redisUtil.setValuesList(VISIT_KEY + user.getUserId().toString(), VISIT_VALUE + postIdString);
             postRepository.save(
                     Post.builder()
                             .postId(post.getPostId())

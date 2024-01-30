@@ -17,6 +17,7 @@ public class PostReadRes {
     private Long like;
     private String imageUrl;
     private String status;
+    private Long userId;
     private String username;
     private List<PostJobLimitRes> jobLimits;
     private List<String> skills;
@@ -36,6 +37,7 @@ public class PostReadRes {
             Long like,
             String imageUrl,
             String status,
+            Long userId,
             String username,
             List<PostJobLimitRes> jobLimits,
             List<String> skills,
@@ -52,6 +54,7 @@ public class PostReadRes {
         this.like = like;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.userId = userId;
         this.username = username;
         this.jobLimits = jobLimits;
         this.skills = skills;

@@ -113,6 +113,7 @@ public interface PostServiceMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
+    @Mapping(source = "post.user.userId", target = "userId")
     @Mapping(source = "postStacks", target = "skills")
     @Mapping(source = "post.postLikes", qualifiedByName = "isCheckLiked", target = "liked")
     @Mapping(source = "post.applicants", qualifiedByName = "isCheckApply", target = "applicantId")
@@ -124,6 +125,7 @@ public interface PostServiceMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "postLikes", target = "like")
     @Mapping(source = "post.user.username", target = "username")
+    @Mapping(source = "post.user.userId", target = "userId")
     PostAllReadRes toPostAllReadResList(Post post);
 
     List<PostAllReadRes> toPostAllReadResList(List<Post> posts);
