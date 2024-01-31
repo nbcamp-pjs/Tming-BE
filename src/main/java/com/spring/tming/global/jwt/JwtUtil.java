@@ -1,5 +1,7 @@
 package com.spring.tming.global.jwt;
 
+import com.spring.tming.global.exception.GlobalException;
+import com.spring.tming.global.meta.ResultCode;
 import com.spring.tming.global.validator.TokenValidator;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -28,6 +30,7 @@ public class JwtUtil {
     private String secretkey;
 
     private Key key;
+
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct
@@ -68,7 +71,7 @@ public class JwtUtil {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateAccessToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -82,6 +85,25 @@ public class JwtUtil {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
         return false;
+    }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new GlobalException(ResultCode.INVALID_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new GlobalException(ResultCode.INVALID_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new GlobalException(ResultCode.INVALID_TOKEN);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new GlobalException(ResultCode.INVALID_TOKEN);
+        }
     }
 
     public Claims getUserInfoFromToken(String token) {

@@ -38,11 +38,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String accessToken = jwtUtil.getTokenFromHeader(request, ACCESS_TOKEN_HEADER);
 
-        if (StringUtils.hasText(accessToken) && !jwtUtil.validateToken(accessToken)) {
+        if (StringUtils.hasText(accessToken) && !jwtUtil.validateAccessToken(accessToken)) {
             String refreshToken = jwtUtil.getTokenFromHeader(request, REFRESH_TOKEN_HEADER);
 
             if (StringUtils.hasText(refreshToken)
-                    && jwtUtil.validateToken(refreshToken)
+                    && jwtUtil.validateRefreshToken(refreshToken)
                     && redisUtil.hasKey(refreshToken)) {
                 Long userId = Long.parseLong(redisUtil.get(refreshToken).toString());
                 User user = userRepository.findByUserId(userId);

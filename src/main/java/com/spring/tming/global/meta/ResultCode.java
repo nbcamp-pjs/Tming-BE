@@ -29,7 +29,7 @@ public enum ResultCode {
     VALID_PASSWORD(3004, "password는 8자 이상, 16자 이하인 대소문자, 숫자, 특수문자를 모두 포함하여 구성되어야 합니다."),
     ALREADY_FOLLOWED_USER(3005, "이미 팔로우한 유저입니다."),
     NOT_YET_FOLLOWED_USER(3006, "아직 팔로우하지 않은 유저입니다."),
-    INVALID_TOKEN(3007, "토큰이 유효하지 않습니다."),
+    INVALID_TOKEN(3007, "유효하지 않은 토큰입니다."),
 
     NOT_FOUND_POST(4002, "모집글 데이터가 없습니다."),
     ALREADY_LIKED_POST(4003, "이미 좋아요가 눌린 모집글입니다."),
