@@ -7,7 +7,7 @@ import com.spring.tming.global.meta.Job;
 public interface UserTest {
 
     Long TEST_USER_ID = 1L;
-
+    String FAILURE = "failure";
     String TEST_USER_NAME = "username";
     String TEST_USER_PASSWORD = "ABcd5678#&";
     String TEST_USER_EMAIL = "username@gmail.com";
