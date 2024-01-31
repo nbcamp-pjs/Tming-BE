@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,11 +25,10 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public class LoginTest {
+public class LoginTest extends BaseMvcTest {
     @Autowired WebApplicationContext context;
     @Autowired UserRepository userRepository;
     @Autowired PasswordEncoder passwordEncoder;
-    private MockMvc mockMvc;
 
     @BeforeEach
     public void setup() {
