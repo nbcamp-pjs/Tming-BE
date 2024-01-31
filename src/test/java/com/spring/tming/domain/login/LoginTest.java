@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.spring.tming.domain.BaseMvcTest;
+import com.spring.tming.domain.user.dto.request.LoginReq;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -52,25 +52,30 @@ public class LoginTest extends BaseMvcTest {
 
     @Test
     public void login_success() throws Exception {
-
-        String jsonReq =
-                "{\"email\": \"" + TEST_USER_EMAIL + "\",\"password\": \"" + TEST_USER_PASSWORD + "\"}";
+        LoginReq loginReq = LoginReq.builder()
+                .email(TEST_USER_EMAIL)
+                .password(TEST_USER_PASSWORD).build();
 
         mockMvc
-                .perform(post("/v1/users/login").contentType(MediaType.APPLICATION_JSON).content(jsonReq))
+                .perform(post("/v1/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginReq))
+                        .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     public void login_password_failure() throws Exception {
-        String email = TEST_USER_EMAIL;
-        String password = FAILURE + TEST_USER_PASSWORD;
-
-        String jsonReq = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
+        LoginReq loginReq = LoginReq.builder()
+                .email(TEST_USER_EMAIL)
+                .password(FAILURE + TEST_USER_PASSWORD).build();
 
         mockMvc
-                .perform(post("/v1/users/login").contentType(MediaType.APPLICATION_JSON).content(jsonReq))
+                .perform(post("/v1/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginReq))
+                        .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(unauthenticated());
     }
