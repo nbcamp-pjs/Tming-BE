@@ -6,34 +6,33 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.spring.tming.domain.BaseMvcTest;
-import com.spring.tming.domain.user.dto.request.LoginReq;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
+@Transactional
 @AutoConfigureMockMvc
-public class LoginTest extends BaseMvcTest {
+public class LoginTest {
     @Autowired WebApplicationContext context;
     @Autowired UserRepository userRepository;
     @Autowired PasswordEncoder passwordEncoder;
+    private MockMvc mockMvc;
 
     @BeforeEach
     public void setup() {
-        User TEST_USER =
+        User user =
                 User.builder()
                         .userId(TEST_USER_ID)
                         .email(TEST_USER_EMAIL)
@@ -44,7 +43,7 @@ public class LoginTest extends BaseMvcTest {
                         .introduce(TEST_USER_INTRODUCE)
                         .profileImageUrl(TEST_USER_PROFILE_URL)
                         .build();
-        userRepository.save(TEST_USER);
+        userRepository.save(user);
         mockMvc =
                 MockMvcBuilders.webAppContextSetup(this.context)
                         .apply(SecurityMockMvcConfigurers.springSecurity())
@@ -53,29 +52,25 @@ public class LoginTest extends BaseMvcTest {
 
     @Test
     public void login_success() throws Exception {
-        LoginReq req = LoginReq.builder().email(TEST_USER_EMAIL).password(TEST_USER_PASSWORD).build();
+
+        String jsonReq =
+                "{\"email\": \"" + TEST_USER_EMAIL + "\",\"password\": \"" + TEST_USER_PASSWORD + "\"}";
 
         mockMvc
-                .perform(
-                        post("/v1/users/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(req))
-                                .principal(this.mockPrincipal))
+                .perform(post("/v1/users/login").contentType(MediaType.APPLICATION_JSON).content(jsonReq))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     public void login_password_failure() throws Exception {
-        LoginReq req =
-                LoginReq.builder().email(TEST_USER_EMAIL).password(FAILURE + TEST_USER_PASSWORD).build();
+        String email = TEST_USER_EMAIL;
+        String password = FAILURE + TEST_USER_PASSWORD;
+
+        String jsonReq = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
 
         mockMvc
-                .perform(
-                        post("/v1/users/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(req))
-                                .principal(this.mockPrincipal))
+                .perform(post("/v1/users/login").contentType(MediaType.APPLICATION_JSON).content(jsonReq))
                 .andDo(print())
                 .andExpect(unauthenticated());
     }
