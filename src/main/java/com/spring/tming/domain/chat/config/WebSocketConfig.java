@@ -2,6 +2,7 @@ package com.spring.tming.domain.chat.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -11,6 +12,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final StompHandler stompHandler;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 웹소켓이 handshake를 하기 위해 연결하는 endpoint
@@ -24,5 +27,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         // 서버 -> 클라이언트로 발행하는 메세지에 대한 endpoint 설정
         config.enableSimpleBroker("/sub");
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(stompHandler);
     }
 }
