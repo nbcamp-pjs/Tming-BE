@@ -12,6 +12,7 @@ import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,31 +52,33 @@ public class LoginTest extends BaseMvcTest {
     }
 
     @Test
+    @DisplayName("로그인_성공")
     public void login_success() throws Exception {
-        LoginReq loginReq = LoginReq.builder()
-                .email(TEST_USER_EMAIL)
-                .password(TEST_USER_PASSWORD).build();
+        LoginReq loginReq =
+                LoginReq.builder().email(TEST_USER_EMAIL).password(TEST_USER_PASSWORD).build();
 
         mockMvc
-                .perform(post("/v1/users/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginReq))
-                        .principal(this.mockPrincipal))
+                .perform(
+                        post("/v1/users/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginReq))
+                                .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
+    @DisplayName("로그인_실패")
     public void login_password_failure() throws Exception {
-        LoginReq loginReq = LoginReq.builder()
-                .email(TEST_USER_EMAIL)
-                .password(FAILURE + TEST_USER_PASSWORD).build();
+        LoginReq loginReq =
+                LoginReq.builder().email(TEST_USER_EMAIL).password(FAILURE + TEST_USER_PASSWORD).build();
 
         mockMvc
-                .perform(post("/v1/users/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginReq))
-                        .principal(this.mockPrincipal))
+                .perform(
+                        post("/v1/users/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginReq))
+                                .principal(this.mockPrincipal))
                 .andDo(print())
                 .andExpect(unauthenticated());
     }
