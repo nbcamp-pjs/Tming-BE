@@ -27,7 +27,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
 
         String refreshToken = jwtUtil.getTokenWithoutBearer(request.getHeader(REFRESH_TOKEN_HEADER));
 
-        TokenValidator.validate(jwtUtil.validateToken(refreshToken));
+        TokenValidator.validate(jwtUtil.validateRefreshToken(refreshToken));
 
         if (redisUtil.hasKey(refreshToken)) {
             redisUtil.delete(refreshToken);
