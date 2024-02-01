@@ -40,7 +40,10 @@ public enum ResultCode {
     POST_INVALID_CONTENT(4008, "content는 1500자 안으로 작성되어야 합니다."),
 
     NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다."),
+
+    // 채팅방관련
     NOT_FOUND_CHATROOM(6000, "채팅방이 존재하지 않습니다."),
+    CHATROOM_MISMATCH(6001, "유저가 참여한 방이 아닙니다."),
 
     // 모집글 신청 관련
     ALREADY_APPLIED_POST(7003, "이미 신청한 모집글입니다."),

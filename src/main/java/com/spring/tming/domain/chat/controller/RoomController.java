@@ -1,8 +1,10 @@
 package com.spring.tming.domain.chat.controller;
 
+import com.spring.tming.domain.chat.dto.request.RoomFindReq;
 import com.spring.tming.domain.chat.dto.request.RoomGetAllReq;
 import com.spring.tming.domain.chat.dto.request.RoomGetReq;
 import com.spring.tming.domain.chat.dto.request.RoomSaveReq;
+import com.spring.tming.domain.chat.dto.response.RoomFindRes;
 import com.spring.tming.domain.chat.dto.response.RoomGetAllResList;
 import com.spring.tming.domain.chat.dto.response.RoomGetRes;
 import com.spring.tming.domain.chat.dto.response.RoomSaveRes;
@@ -26,6 +28,22 @@ public class RoomController {
 
         roomReq.setSenderId(userDetails.getUser().getUserId());
         return RestResponse.success(roomService.createRoom(roomReq));
+    }
+
+    // 방확인
+    @PostMapping("/{userId}")
+    public RestResponse<RoomFindRes> findRoom(
+            @PathVariable Long userId,
+            @RequestBody RoomFindReq roomFind,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        RoomFindReq roomFindReq =
+                RoomFindReq.builder()
+                        .senderId(userDetails.getUser().getUserId())
+                        .receiverId(userId)
+                        .roomName(roomFind.getRoomName())
+                        .build();
+
+        return RestResponse.success(roomService.findRoom(roomFindReq));
     }
 
     @GetMapping
