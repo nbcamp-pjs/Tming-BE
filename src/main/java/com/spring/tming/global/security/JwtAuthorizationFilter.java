@@ -4,7 +4,9 @@ import static com.spring.tming.global.jwt.JwtUtil.*;
 
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
+import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.jwt.JwtUtil;
+import com.spring.tming.global.meta.ResultCode;
 import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.validator.UserValidator;
 import io.jsonwebtoken.Claims;
@@ -53,12 +55,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         if (StringUtils.hasText(accessToken)) {
-            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
             try {
+                Claims info = jwtUtil.getUserInfoFromToken(accessToken);
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
+                throw new GlobalException(ResultCode.INVALID_TOKEN);
             }
         }
         filterChain.doFilter(request, response);
