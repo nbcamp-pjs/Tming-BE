@@ -9,13 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoomFindRes {
     private Long chatRoomId;
-    private Long senderId;
-    private Long receiverId;
 
     @Builder
-    private RoomFindRes(Long chatRoomId, Long senderId, Long receiverId) {
+    private RoomFindRes(Long chatRoomId) {
         this.chatRoomId = chatRoomId;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
     }
 }

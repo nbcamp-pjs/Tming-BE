@@ -13,7 +13,6 @@ import com.spring.tming.domain.user.repository.UserRepository;
 import com.spring.tming.global.validator.ChatRoomValidator;
 import com.spring.tming.global.validator.UserValidator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +63,6 @@ public class RoomService {
                         .equals(receiverMember.getChatRoomId().getChatRoomId())) {
                     return RoomFindRes.builder()
                             .chatRoomId(senderMember.getChatRoomId().getChatRoomId())
-                            .senderId(roomFindReq.getSenderId())
-                            .receiverId(roomFindReq.getReceiverId())
                             .build();
                 }
             }
@@ -78,11 +75,7 @@ public class RoomService {
                         .senderId(roomFindReq.getSenderId())
                         .build();
         RoomSaveRes roomSaveRes = createRoom(roomSaveReq);
-        return RoomFindRes.builder()
-                .receiverId(roomFindReq.getReceiverId())
-                .chatRoomId(roomSaveRes.getRoomId())
-                .senderId(roomFindReq.getSenderId())
-                .build();
+        return RoomFindRes.builder().chatRoomId(roomSaveRes.getRoomId()).build();
     }
 
     // 채팅방 단건조회
@@ -162,6 +155,8 @@ public class RoomService {
         // 유저아이디 ->채팅방 아이디
         List<ChatMember> chatMemberList = memberRepository.findByUserId(roomInfoReq.getUserId());
         ChatRoomValidator.checkRoomList(chatMemberList);
+        // 유저 프로필 이미지
+        String url = roomInfoReq.getUserId().getProfileImageUrl();
         // 채팅방 정보(roomId, roomName, receiverId)
         List<RoomInfoRes> roomInfoResList =
                 chatMemberList.stream()
@@ -172,9 +167,11 @@ public class RoomService {
                                     ChatMember receiver =
                                             memberRepository.findByChatRoomIdAndUserIdNot(
                                                     chatRoom, roomInfoReq.getUserId());
+                                    ;
                                     return ChatRoomServiceMapper.INSTANCE.toRoomInfoRes(
                                             chatRoom,
                                             userRepository.findByUserId(receiver.getUserId().getUserId()),
+                                            roomInfoReq.getUserId(),
                                             receiver);
                                 })
                         .collect(Collectors.toList());

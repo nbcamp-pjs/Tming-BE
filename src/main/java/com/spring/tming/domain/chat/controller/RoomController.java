@@ -29,18 +29,19 @@ public class RoomController {
         roomReq.setSenderId(userDetails.getUser().getUserId());
         return RestResponse.success(roomService.createRoom(roomReq));
     }
-
+    //  @RequestParam(name = "job", required = false) Job job,
+    // @RequestParam(name = "offset", defaultValue = "1") String offset,
     // 방확인
-    @PostMapping("/{userId}")
+    @GetMapping("/chat")
     public RestResponse<RoomFindRes> findRoom(
-            @PathVariable Long userId,
-            @RequestBody RoomFindReq roomFind,
+            @RequestParam(name = "receiverId") Long receiverId,
+            @RequestParam(name = "roomName", defaultValue = "newChatRoom") String roomName,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         RoomFindReq roomFindReq =
                 RoomFindReq.builder()
                         .senderId(userDetails.getUser().getUserId())
-                        .receiverId(userId)
-                        .roomName(roomFind.getRoomName())
+                        .receiverId(receiverId)
+                        .roomName(roomName)
                         .build();
 
         return RestResponse.success(roomService.findRoom(roomFindReq));

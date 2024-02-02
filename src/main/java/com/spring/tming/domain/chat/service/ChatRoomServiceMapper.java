@@ -49,8 +49,9 @@ public interface ChatRoomServiceMapper {
 
     @Mapping(source = "chatRoom.chatRoomId", target = "chatRoomId")
     @Mapping(source = "chatMember.userId.userId", target = "userId")
-    @Mapping(source = "user.username", target = "username")
-    RoomInfoRes toRoomInfoRes(ChatRoom chatRoom, User user, ChatMember chatMember);
+    @Mapping(source = "receiver.username", target = "username")
+    @Mapping(source = "sender.profileImageUrl", target = "imageUrl")
+    RoomInfoRes toRoomInfoRes(ChatRoom chatRoom, User receiver, User sender, ChatMember chatMember);
 
     @Mapping(source = "user", target = "userId")
     RoomInfoReq toRoomInfoReq(User user);

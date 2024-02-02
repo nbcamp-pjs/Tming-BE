@@ -7,6 +7,7 @@ import com.spring.tming.domain.chat.entity.ChatMember;
 import com.spring.tming.domain.chat.entity.ChatRoom;
 import com.spring.tming.global.exception.GlobalException;
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 public class ChatRoomValidator {
 
@@ -38,7 +39,7 @@ public class ChatRoomValidator {
     }
 
     private static boolean isNulllChatMemberList(List<ChatMember> chatMemberList) {
-        return chatMemberList.isEmpty();
+        return CollectionUtils.isEmpty(chatMemberList);
     }
 
     private static boolean isNullChatRoom(ChatRoom chatRoom) {

@@ -17,5 +17,4 @@ public interface ChatMemberRepository extends JpaRepository<ChatMember, Long> {
     ChatMember findByChatRoomIdAndUserIdNot(ChatRoom chatRoom, User userId);
 
     ChatMember findByChatRoomIdChatRoomIdAndUserIdUserId(Long roomId, Long userId);
-
 }
