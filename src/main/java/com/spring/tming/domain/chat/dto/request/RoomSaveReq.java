@@ -12,8 +12,9 @@ public class RoomSaveReq {
     private Long senderId;
 
     @Builder
-    private RoomSaveReq(Long userId, String name) {
+    private RoomSaveReq(Long userId, String name, Long senderId) {
         this.userId = userId;
         this.name = name;
+        this.senderId = senderId;
     }
 }
