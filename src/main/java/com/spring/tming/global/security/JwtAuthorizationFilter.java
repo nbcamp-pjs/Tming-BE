@@ -46,8 +46,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(refreshToken)
                     && jwtUtil.validateRefreshToken(refreshToken)
                     && redisUtil.hasKey(refreshToken)) {
-                Long userId = Long.parseLong(redisUtil.get(refreshToken).toString());
-                User user = userRepository.findByUserId(userId);
+                String email = redisUtil.get(refreshToken).toString();
+                User user = userRepository.findByEmail(email);
                 UserValidator.validate(user);
                 accessToken = jwtUtil.createAccessToken(user.getEmail()).split(" ")[1].trim();
                 response.addHeader(ACCESS_TOKEN_HEADER, BEARER_PREFIX + accessToken);
