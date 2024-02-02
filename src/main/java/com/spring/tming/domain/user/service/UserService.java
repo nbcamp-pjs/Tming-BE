@@ -40,7 +40,6 @@ public class UserService {
     private final RedisUtil redisUtil;
 
     private final String FOLDER_USER = "user";
-    private final String DEFAULT_IMAGE = "test/loopy-goonchim.png";
 
     @Value("${cloud.aws.s3.bucket.url}")
     private String bucketUrl;
@@ -65,7 +64,7 @@ public class UserService {
                         .username(signupReq.getUsername())
                         .role(Role.USER)
                         .job(signupReq.getJob())
-                        .profileImageUrl(DEFAULT_IMAGE)
+                        .profileImageUrl(null)
                         .build();
         userRepository.save(user);
         return new SignupRes();
