@@ -83,6 +83,11 @@ tasks.withType(JavaCompile) {
 
 spotless {
 	java {
+		target project.fileTree(project.rootDir) {
+			include '**/*.java'
+			exclude 'build/generated/**/*.*'
+		}
+
 		// 사용하지 않는 import 제거
 		removeUnusedImports()
 		// 구글 자바 포맷 적용
@@ -96,9 +101,8 @@ spotless {
 	}
 }
 
-tasks.named("spotlessJavaCheck").configure { dependsOn("spotlessApply") }
 // 의존성을 설정해줌 test 끝나고 spotlessjava 수행되도록
-tasks.named("spotlessJava").configure { dependsOn("compileTestJava") }
+tasks.named("spotlessJava").configure {dependsOn("asciidoctor")}
 
 tasks.named('test') {
 	useJUnitPlatform()
