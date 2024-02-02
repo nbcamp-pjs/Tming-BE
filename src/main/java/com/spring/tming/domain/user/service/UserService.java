@@ -138,7 +138,7 @@ public class UserService {
                 User.builder()
                         .userId(prevUser.getUserId())
                         .email(prevUser.getEmail())
-                        .password(passwordEncoder.encode(userUpdateReq.getPassword()))
+                        .password(prevUser.getPassword())
                         .username(userUpdateReq.getUsername())
                         .role(prevUser.getRole())
                         .job(userUpdateReq.getJob())

@@ -52,9 +52,6 @@ public class UserValidator {
         if (!isCorrectUsernameFormat(userUpdateReq.getUsername())) {
             throw new GlobalException(VALID_USERNAME);
         }
-        if (!isCorrectPasswordFormat(userUpdateReq.getPassword())) {
-            throw new GlobalException(VALID_PASSWORD);
-        }
     }
 
     public static void checkAlreadyFollowed(Follow follow) {
