@@ -11,10 +11,12 @@ public class RoomMessageRes {
 
     private Long userId;
     private String content;
+    private String createTimestamp;
 
     @Builder
-    private RoomMessageRes(Long userId, String content) {
+    private RoomMessageRes(Long userId, String content, String createTimestamp) {
         this.userId = userId;
         this.content = content;
+        this.createTimestamp = createTimestamp;
     }
 }

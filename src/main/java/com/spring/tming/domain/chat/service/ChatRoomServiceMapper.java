@@ -39,6 +39,7 @@ public interface ChatRoomServiceMapper {
 
     @Mapping(source = "chat.userId.userId", target = "userId")
     @Mapping(source = "content", target = "content")
+    @Mapping(source = "createTimestamp", target = "createTimestamp")
     RoomMessageRes toRoomMessageRes(Chat chat);
 
     @Mapping(source = "chat.userId.userId", target = "userId")
