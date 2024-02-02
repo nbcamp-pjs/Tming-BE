@@ -6,6 +6,7 @@ import com.spring.tming.domain.chat.dto.response.RoomInfoRes;
 import com.spring.tming.domain.chat.dto.response.RoomLastChatRes;
 import com.spring.tming.domain.chat.dto.response.RoomMessageRes;
 import com.spring.tming.domain.chat.dto.response.RoomSaveRes;
+import com.spring.tming.domain.chat.dto.response.RoomUserInfoRes;
 import com.spring.tming.domain.chat.entity.Chat;
 import com.spring.tming.domain.chat.entity.ChatMember;
 import com.spring.tming.domain.chat.entity.ChatRoom;
@@ -59,4 +60,11 @@ public interface ChatRoomServiceMapper {
     @Mapping(source = "chatMember.userId.userId", target = "userId")
     @Mapping(source = "chatMember.chatRoomId.chatRoomId", target = "roomId")
     RoomMessageReq toRoomMessageReq(ChatMember chatMember);
+
+    @Mapping(source = "userId.userId", target = "userId")
+    @Mapping(source = "userId.username", target = "username")
+    @Mapping(source = "userId.profileImageUrl", target = "imageUrl")
+    RoomUserInfoRes toRoomUserInfoRes(ChatMember chatMember);
+
+    List<RoomUserInfoRes> toRoomUserInfoReses(List<ChatMember> chatMembers);
 }

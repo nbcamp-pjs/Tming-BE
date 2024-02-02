@@ -78,7 +78,7 @@ public class RoomService {
         return RoomFindRes.builder().chatRoomId(roomSaveRes.getRoomId()).build();
     }
 
-    // 채팅방 단건조회
+    @Transactional(readOnly = true)
     public RoomGetRes getFindRoom(RoomGetReq roomGetReq) {
         // 채팅방 확인
         ChatRoom checkRoom = roomRepository.findByChatRoomId(roomGetReq.getRoomId());
@@ -99,16 +99,13 @@ public class RoomService {
         ChatRoom chatRoom = roomRepository.findByChatRoomId(roomGetReq.getRoomId());
         // 채팅 다수 상대 조회
         List<ChatMember> chatList = memberRepository.findByChatRoomId(chatRoom);
-
-        List<Long> chatUserList =
-                chatList.stream()
-                        .map(chatMember -> chatMember.getUserId().getUserId())
-                        .collect(Collectors.toList());
+        List<RoomUserInfoRes> roomUserInfoReses =
+                ChatRoomServiceMapper.INSTANCE.toRoomUserInfoReses(chatList);
 
         return RoomGetRes.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
                 .chatRoomName(chatRoom.getChatRoomName())
-                .chatUserList(chatUserList)
+                .roomUserInfoReses(roomUserInfoReses)
                 .roomMessageResList(roomMessageResList)
                 .build();
     }

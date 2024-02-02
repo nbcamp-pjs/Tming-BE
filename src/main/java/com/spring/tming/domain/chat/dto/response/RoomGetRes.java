@@ -12,18 +12,18 @@ public class RoomGetRes {
 
     private Long chatRoomId;
     private String chatRoomName;
-    private List<Long> chatUserList;
+    private List<RoomUserInfoRes> roomUserInfoReses;
     private RoomMessageResList roomMessageResList;
 
     @Builder
     private RoomGetRes(
             Long chatRoomId,
             String chatRoomName,
-            List<Long> chatUserList,
+            List<RoomUserInfoRes> roomUserInfoReses,
             RoomMessageResList roomMessageResList) {
         this.chatRoomId = chatRoomId;
         this.chatRoomName = chatRoomName;
-        this.chatUserList = chatUserList;
+        this.roomUserInfoReses = roomUserInfoReses;
         this.roomMessageResList = roomMessageResList;
     }
 }
