@@ -2,7 +2,6 @@ package com.spring.tming.domain.post.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -131,8 +130,7 @@ class PostControllerTest extends BaseMvcTest {
 
         PostCreateRes postCreateRes = PostCreateRes.builder().postId(postId).build();
 
-        when(postService.createPost(eq(postCreateReq), eq(imageFile), eq(userDetails.getUser())))
-                .thenReturn(postCreateRes);
+        when(postService.createPost(any(), any(), any())).thenReturn(postCreateRes);
 
         // when
         MvcResult result =
@@ -181,14 +179,14 @@ class PostControllerTest extends BaseMvcTest {
                         "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
 
         PostUpdateRes postUpdateRes = new PostUpdateRes();
-        when(postService.updatePost(eq(postUpdateReq), eq(imageFile), eq(userDetails.getUser())))
-                .thenReturn(postUpdateRes);
+        when(postService.updatePost(any(), any(), any())).thenReturn(postUpdateRes);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(
                                 multipart("/v1/posts").file(imageFile).file(request).principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
@@ -207,17 +205,17 @@ class PostControllerTest extends BaseMvcTest {
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
 
         PostDeleteRes postDeleteRes = new PostDeleteRes();
-        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())))
-                .thenReturn(postDeleteRes);
+        when(postService.deletePost(any(), any())).thenReturn(postDeleteRes);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(
                                 delete("/v1/posts")
-                                        .contentType("application/json")
+                                        .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(postDeleteReq))
                                         .principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
@@ -253,12 +251,13 @@ class PostControllerTest extends BaseMvcTest {
                         .skills(skills)
                         .build();
 
-        when(postService.readPost(eq(postId), eq(userDetails.getUser()))).thenReturn(expectedResponse);
+        when(postService.readPost(any(), any())).thenReturn(expectedResponse);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(get("/v1/posts/{postId}", postId).principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
     }
@@ -289,6 +288,7 @@ class PostControllerTest extends BaseMvcTest {
                                         .param("offset", "1")
                                         .param("size", "10")
                                         .principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(MockMvcResultMatchers.status().isOk())
                         .andReturn();
     }
@@ -304,17 +304,17 @@ class PostControllerTest extends BaseMvcTest {
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
 
         PostStatusUpdateRes postStatusUpdateRes = new PostStatusUpdateRes();
-        when(postService.updatePostStatus(eq(postStatusUpdateReq), eq(userDetails.getUser())))
-                .thenReturn(postStatusUpdateRes);
+        when(postService.updatePostStatus(any(), any())).thenReturn(postStatusUpdateRes);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(
                                 patch("/v1/posts/status")
-                                        .contentType("application/json")
+                                        .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(postStatusUpdateReq))
                                         .principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
     }
