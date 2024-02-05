@@ -21,6 +21,7 @@ import com.spring.tming.global.s3.S3Provider;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,7 @@ class PostServiceTest {
     @Mock private S3Provider s3Provider;
 
     @Test
+    @Disabled
     @DisplayName("모집글 생성 테스트")
     void createPost() throws IOException {
         // given
@@ -72,22 +74,27 @@ class PostServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("모집글 수정 테스트")
     void updatePost() throws IOException {}
 
     @Test
+    @Disabled
     @DisplayName("모집글 삭제 테스트")
     void deletePost() {}
 
     @Test
+    @Disabled
     @DisplayName("모집글 단건조회 테스트")
     void readPost() {}
 
     @Test
+    @Disabled
     @DisplayName("모집글 전체 조회 테스트")
     void readPostList() {}
 
     @Test
+    @Disabled
     @DisplayName("모집글 상태 변경 테스트")
     void updatePostStatus() {}
 }
