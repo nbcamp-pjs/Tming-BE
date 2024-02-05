@@ -14,9 +14,9 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.user.entity.User;
-import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
+import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.s3.S3Provider;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -39,7 +39,7 @@ class PostServiceTest {
     @Mock private PostRepository postRepository;
     @Mock private PostStackRepository postStackRepository;
     @Mock private JobLimitRepository jobLimitRepository;
-    @Mock private UserService userService;
+    @Mock private RedisUtil redisUtil;
     @Mock private S3Provider s3Provider;
 
     @Test
