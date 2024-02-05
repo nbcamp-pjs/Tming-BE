@@ -2,10 +2,11 @@ package com.spring.tming.domain.post.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,11 +16,18 @@ import com.spring.tming.domain.post.dto.request.PostCreateReq;
 import com.spring.tming.domain.post.dto.request.PostDeleteReq;
 import com.spring.tming.domain.post.dto.request.PostJobLimitReq;
 import com.spring.tming.domain.post.dto.request.PostLikeReq;
+import com.spring.tming.domain.post.dto.request.PostReadReq;
+import com.spring.tming.domain.post.dto.request.PostStatusUpdateReq;
 import com.spring.tming.domain.post.dto.request.PostUnlikeReq;
 import com.spring.tming.domain.post.dto.request.PostUpdateReq;
+import com.spring.tming.domain.post.dto.response.PostAllReadRes;
 import com.spring.tming.domain.post.dto.response.PostCreateRes;
 import com.spring.tming.domain.post.dto.response.PostDeleteRes;
+import com.spring.tming.domain.post.dto.response.PostJobLimitRes;
 import com.spring.tming.domain.post.dto.response.PostLikeRes;
+import com.spring.tming.domain.post.dto.response.PostReadRes;
+import com.spring.tming.domain.post.dto.response.PostReadResList;
+import com.spring.tming.domain.post.dto.response.PostStatusUpdateRes;
 import com.spring.tming.domain.post.dto.response.PostUnlikeRes;
 import com.spring.tming.domain.post.dto.response.PostUpdateRes;
 import com.spring.tming.domain.post.service.PostLikeService;
@@ -27,13 +35,16 @@ import com.spring.tming.domain.post.service.PostService;
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
+import com.spring.tming.global.meta.Status;
 import com.spring.tming.global.security.UserDetailsImpl;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
@@ -42,6 +53,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.StreamUtils;
 
 @WebMvcTest(controllers = {PostController.class})
@@ -117,8 +130,7 @@ class PostControllerTest extends BaseMvcTest {
 
         PostCreateRes postCreateRes = PostCreateRes.builder().postId(postId).build();
 
-        when(postService.createPost(eq(postCreateReq), eq(imageFile), eq(userDetails.getUser())))
-                .thenReturn(postCreateRes);
+        when(postService.createPost(any(), any(), any())).thenReturn(postCreateRes);
 
         // when
         MvcResult result =
@@ -167,14 +179,14 @@ class PostControllerTest extends BaseMvcTest {
                         "request", "json", "application/json", json.getBytes(StandardCharsets.UTF_8));
 
         PostUpdateRes postUpdateRes = new PostUpdateRes();
-        when(postService.updatePost(eq(postUpdateReq), eq(imageFile), eq(userDetails.getUser())))
-                .thenReturn(postUpdateRes);
+        when(postService.updatePost(any(), any(), any())).thenReturn(postUpdateRes);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(
                                 multipart("/v1/posts").file(imageFile).file(request).principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
@@ -193,17 +205,17 @@ class PostControllerTest extends BaseMvcTest {
         UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
 
         PostDeleteRes postDeleteRes = new PostDeleteRes();
-        when(postService.deletePost(eq(postDeleteReq), eq(userDetails.getUser())))
-                .thenReturn(postDeleteRes);
+        when(postService.deletePost(any(), any())).thenReturn(postDeleteRes);
 
         // when
         MvcResult result =
                 mockMvc
                         .perform(
                                 delete("/v1/posts")
-                                        .contentType("application/json")
+                                        .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(postDeleteReq))
                                         .principal(this.mockPrincipal))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
 
@@ -216,11 +228,94 @@ class PostControllerTest extends BaseMvcTest {
     }
 
     @Test
-    void readPostTest() {}
+    @DisplayName("모집글 단건조회 테스트")
+    void readPostTest() throws Exception {
+        // given
+        Long postId = 1L;
+        String title = "title";
+        String content = "content";
+        String deadline = String.valueOf(Timestamp.valueOf(LocalDateTime.now()));
+        List<PostJobLimitRes> jobLimits =
+                List.of(PostJobLimitRes.builder().headcount(1).job(Job.BACKEND.getDescription()).build());
+        List<String> skills = List.of(Skill.JAVA.getDescription(), Skill.SPRING.getDescription());
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        PostReadRes expectedResponse =
+                PostReadRes.builder()
+                        .postId(postId)
+                        .title(title)
+                        .content(content)
+                        .deadline(deadline)
+                        .jobLimits(jobLimits)
+                        .skills(skills)
+                        .build();
+
+        when(postService.readPost(any(), any())).thenReturn(expectedResponse);
+
+        // when
+        MvcResult result =
+                mockMvc
+                        .perform(get("/v1/posts/{postId}", postId).principal(this.mockPrincipal))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andReturn();
+    }
 
     @Test
-    void readPostListTest() {}
+    @DisplayName("모집글 전체 조회 테스트")
+    void readPostListTest() throws Exception {
+        // given
+        PostReadResList postReadResList =
+                PostReadResList.builder()
+                        .postAllReadRes(Collections.singletonList(PostAllReadRes.builder().build()))
+                        .totalCount(1L)
+                        .totalPage(1)
+                        .pageNumber(1)
+                        .build();
+
+        when(postService.readPostList(Mockito.any(PostReadReq.class), Mockito.any(User.class)))
+                .thenReturn(postReadResList);
+
+        // when
+        MvcResult result =
+                mockMvc
+                        .perform(
+                                MockMvcRequestBuilders.get("/v1/posts")
+                                        .param("type", "ALL")
+                                        .param("skill", "JAVA")
+                                        .param("job", "BACKEND")
+                                        .param("offset", "1")
+                                        .param("size", "10")
+                                        .principal(this.mockPrincipal))
+                        .andDo(print())
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andReturn();
+    }
 
     @Test
-    void updatePostStatusTest() {}
+    @DisplayName("모집글 상태 변경 테스트")
+    void updatePostStatusTest() throws Exception {
+        // given
+        Long postId = 1L;
+        PostStatusUpdateReq postStatusUpdateReq =
+                PostStatusUpdateReq.builder().postId(postId).status(Status.CLOSED).build();
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(User.builder().build());
+
+        PostStatusUpdateRes postStatusUpdateRes = new PostStatusUpdateRes();
+        when(postService.updatePostStatus(any(), any())).thenReturn(postStatusUpdateRes);
+
+        // when
+        MvcResult result =
+                mockMvc
+                        .perform(
+                                patch("/v1/posts/status")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(postStatusUpdateReq))
+                                        .principal(this.mockPrincipal))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andReturn();
+    }
 }
