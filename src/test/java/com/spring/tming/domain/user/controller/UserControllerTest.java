@@ -1,6 +1,7 @@
 package com.spring.tming.domain.user.controller;
 
 import static com.spring.tming.global.meta.Job.BACKEND;
+import static com.spring.tming.test.UserTest.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -14,16 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.spring.tming.domain.BaseMvcTest;
 import com.spring.tming.domain.user.dto.request.FollowReq;
+import com.spring.tming.domain.user.dto.request.SignupReq;
 import com.spring.tming.domain.user.dto.request.UnfollowReq;
 import com.spring.tming.domain.user.dto.request.UserUpdateReq;
-import com.spring.tming.domain.user.dto.response.FollowRes;
-import com.spring.tming.domain.user.dto.response.FollowerGetRes;
-import com.spring.tming.domain.user.dto.response.FollowerGetResList;
-import com.spring.tming.domain.user.dto.response.FollowingGetRes;
-import com.spring.tming.domain.user.dto.response.FollowingGetResList;
-import com.spring.tming.domain.user.dto.response.UnfollowRes;
-import com.spring.tming.domain.user.dto.response.UserGetRes;
-import com.spring.tming.domain.user.dto.response.UserUpdateRes;
+import com.spring.tming.domain.user.dto.response.*;
 import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.meta.Job;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +35,31 @@ import org.springframework.mock.web.MockMultipartFile;
 @WebMvcTest(controllers = {UserController.class})
 class UserControllerTest extends BaseMvcTest {
     @MockBean private UserService userService;
+
+    @Test
+    @DisplayName("회원가입")
+    void 회원가입() throws Exception {
+
+        SignupReq signupReq =
+                SignupReq.builder()
+                        .email(TEST_USER_EMAIL)
+                        .password(TEST_USER_PASSWORD)
+                        .username(TEST_USER_NAME)
+                        .job(TEST_USER_JOB)
+                        .build();
+
+        SignupRes signupRes = new SignupRes();
+
+        when(userService.signup(any())).thenReturn(signupRes);
+
+        this.mockMvc
+                .perform(
+                        post("/v1/users/signup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(signupReq)))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+    }
 
     @Test
     @DisplayName("유저 프로필 조회 테스트")
