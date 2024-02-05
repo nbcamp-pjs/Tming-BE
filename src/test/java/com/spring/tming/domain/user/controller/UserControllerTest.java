@@ -40,21 +40,23 @@ class UserControllerTest extends BaseMvcTest {
     @DisplayName("회원가입")
     void 회원가입() throws Exception {
 
-        SignupReq signupReq = SignupReq.builder()
-                .email(TEST_USER_EMAIL)
-                .password(TEST_USER_PASSWORD)
-                .username(TEST_USER_NAME)
-                .job(TEST_USER_JOB)
-                .build();
+        SignupReq signupReq =
+                SignupReq.builder()
+                        .email(TEST_USER_EMAIL)
+                        .password(TEST_USER_PASSWORD)
+                        .username(TEST_USER_NAME)
+                        .job(TEST_USER_JOB)
+                        .build();
 
         SignupRes signupRes = new SignupRes();
 
         when(userService.signup(any())).thenReturn(signupRes);
 
         this.mockMvc
-                .perform(post("/v1/users/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupReq)))
+                .perform(
+                        post("/v1/users/signup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(signupReq)))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
