@@ -1,6 +1,5 @@
 package com.spring.tming.domain.post.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -15,19 +14,18 @@ import com.spring.tming.domain.post.repository.JobLimitRepository;
 import com.spring.tming.domain.post.repository.PostRepository;
 import com.spring.tming.domain.post.repository.PostStackRepository;
 import com.spring.tming.domain.user.entity.User;
+import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.meta.Job;
 import com.spring.tming.global.meta.Skill;
 import com.spring.tming.global.s3.S3Provider;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -40,6 +38,7 @@ class PostServiceTest {
     @Mock private PostRepository postRepository;
     @Mock private PostStackRepository postStackRepository;
     @Mock private JobLimitRepository jobLimitRepository;
+    @Mock private UserService userService;
     @Mock private S3Provider s3Provider;
 
     @Test
@@ -74,7 +73,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("모집글 수정 테스트")
-    void updatePost() {}
+    void updatePost() throws IOException {}
 
     @Test
     @DisplayName("모집글 삭제 테스트")
