@@ -7,16 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoomMessageRes {
-
+public class RoomUserInfoRes {
     private Long userId;
-    private String content;
-    private String createTimestamp;
+    private String username;
+    private String imageUrl;
 
     @Builder
-    private RoomMessageRes(Long userId, String content, String createTimestamp) {
+    private RoomUserInfoRes(Long userId, String username, String imageUrl) {
         this.userId = userId;
-        this.content = content;
-        this.createTimestamp = createTimestamp;
+        this.username = username;
+        this.imageUrl = imageUrl;
     }
 }

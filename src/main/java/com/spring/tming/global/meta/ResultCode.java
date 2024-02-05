@@ -29,7 +29,7 @@ public enum ResultCode {
     VALID_PASSWORD(3004, "password는 8자 이상, 16자 이하인 대소문자, 숫자, 특수문자를 모두 포함하여 구성되어야 합니다."),
     ALREADY_FOLLOWED_USER(3005, "이미 팔로우한 유저입니다."),
     NOT_YET_FOLLOWED_USER(3006, "아직 팔로우하지 않은 유저입니다."),
-    INVALID_TOKEN(3007, "토큰이 유효하지 않습니다."),
+    INVALID_TOKEN(3007, "유효하지 않은 토큰입니다."),
 
     NOT_FOUND_POST(4002, "모집글 데이터가 없습니다."),
     ALREADY_LIKED_POST(4003, "이미 좋아요가 눌린 모집글입니다."),
@@ -40,7 +40,10 @@ public enum ResultCode {
     POST_INVALID_CONTENT(4008, "content는 1500자 안으로 작성되어야 합니다."),
 
     NOT_FOUND_COMMENT(5000, "댓글을 찾을 수 없거나 작성자가 아닙니다."),
+
+    // 채팅방관련
     NOT_FOUND_CHATROOM(6000, "채팅방이 존재하지 않습니다."),
+    CHATROOM_MISMATCH(6001, "유저가 참여한 방이 아닙니다."),
 
     // 모집글 신청 관련
     ALREADY_APPLIED_POST(7003, "이미 신청한 모집글입니다."),

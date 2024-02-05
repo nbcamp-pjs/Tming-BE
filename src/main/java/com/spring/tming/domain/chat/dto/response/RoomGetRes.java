@@ -1,5 +1,6 @@
 package com.spring.tming.domain.chat.dto.response;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,15 +12,18 @@ public class RoomGetRes {
 
     private Long chatRoomId;
     private String chatRoomName;
-    private Long userId;
+    private List<RoomUserInfoRes> roomUserInfoReses;
     private RoomMessageResList roomMessageResList;
 
     @Builder
     private RoomGetRes(
-            Long chatRoomId, String chatRoomName, Long userId, RoomMessageResList roomMessageResList) {
+            Long chatRoomId,
+            String chatRoomName,
+            List<RoomUserInfoRes> roomUserInfoReses,
+            RoomMessageResList roomMessageResList) {
         this.chatRoomId = chatRoomId;
         this.chatRoomName = chatRoomName;
-        this.userId = userId;
+        this.roomUserInfoReses = roomUserInfoReses;
         this.roomMessageResList = roomMessageResList;
     }
 }

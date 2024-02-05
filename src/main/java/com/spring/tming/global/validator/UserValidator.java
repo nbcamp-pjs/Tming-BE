@@ -29,6 +29,16 @@ public class UserValidator {
         }
     }
 
+    public static void duplicatedUpdateUser(UserUpdateReq userUpdateReq, User user) {
+        if (!isNullUser(user) && !isSameUser(userUpdateReq, user)) {
+            throw new GlobalException(DUPLICATED_USERNAME_OR_EMAIL);
+        }
+    }
+
+    private static boolean isSameUser(UserUpdateReq userUpdateReq, User user) {
+        return userUpdateReq.getUserId().equals(user.getUserId());
+    }
+
     public static void validate(SignupReq req) {
         if (!isCorrectUsernameFormat(req.getUsername())) {
             throw new GlobalException(VALID_USERNAME);
@@ -41,9 +51,6 @@ public class UserValidator {
     public static void validate(UserUpdateReq userUpdateReq) {
         if (!isCorrectUsernameFormat(userUpdateReq.getUsername())) {
             throw new GlobalException(VALID_USERNAME);
-        }
-        if (!isCorrectPasswordFormat(userUpdateReq.getPassword())) {
-            throw new GlobalException(VALID_PASSWORD);
         }
     }
 

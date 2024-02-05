@@ -4,7 +4,9 @@ import static com.spring.tming.global.jwt.JwtUtil.*;
 
 import com.spring.tming.domain.user.entity.User;
 import com.spring.tming.domain.user.repository.UserRepository;
+import com.spring.tming.global.exception.GlobalException;
 import com.spring.tming.global.jwt.JwtUtil;
+import com.spring.tming.global.meta.ResultCode;
 import com.spring.tming.global.redis.RedisUtil;
 import com.spring.tming.global.validator.UserValidator;
 import io.jsonwebtoken.Claims;
@@ -38,14 +40,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String accessToken = jwtUtil.getTokenFromHeader(request, ACCESS_TOKEN_HEADER);
 
-        if (StringUtils.hasText(accessToken) && !jwtUtil.validateToken(accessToken)) {
+        if (StringUtils.hasText(accessToken) && !jwtUtil.validateAccessToken(accessToken)) {
             String refreshToken = jwtUtil.getTokenFromHeader(request, REFRESH_TOKEN_HEADER);
 
             if (StringUtils.hasText(refreshToken)
-                    && jwtUtil.validateToken(refreshToken)
+                    && jwtUtil.validateRefreshToken(refreshToken)
                     && redisUtil.hasKey(refreshToken)) {
-                Long userId = Long.parseLong(redisUtil.get(refreshToken).toString());
-                User user = userRepository.findByUserId(userId);
+                String email = redisUtil.get(refreshToken).toString();
+                User user = userRepository.findByEmail(email);
                 UserValidator.validate(user);
                 accessToken = jwtUtil.createAccessToken(user.getEmail()).split(" ")[1].trim();
                 response.addHeader(ACCESS_TOKEN_HEADER, BEARER_PREFIX + accessToken);
@@ -53,12 +55,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         if (StringUtils.hasText(accessToken)) {
-            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
             try {
+                Claims info = jwtUtil.getUserInfoFromToken(accessToken);
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
+                throw new GlobalException(ResultCode.INVALID_TOKEN);
             }
         }
         filterChain.doFilter(request, response);

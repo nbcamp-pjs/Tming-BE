@@ -16,13 +16,21 @@ public class UserUpdateReq {
     private String username;
     private Job job;
     private String introduce;
+    private String profileImageUrl;
 
     @Builder
-    private UserUpdateReq(Long userId, String password, String username, Job job, String introduce) {
+    private UserUpdateReq(
+            Long userId,
+            String password,
+            String username,
+            Job job,
+            String introduce,
+            String profileImageUrl) {
         this.userId = userId;
         this.password = password;
         this.username = username;
         this.job = job;
         this.introduce = introduce;
+        this.profileImageUrl = profileImageUrl;
     }
 }
