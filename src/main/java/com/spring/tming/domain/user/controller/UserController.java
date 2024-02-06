@@ -25,6 +25,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
     @PostMapping("/signup")
     public RestResponse<SignupRes> signup(@RequestBody SignupReq signupReq) {
         return RestResponse.success(userService.signup(signupReq));
