@@ -14,10 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.spring.tming.domain.BaseMvcTest;
-import com.spring.tming.domain.user.dto.request.FollowReq;
-import com.spring.tming.domain.user.dto.request.SignupReq;
-import com.spring.tming.domain.user.dto.request.UnfollowReq;
-import com.spring.tming.domain.user.dto.request.UserUpdateReq;
+import com.spring.tming.domain.user.dto.request.*;
 import com.spring.tming.domain.user.dto.response.*;
 import com.spring.tming.domain.user.service.UserService;
 import com.spring.tming.global.meta.Job;
@@ -57,6 +54,44 @@ class UserControllerTest extends BaseMvcTest {
                         post("/v1/users/signup")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(signupReq)))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("중복검사_닉네임")
+    void 중복검사_닉네임() throws Exception {
+
+        CheckUsernameReq checkUsernameReq = CheckUsernameReq.builder().username(TEST_USER_NAME).build();
+
+        CheckUsernameRes checkUsernameRes = CheckUsernameRes.builder().check(true).build();
+
+        when(userService.checkUsername(any())).thenReturn(checkUsernameRes);
+
+        this.mockMvc
+                .perform(
+                        post("/v1/users/check-username")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(checkUsernameReq)))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("중복검사_이메일")
+    void 중복검사_이메일() throws Exception {
+
+        CheckEmailReq checkEmailReq = CheckEmailReq.builder().email(TEST_USER_EMAIL).build();
+
+        CheckEmailRes checkEmailRes = CheckEmailRes.builder().check(true).build();
+
+        when(userService.checkEmail(any())).thenReturn(checkEmailRes);
+
+        this.mockMvc
+                .perform(
+                        post("/v1/users/check-email")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(checkEmailReq)))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
