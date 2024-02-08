@@ -29,8 +29,7 @@ public class RoomController {
         roomReq.setSenderId(userDetails.getUser().getUserId());
         return RestResponse.success(roomService.createRoom(roomReq));
     }
-    //  @RequestParam(name = "job", required = false) Job job,
-    // @RequestParam(name = "offset", defaultValue = "1") String offset,
+
     // 방확인
     @GetMapping("/chat")
     public RestResponse<RoomFindRes> findRoom(
